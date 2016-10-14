@@ -13,3 +13,7 @@ Riak is removed in favour of ElasticSearch.
 | 2017-03-09 | MongoDB         | Fortunato Flores Ando |
 | 2017-03-27 | HBase           | Pär Tjärnberg         |
 | 2017-04-27 | ElasticSearch   | Henrik L. + Breding   |
+
+Each database has its own folder. Example code and data files are located
+in a subfolder called `code`. The `README.md` file for each database
+provides more information.
