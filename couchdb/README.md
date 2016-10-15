@@ -22,6 +22,6 @@ Open browser and go to: [localhost:5984/_utils][fauxton]
 ### Etc
 
 
-[fauxton-first-page]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/img/fuxton-first-page.PNG?raw=true "Fuxton First Page"
+[fauxton-first-page]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fuxton-first-page.PNG?raw=true "Fuxton First Page"
 [couch-download]: http://couchdb.apache.org/#download 
 [fauxton]: http://localhost:5984/_utils/
