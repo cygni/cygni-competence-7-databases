@@ -1,6 +1,6 @@
 # CouchDB
 
-## Installing CouchDB
+## Run CouchDB
 
 ### Docker
 
@@ -11,7 +11,7 @@
 
  - Download and use installer [http://couchdb.apache.org/#download][couch-download]
  
-### Verify installation
+### Verify
 Open browser and go to: [localhost:5984/_utils][fauxton]
  
 ![alt text][fauxton-first-page]
