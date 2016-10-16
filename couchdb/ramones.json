@@ -1,0 +1,17 @@
+{
+    "name": "Ramones",
+    "albums": [
+        {
+            "title": "Ramones",
+            "year": 1976
+        },
+        {
+            "title": "Rocket to Russia",
+            "year": 1977
+        },
+        {
+            "title": "Road to Ruin",
+            "year": 1978
+        }
+    ]
+}

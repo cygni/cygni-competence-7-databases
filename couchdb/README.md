@@ -143,6 +143,23 @@ $ curl localhost:5984/music/5dd92d287619477369ec87e4ef00d73b
 3. Create a new document that contains a jpg image as an attachment. Lastly, craft and execute a cURL request that will return the attachment.
 
 ## Creating and Querying Views 
+In CouchDB you access documents through *views*. Each database created in CouchDB comes with a few predefined views that allows you to query data from the documents. A view consists of a *map* and a *reduce* function that generates an ordered list of key-value pairs.
+
+### Querying default views
+The simplest predefined view is called *_all_docs* and is accessible through `localhost:5984/{db}/_all_docs`. Issue a GET request on the music database.
+
+```
+$ curl localhost:5984/music/_all_docs
+```
+
+Appends the query parameter *include_docs=true* to include the entire documents in the response.
+
+```
+$ curl localhost:5984/music/_all_docs?include_docs=true
+```
+
+### Writing views
+Fauxton provides a pretty decent interface for writing your own views with map and reduce function. Views are stored in *design documents*. These are special documents that are prefixed with _design/. We are going to create a view that generates artist document ids keyed by artist name.
 
 ## Advanced Views, Changes API, and Replicating Data
 
