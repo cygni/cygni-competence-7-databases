@@ -3,19 +3,16 @@
 - CouchDB API reference: [http://docs.couchdb.org/en/2.0.0/http-api.html](http://docs.couchdb.org/en/2.0.0/http-api.html)
 
 ## Before we start
-Before we start, please make sure you are able to run CouchDB 2.0 on your machine. Instructions on how to run or install CouchDB on different platforms follows.
+Before we start, please make sure you are able to run CouchDB 2.0 on your machine. We recommend using Docker. Use the official docker image 'couchdb' and start a new container named 'db' using the following command in bash:
+```
+$ docker run -d --name db -v $(pwd):/home/couchdb/dev/lib -p 5984:15984 couchdb --with-admin-party-please 
+```
 
-### Docker
-This repository comes with a Dockerfile that allows you to download and run CouchDB inside a Docker container.
+Or if you are on windows:
+```
+> docker run -d --name db -v %cd%:/home/couchdb/dev/lib -p 5984:15984 couchdb --with-admin-party-please
+```
 
-- `docker build -t couchdb .`
-- `docker run -d --name couchdb-run -p 5984:15984 couchdb`
-
-### Windows and OSX
-If you do not have Docker installed or if you prefer to install CouchDB locally on your machine there are installers available for Windows and OSX. Both of them should ultimately start CouchDB as a service.
-
- - Download and use installer [http://couchdb.apache.org/#download][couch-download]
- 
 ### Verify
 To verify that your database is up and running at port 5984, go to [localhost:5984/_utils][fauxton]. This opens 'Fauxton', the web interface that comes with CouchDB.
 
