@@ -31,8 +31,6 @@ $ docker run -d --name db -p 5984:5984 -v $(pwd):/home/couchdb/dev/lib couchdb
 
 To verify that your database is up and running at port 5984, go to [localhost:5984/_utils][fauxton]. This should now open 'Fauxton', the web interface that comes with CouchDB.
 
-- Open browser and go to: [localhost:5984/_utils][fauxton]
- 
 ![alt text][fauxton-first-page]
 
 ### TODO: Docker containers for node and cURL
@@ -48,8 +46,6 @@ Your browser should now be looking at [http://localhost:5984/_utils/#/database/m
 
 Click the '+' next to 'All Documents' and create a new document. A new view will open. CouchDB generates a new unique identifier for you by default. The identifier is specified by the *_id* field. You are free to change it. If the *_id* field is completely omitted in the new document, CouchDB will generate a new one before saving. For now, just click 'Create Document' to save the new document.
 
-- Create a new empty document
-
 This will take you back to the list of documents in 'music'. Double click the the header of the document or click the 'edit' icon in the top-right corner. This takes you to the document editor. 
 
 Note the additional field called *_rev* in the new document. CouchDB will generate a new value for this field each the document changes. The integer at the beginning represents the numerical revision of the document. In order to update a document in CouchDB, both the *_id* and the *_rev* fields must be provided. Only if the provided *_rev* field matches the *_rev* field in the database will the update be accepted. That is, CouchDB ensures that clients have read the latest version of a document when updating.
@@ -58,9 +54,8 @@ To update a document in Fauxton, simply modify the json in the document editor a
 
 - Add a new field: `"name": "Ramones"`
 
-Note the updated *_rev* field. Go ahead and add some albums to the document as well.
+Note the updated *_rev* field. Go ahead and add some albums to the document as well:
 
-- Add a new albums field:
 ```
 "albums": [
     {
@@ -160,13 +155,13 @@ $ curl localhost:5984/music/5dd92d287619477369ec87e4ef00d73b
 In CouchDB you access documents through *views*. Each database created in CouchDB comes with a few predefined views that allows you to query data from the documents. A view consists of a *map* and a *reduce* function that generates an ordered list of key-value pairs.
 
 ### Querying default views
-The simplest predefined view is called *_all_docs* and is accessible through `localhost:5984/{db}/_all_docs`. Issue a GET request on the music database.
+The simplest predefined view is called *_all_docs* and is accessible through `localhost:5984/{db}/_all_docs`. Try it out by issuing a GET request on the music database.
 
 ```
 $ curl localhost:5984/music/_all_docs
 ```
 
-Appends the query parameter *include_docs=true* to include the entire documents in the response.
+Append the query parameter *include_docs=true* to include the entire documents in the response.
 
 ```
 $ curl localhost:5984/music/_all_docs?include_docs=true
@@ -175,10 +170,67 @@ $ curl localhost:5984/music/_all_docs?include_docs=true
 ### Writing views
 Fauxton provides a pretty decent interface for writing your own views with map and reduce function. Views are stored in *design documents*. These are special documents that are prefixed with _design/. We are going to create a view that generates artist document ids keyed by artist name.
 
+Go to [localhost:5984/_utils][fauxton] and go to the *music* database page. Now click the '+' sign next to 'Design Documents' and add a new view. Name the view 'by_name' and add it to a new design document called 'artists'.
+
+![alt text][fauxton-music-new-view]
+
+Write the following map function then hit 'Create Document' to save the view and view the results.
+
+```javascript
+function(doc) {
+  if ('name' in doc) {
+    emit(doc.name, doc._id);
+  }
+}
+```
+
+
+
+Before we head back to the command line, we are going to create another view that finds albums by name. Go back to the *music* database page and create a new design document named 'albums' with a view named 'by_name'. Add the following map function:
+
+```javascript
+function(doc) {
+  if ('name' in doc && 'albums' in doc) {
+    doc.albums.forEach(function(album){
+      var key = album.title || album.name;
+      var value = { by: doc.name, album: album };
+      emit(key, value);
+    });
+  }
+}
+```
+
+### Querying views
+Views are be queried using the following path:
+
+```
+/{database}/_design/{design-document}/_view/{view-name}
+```
+
+So, for example to find artists by name:
+
+```
+$ curl localhost:5984/music/_design/artists/_view/by_name
+```
+And albums:
+```
+$ curl localhost:5984/music/_design/albums/_view/by_name
+```
+
+### Add data
+Querying is not that fun unless we have some data that we can query. Execute the following command to add some music data to our database. It uses the CouchDB *_bulk_docs* handles to add a batch of documents in one request.
+
+```
+$ zcat jamendo-artist-album-track.json.gz | \
+> curl -X POST localhost:5984/music/_bulk_docs/ \
+> -d @- -H "Content-Type: application/json"
+```
+
 ## Advanced Views, Changes API, and Replicating Data
 
 
 [fauxton-first-page]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fuxton-first-page.PNG?raw=true "Fuxton First Page"
 [fauxton-music-db]: fauxton-music-db.png "Fauxton 'music' database"
+[fauxton-music-new-view]: fauxton-music-new-view.png "Creating new view"
 [couch-download]: http://couchdb.apache.org/#download 
 [fauxton]: http://localhost:5984/_utils/
