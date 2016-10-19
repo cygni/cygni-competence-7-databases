@@ -15,6 +15,7 @@ RUN apt-get --no-install-recommends -y install \
     libicu-dev \
     libmozjs185-dev \
     python \
+    haproxy \
     wget
 
 # Get couchdb
@@ -34,5 +35,5 @@ RUN sed -i'' 's/bind_address = 127.0.0.1/bind_address = 0.0.0.0/' rel/overlay/et
 RUN ./configure
 RUN make couch
 
-EXPOSE 15984 25984 35984 15986 25986 35986
-ENTRYPOINT ["/home/couchdb/dev/run", "--with-admin-party-please"]
+EXPOSE 5984 15984 25984 35984 15986 25986 35986
+ENTRYPOINT ["/home/couchdb/dev/run", "--with-admin-party-please", "--with-haproxy"]

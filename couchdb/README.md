@@ -3,25 +3,39 @@
 - CouchDB API reference: [http://docs.couchdb.org/en/2.0.0/http-api.html](http://docs.couchdb.org/en/2.0.0/http-api.html)
 
 ## Before we start
-Before we start, please make sure you are able to run CouchDB 2.0 on your machine. Instructions on how to run or install CouchDB on different platforms follows.
 
-### Docker
-This repository comes with a Dockerfile that allows you to download and run CouchDB inside a Docker container.
+Clone the repository into a directory of your choice.
 
-- `docker build -t couchdb .`
-- `docker run -d --name couchdb-run -p 5984:15984 couchdb`
+```
+$ git clone http://github.com/cygni/cygni-competence-7-databases
+```
 
-### Windows and OSX
-If you do not have Docker installed or if you prefer to install CouchDB locally on your machine there are installers available for Windows and OSX. Both of them should ultimately start CouchDB as a service.
+### Running CouchDB
+The repository comes with a Dockerfile that allows you to download and run CouchDB 2.0.0 inside a Docker container. So make sure that your current directory is `cygni-competence-7-databases/couchdb`. Then build a docker image with the following command:
 
- - Download and use installer [http://couchdb.apache.org/#download][couch-download]
- 
-### Verify
-To verify that your database is up and running at port 5984, go to [localhost:5984/_utils][fauxton]. This opens 'Fauxton', the web interface that comes with CouchDB.
+```
+$ docker build -t couchdb .
+```
+
+If you are using windows, start a container using the following command:
+
+```
+> docker run -d --name db -p 5984:5984 -v %cd%:/home/couchdb/dev/lib couchdb
+```
+
+Or, if you are using bash:
+
+```
+$ docker run -d --name db -p 5984:5984 -v $(pwd):/home/couchdb/dev/lib couchdb
+```
+
+To verify that your database is up and running at port 5984, go to [localhost:5984/_utils][fauxton]. This should now open 'Fauxton', the web interface that comes with CouchDB.
 
 - Open browser and go to: [localhost:5984/_utils][fauxton]
  
 ![alt text][fauxton-first-page]
+
+### TODO: Docker containers for node and cURL
 
 ## CRUD with Fauxton
 We'll start of by doing some CRUD operations with Fauxton and cURL. The first thing we'll need to do is to create a new database. This can be done using Fauxton.
