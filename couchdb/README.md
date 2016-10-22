@@ -226,7 +226,7 @@ curl -X POST db:5984/music/_bulk_docs/ \
 
 
 [fauxton-first-page]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fuxton-first-page.PNG?raw=true "Fuxton First Page"
-[fauxton-music-db]: fauxton-music-db.png "Fauxton 'music' database"
-[fauxton-music-new-view]: fauxton-music-new-view.png "Creating new view"
+[fauxton-music-db]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-music-db.png?raw=true "Fauxton 'music' database"
+[fauxton-music-new-view]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-music-new-view.png?raw=true "Creating new view"
 [couch-download]: http://couchdb.apache.org/#download 
 [fauxton]: http://localhost:5984/_utils/
