@@ -1,4 +1,6 @@
 # CouchDB
+TODO
+
 ## Resources
 - CouchDB API reference: [http://docs.couchdb.org/en/2.0.0/http-api.html](http://docs.couchdb.org/en/2.0.0/http-api.html)
 
@@ -220,8 +222,10 @@ The jamendo-data.json file contains artist data in the following format: ('rando
 ## Views 
 In CouchDB you access documents through *views*. Each database created in CouchDB comes with a few predefined views that allows you to query data from the documents. A view consists of a *map* and a *reduce* function that generates an ordered list of key-value pairs.
 
+TODO: View query parameters
+
 ### Querying default views
-The simplest predefined view is called *_all_docs* and is accessible through `localhost:5984/{db}/_all_docs`. Try it out by issuing a GET request on the music database.
+The simplest predefined view is called *_all_docs* and is accessible through `localhost:5984/{db}/_all_docs`. Issue a GET request on the music database.
 
 ```
 $ curl couch/music/_all_docs
@@ -234,13 +238,13 @@ $ curl couch/music/_all_docs?include_docs=true
 ```
 
 ### Writing views
-Fauxton provides a pretty decent interface for writing your own views with map and reduce function. Views are stored in *design documents*. These are special documents that are prefixed with _design/. We are going to create a view that generates artist document ids keyed by artist name.
+Fauxton provides a way to write your own views with map and reduce functions. Views are stored in *design documents*. These are special documents, prefixed with _design/.
 
-Go to [localhost:5984/_utils][fauxton] and go to the *music* database page. Now click the '+' sign next to 'Design Documents' and add a new view. Name the view 'by_name' and add it to a new design document called 'artists'.
+In Fauxton, go to the *music* database page. Click the '+' sign next to 'Design Documents' and add a new view. Name it 'by_name' and add it to a new design document called 'artists'.
 
 ![alt text][fauxton-music-new-view]
 
-Write the following map function then hit 'Create Document' to save the view and view the results.
+Write the following map function then hit 'Create Document' to save the design document:
 
 ```javascript
 function(doc) {
@@ -250,7 +254,7 @@ function(doc) {
 }
 ```
 
-Before we head back to the command line, we are going to create another view that finds albums by name. Go back to the *music* database page and create a new design document named 'albums' with a view named 'by_name'. Add the following map function:
+Aslo create another view that finds albums by name: go back to the *music* database page and create a new design document named 'albums' with a view named 'by_name' with the following map function:
 
 ```javascript
 function(doc) {
@@ -265,7 +269,7 @@ function(doc) {
 ```
 
 ### Querying views
-Views are be queried using the following path:
+Views are queried using the following path:
 
 ```
 /{database}/_design/{design-document}/_view/{view-name}
@@ -303,7 +307,7 @@ function (doc) {
 }
 ```
 
-This mapper will generate rows keyed by tag name and the value '1' for each tag found. We are going to *reduce* these values with a count function. Select 'CUSTOM' from the dropdown menu, the default reduce function works for us. It will count the number of values for each key. 
+This map function will generate rows keyed by tags on album tracks and the value '1' for each tag found. We are going to *reduce* these values with a count function. Select 'CUSTOM' from the dropdown menu, the default reduce function works for us - it will count the number of values for each key.
 
 ``` javascript
 function (keys, values, rereduce) {
@@ -317,13 +321,13 @@ function (keys, values, rereduce) {
 
 Execute the following command to retrieve the reduced result:
 
-```
+``` bash
 $ curl 'couch/music/_design/tags/_view/by_name?reduce=true&group=true'
 ```
 
 It is not possible to sort reduced views by value directly from couch. This is something that has to be implemented in your application. For fun we can use jq to retrieve the top 10 most popular tags of our result set.
 
-```
+``` bash
 $ curl 'couch/music/_design/tags/_view/by_name?reduce=true&group=true' | \
 jq .rows | jq 'sort_by(.value)' | jq reverse | jq .[0:10]
 ```
@@ -356,13 +360,22 @@ Will retrieve information about all changes in the 'music' database since creati
 
 Like other views you can specify the 'include_docs' and 'limit' query parameters.
 
-### Exercises Changes API
+## Exercises: Changes API
 1. Create a cURL request that gets the latest changes for a document with an id of your choice, e.g. 'nirvana'. Then go to fauxton and create/edit that document and execute your curl request again.
 2. Create a cURL request that uses the *longpolling* feed to get document updates to the same document since the last update sequence. Go to fauxton and edit the document to see what happends.
 3. Create a cURL request that uses the *continuous* feed to get document updates for the entire database since the last update sequence. Then go to fauxton and update documents at your will. Inspect the output from cURL.
 
 ## Replicating Data
-CouchDB provides an easy way to replicate data between databases. 
+CouchDB provides an easy way to replicate data between databases.
+
+TODO:
+
+## Exercises: Replicating
+TODO
+## Mango queries
+TODO
+## Exercises: Mango queries
+TODO
 
 [fauxton-first-page]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fuxton-first-page.PNG?raw=true "Fauxton First Page"
 [fauxton-new-document]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-new-document.png?raw=true "Fauxton new document"
