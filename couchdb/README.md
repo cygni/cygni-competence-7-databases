@@ -195,17 +195,17 @@ The jamendo-data.json file contains artist data in the following format: ('rando
   "_id": "XXXX",
   "name": "Artist Name",
   "country": "CTR",
-  "random": 33654
+  "random": 33654,
   "albums": [
     {
       "id": "YYYY",
       "name": "Album Name",
-      "random": 52086
+      "random": 52086,
       "tracks": [
         {
           "id": "ZZZZ",
           "name": "Track Name",
-          "random": 56475
+          "random": 56475,
           "tags": [
               {
                   "idstr": "tag",
