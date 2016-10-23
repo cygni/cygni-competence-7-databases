@@ -10,7 +10,7 @@ Clone the repository into a directory of your choice.
 $ git clone http://github.com/cygni/cygni-competence-7-databases
 ```
 
-Navigate to cygni-competence-7-databases/couchdb/ and build images, these will be hosted on docker hub later. Also create a new docker network called 'couchdb'.
+Navigate to cygni-competence-7-databases/couchdb/ and build the docker images we will use in this exercise. Also create a new docker network called 'couchdb'.
 
 ```
 $ docker build -t cygni-couchdb-db db
@@ -19,35 +19,44 @@ $ docker network create couchdb
 ```
 
 ## Running CouchDB
-Run a container from the 'cygni-couch-db' image using the following command (WINDOWS or bash):
+Start a new container from the 'cygni-couch-db' image using the following command (WINDOWS or bash):
 
 ```
 WINDOWS > docker run -d --name couch -p 5984:80 -v %cd%\db:/couchdb/data --net couchdb cygni-couchdb-db
-BASH    $ docker run -d --name couch -p 5984:80 -v $(pwd)/db:/home/couchdb/dev/lib --net couchdb cygni-couchdb-db
+BASH    $ docker run -d --name couch -p 5984:80 -v $(pwd)/db:/couchdb/data --net couchdb cygni-couchdb-db
 ```
 
-To verify that your database is up and running at port 5984, go to [localhost:5984/_utils][fauxton]. This should now open 'Fauxton', the web interface that comes with CouchDB.
+Verify that your database is up and running at [localhost:5984/_utils][fauxton]. This should now open 'Fauxton', a web interface that comes with CouchDB.
 
 ![alt text][fauxton-first-page]
 
-## CRUD with Fauxton
-Create a new database called 'music' from fauxton. Your browser should now be looking at [http://localhost:5984/_utils/#/database/music/_all_docs](http://localhost:5984/_utils/#/database/music/_all_docs). This page shows you all documents for the 'music' database. From here, you can view, edit or create documents.
+## Fauxton
+Create a new database called 'music' from Fauxton. Your browser should now be looking at [http://localhost:5984/_utils/#/database/music/_all_docs](http://localhost:5984/_utils/#/database/music/_all_docs). From here, you can view, edit, create, or delete documents from the music database.
 
 ![alt text][fauxton-music-db]
 
-Click the '+' next to 'All Documents' and create a new document. A new view will open. CouchDB generates a new unique identifier for you by default. The identifier is specified by the *_id* field. You are free to change it. If the *_id* field is completely omitted in the new document, CouchDB will generate a new one before saving. For now, just click 'Create Document' to save the new document.
+Click on 'All Documents' -> '+' -> 'New document'. Fauxton will take you to its document editor where you manually can edit the initial value of the document. CouchDB already generated a unique identifier for you in the *_id* field. But you are free to change it. If the _id field is omitted, CouchDB will generate a new one before saving. So, just click 'Create Document' to save the new document.
 
-This will take you back to the list of documents in 'music'. Double click the the header of the document or click the 'edit' icon in the top-right corner. This takes you to the document editor. 
+![alt text][fauxton-new-document]
 
-Note the additional field called *_rev* in the new document. CouchDB will generate a new value for this field each the document changes. The integer at the beginning represents the numerical revision of the document. In order to update a document in CouchDB, both the *_id* and the *_rev* fields must be provided. Only if the provided *_rev* field matches the *_rev* field in the database will the update be accepted. That is, CouchDB ensures that clients have read the latest version of a document when updating.
+This should take you back to the view of all documents. Click the edit icon on the created document to go back to the editor.
 
-To update a document in Fauxton, simply modify the json in the document editor and hit "Save Changes".
+![alt text][fauxton-all-docs]
 
-- Add a new field: `"name": "Ramones"`
+Note the additional field called *_rev*. CouchDB generates a new value for this field each the document changes. The integer at the beginning represents the numerical revision of the document. As you will see later, to update a document in CouchDB, both the *_id* and the *_rev* fields must be provided. The update will only be accepted if the provided *_rev* field matches the current *_rev* field in the database. That is, CouchDB ensures that clients have read the latest version of a document when updating.
 
-Note the updated *_rev* field. Go ahead and add some albums to the document as well:
+Now, delete the document we created. You can do this either from the view of all documents or from the document editor. Then create a brand new document. But this time, you should specify the id yourself. In the document editor, add the following json:
 
+``` json
+{
+  "_id": "ramones",
+  "name": "Ramones"
+}
 ```
+
+Save the document. Then go back and edit to add a 'albums' field:
+
+``` json
 "albums": [
     {
         "title": "Ramones",
@@ -64,53 +73,73 @@ Note the updated *_rev* field. Go ahead and add some albums to the document as w
 ]
 ```
 
+After saving, note the updated *_rev* field. It should start with '2'.
+
 ## Getting dirty with cURL
+While the Fauxton interface provides a great overview of what features are available in CouchDB, it hides some of the details of how CouchDB works. We are going to use the command line tool *cURL* to communicate with CouchDB over its' RESTful API. Start the prepared shell using docker:
 
-While the Fauxton interface provides a great overview of what features are available in CouchDB, it hides some details of how things work. We are going to use the command line tool *cURL* to communicate with CouchDB over its' RESTful API. 
-
-Start the prepared exercise shell using docker:
-
-```
-$ docker run -it --rm -v %cd%:/couch --net couchdb cygni-couchdb-shell
+``` bash
+WINDOWS > docker run -it --rm -v %cd%:/couch --net couchdb cygni-couchdb-shell
+BASH    $ docker run -it --rm -v $(pwd):/couch --net couchdb cygni-couchdb-shell
 ```
 
-Once inside the running container, issue a GET request to the root of the CouchDB endpoint. This will an informational message about the CouchDB instance.
+Once inside the running container, issue a GET request to the root of the CouchDB endpoint. This will retrieve an informational message about the CouchDB instance.
 
-```
+``` bash
 $ curl couch
+{"couchdb":"Welcome","version":"2.0.0","vendor":{"name":"The ... 
 ```
 
 Issuing a GET request on a database will retrieve information about the database including number of documents and number of operations.
 
-```
+``` bash
 $ curl couch/music
+{"db_name":"music","update_seq":"4-...
 ```
 
-### Read documents with GET
-To read a specific document, append the *_id* to the URL. You may copy the value from Fauxton.
+### Accessing documents
+Documents in a database are exposed as resources on the path /{db}/{document-id}. See the [API reference][couch-api-document]. Issuing a GET request will retrieve the entire document: (you can pipe output to 'jq .' for pretty printing json)
 
 ```
-$ curl couch/music/{id}
+$ curl couch/music/ramones | jq .
+{
+  "_id": "ramones",
+  "_rev": "2-0a47eedbed7a829478ca490dbd9b2b6f",
+  "name": "Ramones",
+  "albums": [
+    {
+      "title": "Ramones",
+      "year": 1976
+    },
+    {
+      "title": "Rocket to Russia",
+      "year": 1977
+    },
+    {
+      "title": "Road to Ruin",
+      "year": 1978
+    }
+  ]
+}
+$
 ```
 
-### Create documents with PUT or POST
-To create a new document you can use PUT or POST. Issue a POST request to the music database to create a new document. CouchDB will respond with generated identifier and revision values.
+To create a new document you can either PUT or POST. Issue a POST request to the music database to create a new document. CouchDB will respond with generated identifier and revision values:
 
 ```
 $ curl -X POST couch/music/ \
 -H "Content-Type: application/json" \
 -d '{"name": "De Lyckliga Kompisarna"}'
-{"ok":true,"id":"5dd92d287619477369ec87e4ef00d73b","rev":"1-e4ce78586222cdb35465d4bea038238a"}
+{"ok":true,"id":"5dd92....","rev":"1-e4ce7...."}
 ```
 
-### Update documents with PUT
-We will use a PUT request to update existing document. When we are updating documents in CouchDB, we have to specify the *_id* and *_rev* fields in the latest version of the document we want to update. The *_id* value is simply specified in the URL using RESTful conventions: `couch/music/{id}`. The *_rev* value can be specified in three ways:
+Updates to existing documents are made using PUT requests. As mentioned earlier, we have to specify the *_id* and *_rev* fields of the latest version of the document we want to update. The *_id* value is specified in the URL: `couch/{db}/{id}`. The *_rev* value can be specified in:
 
-- In the json body with a field named `"_rev": {revision}`
-- In the If-Match HTTP header `If-Match: {revision}`
-- In the rev query parameter `localhost:5984/music/{id}?rev={revision}`
+- The json body with a field named `"_rev": {revision}`
+- The If-Match HTTP header `If-Match: {revision}`
+- The rev query parameter `localhost:5984/music/{id}?rev={revision}`
 
-Issue a PUT request to add some albums to the 'De Lyckliga Kompisarna' artist document. First you might have to GET `localhost:5984/music/{id}` to gain access to the latest *_rev* value. Then you can choose freely how you want to specify the revision. The following command updates using the rev query parameter.
+Add some albums to the 'De Lycklyga Kompisarna' document by issuing a PUT:
 
 ```
 $ curl -X PUT 'couch/music/5dd92d287619477369ec87e4ef00d73b?rev=1-e4ce78586222cdb35465d4bea038238a' \
@@ -125,29 +154,29 @@ $ curl -X PUT 'couch/music/5dd92d287619477369ec87e4ef00d73b?rev=1-e4ce78586222cd
 {"ok":true,"id":"5dd92d287619477369ec87e4ef00d73b","rev":"2-027c7d133a0ccaf9596c6aa3dbe9e30f"}
 ```
 
-CouchDB will respond with 200 OK and the new revision field value. Try to execute the same command again, CouchDB will responds with an error specifying a 'Document update conflict'. This is because the provided revision value does not match the latest version.
+CouchDB responds with 200 OK and the new revision field value. Try to execute the same command again, CouchDB will responds with an error specifying a 'Document update conflict'. This is because the provided revision value does not match the latest version.
 
-Note how we also provided the 'name' field in the body, even though it was already in the document. That is because an update in CouchDB always completely replace the previous version. You can not simply append values to a document. I.e., if we had omitted the 'name' field, the document would only contain the 'albums' field. Along with the *_id* and *_rev* fields. 
+Note how we also provided the 'name' field in the body, even though it was already in the document. That is because an update in CouchDB always completely replace the previous version of the document. It is not possible to simply append values.
 
-### Removing documents with DELETE
-Finally, we will delete the document using a DELETE request. Similar to PUT, you will specify the document id in the URL. The latest revision also have to be provided in the rev query parameter or in the If-Match HTTP header.
+Finally, delete the document using a DELETE request. Similar to updates, the latest revision has to be provided in the rev query parameter or in the If-Match HTTP header:
 
 ```
 $ curl -X DELETE 'couch/music/5dd92d287619477369ec87e4ef00d73b/?rev=2-027c7d133a0ccaf9596c6aa3dbe9e30f'
 {"ok":true,"id":"5dd92d287619477369ec87e4ef00d73b","rev":"3-451e59c722e3f8fd4ae8b7463efd12eb"}
 ```
 
-CouchDB will respond with an updated revision. Instead of actually removing the document from disk, CouchDB simply inserts a new empty document on the same id and marks it as deleted. So issuing a GET on the document id will return 404 Not Found with additional information specifying that the document has been deleted.
+Note how CouchDB responds with an updated revision. Instead of actually removing the document from disk, CouchDB inserts a new empty document on the same id and marks it as deleted. So, issuing a GET on the document id will return 404 Not Found with an additional 'reason' message specifying that the document has been deleted.
 
 ```
 $ curl couch/music/5dd92d287619477369ec87e4ef00d73b
 {"error":"not_found","reason":"deleted"}
 ```
 
-### Exercises: CRUD
-1. Use cURL to PUT a new document into the database with a specific *_id* of your choice.
+### Exercises: CRUD with cURL
+1. Use cURL to PUT a new artist document into the database with a specific *_id* of your choice.
 2. Use cURL to create a new database with a name of your choice. Then delete it, also using cURL.
-3. Create a new document that contains a jpg image as an attachment. Lastly, craft and execute a cURL request that will return the attachment.
+3. Use cURL to add the 'data/ramones.jpg' image as an [attachment][couch-api-attachments] to the 'Ramones' document. Then, look it up in Fauxton. (Hint: content type is image/jpeg, and binary data can be passed from using the --data-binary option)
+4. Use cURL to retrieve the image attachment.
 
 ## Import data
 Querying is not that fun unless we have some data that we can query. Execute the following command to add some music data to our database. It uses the CouchDB *_bulk_docs* handles to add a batch of documents in one request.
@@ -340,9 +369,13 @@ CouchDB provides an easy way to replicate data between databases.
 
 
 
-[fauxton-first-page]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fuxton-first-page.PNG?raw=true "Fuxton First Page"
+[fauxton-first-page]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fuxton-first-page.PNG?raw=true "Fauxton First Page"
+[fauxton-new-document]: fauxton-new-document.png "Fauxton new document"
+[fauxton-all-docs]: fauxton-all-docs.png "Fauxton all documents"
 [fauxton-music-db]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-music-db.png?raw=true "Fauxton 'music' database"
 [fauxton-music-new-view]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-music-new-view.png?raw=true "Creating new view"
 [couch-download]: http://couchdb.apache.org/#download 
 [fauxton]: http://localhost:5984/_utils/
 [couch-api-change]: http://docs.couchdb.org/en/2.0.0/api/database/changes.html
+[couch-api-document]: http://docs.couchdb.org/en/2.0.0/api/document/common.html 
+[couch-api-attachments]: http://docs.couchdb.org/en/2.0.0/api/document/attachments.html
