@@ -1,0 +1,9 @@
+{
+  "_id": "_design/tracks",
+  "views": {
+    "by_tag": {
+      "map": "function (doc) {\n  (doc.albums || []).forEach(function(album) {\n      (album.tracks || []).forEach(function(track) {\n          (track.tags || []).forEach(function(tag) {\n            emit([tag.idstr, tag.weight], {track: track.name, artist: doc.name, weight: tag.weight});\n          })\n      })\n  });\n}"
+    }
+  },
+  "language": "javascript"
+}
