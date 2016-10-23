@@ -26,7 +26,7 @@ WINDOWS > docker run -d --name couch -p 5984:80 -v %cd%\db:/couchdb/data --net c
 BASH    $ docker run -d --name couch -p 5984:80 -v $(pwd)/db:/couchdb/data --net couchdb cygni-couchdb-db
 ```
 
-Verify that your database is up and running at [localhost:5984/_utils][fauxton]. This should now open 'Fauxton', a web interface that comes with CouchDB.
+Verify that your database is up and running at [localhost:5984/_utils][fauxton]. You should be presented to 'Fauxton', the web interface that comes with CouchDB.
 
 ![alt text][fauxton-first-page]
 
@@ -100,7 +100,7 @@ $ curl couch/music
 ### Accessing documents
 Documents in a database are exposed as resources on the path /{db}/{document-id}. See the [API reference][couch-api-document]. Issuing a GET request will retrieve the entire document: (you can pipe output to 'jq .' for pretty printing json)
 
-```
+``` bash
 $ curl couch/music/ramones | jq .
 {
   "_id": "ramones",
@@ -125,7 +125,7 @@ $ curl couch/music/ramones | jq .
 
 To create a new document you can either PUT or POST. Issue a POST request to the music database to create a new document. CouchDB will respond with generated identifier and revision values:
 
-```
+``` bash
 $ curl -X POST couch/music/ \
 -H "Content-Type: application/json" \
 -d '{"name": "De Lyckliga Kompisarna"}'
@@ -140,7 +140,7 @@ Updates to existing documents are made using PUT requests. As mentioned earlier,
 
 Add some albums to the 'De Lycklyga Kompisarna' document by issuing a PUT:
 
-```
+``` bash
 $ curl -X PUT 'couch/music/5dd92d287619477369ec87e4ef00d73b?rev=1-e4ce78586222cdb35465d4bea038238a' \
 -H "Content-Type: application/json" \
 -d '{
@@ -159,36 +159,36 @@ Note how we also provided the 'name' field in the body, even though it was alrea
 
 Finally, delete the document using a DELETE request. Similar to updates, the latest revision has to be provided in the rev query parameter or in the If-Match HTTP header:
 
-```
-$ curl -X DELETE 'couch/music/5dd92d287619477369ec87e4ef00d73b/?rev=2-027c7d133a0ccaf9596c6aa3dbe9e30f'
+``` bash
+$ curl -X DELETE 'couch/music/5dd92d287619477369ec87e4ef00d73b?rev=2-027c7d133a0ccaf9596c6aa3dbe9e30f'
 {"ok":true,"id":"5dd92d287619477369ec87e4ef00d73b","rev":"3-451e59c722e3f8fd4ae8b7463efd12eb"}
 ```
 
-Note how CouchDB responds with an updated revision. Instead of actually removing the document from disk, CouchDB inserts a new empty document on the same id and marks it as deleted. So, issuing a GET on the document id will return 404 Not Found with an additional 'reason' message specifying that the document has been deleted.
+Note that CouchDB responds with an updated revision. Instead of actually removing the document from disk, CouchDB inserts a new empty document on the same id and marks it as deleted. So, issuing a GET on the document id will return 404 Not Found with an additional 'reason' message specifying that the document has been deleted:
 
-```
+``` bash
 $ curl couch/music/5dd92d287619477369ec87e4ef00d73b
 {"error":"not_found","reason":"deleted"}
 ```
 
-### Exercises: CRUD with cURL
+## Exercises: CRUD with cURL
 1. Use cURL to PUT a new artist document into the database with a specific *_id* of your choice.
 2. Use cURL to create a new database with a name of your choice. Then delete it, also using cURL.
 3. Use cURL to add the 'data/ramones.jpg' image as an [attachment][couch-api-attachments] to the 'Ramones' document. Then, look it up in Fauxton. (Hint: content type is image/jpeg, and binary data can be passed from using the --data-binary option)
 4. Use cURL to retrieve the image attachment.
 
 ## Import data
-Querying is not that fun unless we have some data that we can query. Execute the following command to add some music data to our database. It uses the CouchDB *_bulk_docs* handles to add a batch of documents in one request.
+Execute the following command to add some music data to our database. It uses the CouchDB *_bulk_docs* feature to add a batch of documents in a single POST request.
 
-```
+``` bash
 $ zcat data/jamendo-data.json.gz | \
 curl -X POST couch/music/_bulk_docs/ \
 -d @- -H "Content-Type: application/json"
 ```
 
-The jamendo-data.json file contains artist data in the following format. 'random' is just a random 16-bit number assigned to each artist, album and track.
+The jamendo-data.json file contains artist data in the following format: ('random' is just a random 16-bit number assigned to each artist, album and track)
 
-```
+``` json
 {
   "_id": "XXXX",
   "name": "Artist Name",
@@ -281,7 +281,7 @@ And albums:
 $ curl couch/music/_design/albums/_view/by_name
 ```
 
-### Exercises: Views
+## Exercises: Views
 1. Using the artists/by_name view, find all artists that start with the letter "J".
 2. Create a new artist view that returns artist names keyed by their country. Then use cURL to find all artists from france ('FRA').
 3. Create a new view that returns tracks keyed by their tag. Use cURL to inspect the result.
@@ -364,13 +364,9 @@ Like other views you can specify the 'include_docs' and 'limit' query parameters
 ## Replicating Data
 CouchDB provides an easy way to replicate data between databases. 
 
-
-
-
-
 [fauxton-first-page]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fuxton-first-page.PNG?raw=true "Fauxton First Page"
-[fauxton-new-document]: fauxton-new-document.png "Fauxton new document"
-[fauxton-all-docs]: fauxton-all-docs.png "Fauxton all documents"
+[fauxton-new-document]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-new-document.png?raw=true "Fauxton new document"
+[fauxton-all-docs]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-all-docs.png?raw=true "Fauxton all documents"
 [fauxton-music-db]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-music-db.png?raw=true "Fauxton 'music' database"
 [fauxton-music-new-view]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-music-new-view.png?raw=true "Creating new view"
 [couch-download]: http://couchdb.apache.org/#download 
