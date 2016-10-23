@@ -121,7 +121,6 @@ $ curl couch/music/ramones | jq .
     }
   ]
 }
-$
 ```
 
 To create a new document you can either PUT or POST. Issue a POST request to the music database to create a new document. CouchDB will respond with generated identifier and revision values:
