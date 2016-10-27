@@ -12,20 +12,20 @@ Clone the repository into a directory of your choice.
 $ git clone http://github.com/cygni/cygni-competence-7-databases
 ```
 
-Navigate to cygni-competence-7-databases/couchdb/ and build the docker images we will use in this exercise. Also create a new docker network called 'couchdb'.
+Pull the docker images we will use in this exercise and create a new docker network called 'couchdb'.
 
 ```
-$ docker build -t cygni-couchdb-db db
-$ docker build -t cygni-couchdb-shell .
+$ docker pull cygni/7-databases:couchdb
+$ docker pull cygni/7-databases:couchdb-shell
 $ docker network create couchdb
 ```
 
 ## Running CouchDB
-Start a new container from the 'cygni-couch-db' image using the following command (WINDOWS or bash):
+Start a new container from the 'cygni/7-databases:couchdb' image using the following command (WINDOWS or bash):
 
 ```
-WINDOWS > docker run -d --name couch -p 5984:80 -v %cd%\db:/couchdb/data --net couchdb cygni-couchdb-db
-BASH    $ docker run -d --name couch -p 5984:80 -v $(pwd)/db:/couchdb/data --net couchdb cygni-couchdb-db
+WINDOWS > docker run -d --name couch -p 5984:80 -v %cd%\db:/couchdb/data --net couchdb cygni/7-databases:couchdb
+BASH    $ docker run -d --name couch -p 5984:80 -v $(pwd)/db:/couchdb/data --net couchdb cygni/7-databases:couchdb
 ```
 
 Verify that your database is up and running at [localhost:5984/_utils][fauxton]. You should be presented to 'Fauxton', the web interface that comes with CouchDB.
@@ -81,8 +81,8 @@ After saving, note the updated *_rev* field. It should start with '2'.
 While the Fauxton interface provides a great overview of what features are available in CouchDB, it hides some of the details of how CouchDB works. We are going to use the command line tool *cURL* to communicate with CouchDB over its' RESTful API. Start the prepared shell using docker:
 
 ``` bash
-WINDOWS > docker run -it --rm -v %cd%:/couch --net couchdb cygni-couchdb-shell
-BASH    $ docker run -it --rm -v $(pwd):/couch --net couchdb cygni-couchdb-shell
+WINDOWS > docker run -it --rm -v %cd%:/couch --net couchdb cygni/7-databases:couchdb-shell
+BASH    $ docker run -it --rm -v $(pwd):/couch --net couchdb cygni/7-databases:couchdb-shell
 ```
 
 Once inside the running container, issue a GET request to the root of the CouchDB endpoint. This will retrieve an informational message about the CouchDB instance.
