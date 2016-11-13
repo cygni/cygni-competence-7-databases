@@ -1,5 +1,5 @@
 # CouchDB
-TODO
+This exercise is divided into several sections. The first part of each section introduces a new concept and describes how to perform certain actions on the database. Then there is a set of exercises where you need to figure out yourself how to solve the problem. Take the opportunity to discuss with a neighbour and skim through the API-reference for guidelines.
 
 ## Resources
 - CouchDB API reference: [http://docs.couchdb.org/en/2.0.0/http-api.html](http://docs.couchdb.org/en/2.0.0/http-api.html)
@@ -18,15 +18,16 @@ $ docker pull cygni/7-databases:couchdb-shell
 $ docker network create couchdb
 ```
 
-## Running CouchDB
-Start a new container from the 'cygni/7-databases:couchdb' image using the following command (WINDOWS or bash):
+Ensure that your current directory is the `cygni-competence-7-databases/couchdb` directory. Then start a new container from the 'cygni/7-databases:couchdb' image using the following command (WINDOWS or bash):
 
 ```
 WINDOWS > docker run -d --name couch -p 5984:80 -v %cd%\db:/couchdb/data --net couchdb cygni/7-databases:couchdb
 BASH    $ docker run -d --name couch -p 5984:80 -v $(pwd)/db:/couchdb/data --net couchdb cygni/7-databases:couchdb
 ```
 
-Verify that your database is up and running at [localhost:5984/_utils][fauxton]. You should be presented to 'Fauxton', the web interface that comes with CouchDB.
+Note: `-v %cd%\db:couchdb/data` and `-v $(pwd)/db:/couchdb/data` _mounts_ the `db` directory inside the container so that your database files are kept when you delete the container.
+
+Now verify that your database is up and running at [localhost:5984/_utils][fauxton]. You should be presented to 'Fauxton', the web interface that comes with CouchDB. If not, something is wrong with your setup. Post your issue in the #7-databases channel on slack to get it resolved before the occasion.
 
 ![alt text][fauxton-first-page]
 
@@ -218,7 +219,7 @@ The jamendo-data.json file contains artist data in the following format: ('rando
 ```
 
 ## Views 
-In CouchDB you access documents through *views*. The simplest predefined view is called [_all_docs][couch-api-bulk-api] and is accessible through `couch/{db}/_all_docs`. The following request will retrieve the revision values of the first 10 documents in the 'music' database ordered by document id:
+In CouchDB you access documents through *views*. The simplest predefined view is called [_all_docs][couch-api-views] and is accessible through `couch/{db}/_all_docs`. The following request will retrieve the revision values of the first 10 documents in the 'music' database ordered by document id:
 
 ```
 $ curl couch/music/_all_docs?limit=10
@@ -254,7 +255,7 @@ function(doc) {
 Try your new view by running the following command in curl:
 
 ```
-$ curl couch/music/_design/_view/by_name?limit=2 | jq .
+$ curl couch/music/_design/artists/_view/by_name?limit=2 | jq .
 {
   "total_rows": 2721,
   "offset": 0,
@@ -400,7 +401,7 @@ Will retrieve information about all changes in the 'music' database since creati
 }
 ```
 
-Like other views you can specify the 'include_docs' and 'limit' query parameters.
+Just like with views you can specify the 'include_docs' and 'limit' query parameters.
 
 ## Exercises: Changes API
 1. Create a cURL request that gets the latest changes for a document with an id of your choice, e.g. 'nirvana'. Then go to fauxton and create/edit that document and execute your curl request again.
@@ -408,18 +409,71 @@ Like other views you can specify the 'include_docs' and 'limit' query parameters
 3. Create a cURL request that uses the *continuous* feed to get document updates for the entire database since the last update sequence. Then go to fauxton and update documents at your will. Inspect the output from cURL.
 
 ## Replicating Data
-CouchDB provides an easy way to replicate data between databases.
+CouchDB provides an easy way to replicate data between databases. Go to Fauxton and navigate to the 'Replication' page. Replicate the 'music' database into a new database called 'music-repl'.
 
-TODO:
+![alt text][fauxton-replicate]
+
+After a few seconds, the new database should have been created so it can be viewed on the 'Databases' page:
+
+![alt text][fauxton-music-repl]
+
+Go back to the shell and enter the following command to insert a new artist document that we are going to use to investigate conflicts:
+
+```
+$ curl -X PUT couch/music/theconflicts \
+-H "Content-Type: application/json" \
+-d '{ "name": "The Conflicts" }'
+```
+
+Then trigger a new replications from Fauxton. So you should be able to get 'theconflicts' artist from the `music-repl` database as well:
+
+```
+$ curl couch/music-repl/theconflicts 
+{"_id":"theconflicts","_rev":"1-...","name":"The Conflicts"}
+```
+
+Now, update the document in `music-repl` database by adding a new album:
+
+```
+$ curl -X PUT couch/music-repl/theconflicts?rev=1-... \
+-H "Content-Type: application/json" \
+-d '{
+  "name": "The Conflicts",
+  "albums": ["Conflicts of Interest"] 
+}'
+```
+
+Before doing any replication, also update the document in the original database by adding _different_ album:
+
+```
+$ curl -X PUT couch/music/theconflicts?rev=1-... \
+-H "Content-Type: application/json" \
+-d '{
+  "name": "The Conflicts",
+  "albums": ["Conflicting Opinions"] 
+}'
+```
+
+Now we have two conflicting versions of the same document in our two databases. So, trigger a new replication to see what happens. You should notice that both `curl couch/music/theconflicts` and `curl couch/music-repl/theconflicts` returns the same version. I.e., CouchDB picked a winning version using a deterministic algorithm.
+
+View the conflicting versions version by appending the `conflicts=true` query parameter: 
+
+```
+$ curl couch/music-repl/theconflicts?conflicts=true
+```
+
+Retrieve the 'losing' version of the document using the `rev={rev}` query parameter:
+
+```
+$ curl couch/music-repl/theconflicts?rev={conflict-rev}
+```
 
 ## Exercises: Replicating
-TODO
-## Mango queries
-TODO
-## Exercises: Mango queries
-TODO
+1. Figure out how to resolve the conflict using cURL.
 
 [fauxton-first-page]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fuxton-first-page.PNG?raw=true "Fauxton First Page"
+[fauxton-replicate]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-replicate?raw=true "Fauxton replicate"
+[fauxton-music-repl]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-music-repl.png?raw=true "Replicated database"
 [fauxton-new-document]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-new-document.png?raw=true "Fauxton new document"
 [fauxton-all-docs]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-all-docs.png?raw=true "Fauxton all documents"
 [fauxton-music-db]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-music-db.png?raw=true "Fauxton 'music' database"
@@ -427,9 +481,7 @@ TODO
 [couch-download]: http://couchdb.apache.org/#download 
 [fauxton]: http://localhost:5984/_utils/
 [couch-api-change]: http://docs.couchdb.org/en/2.0.0/api/database/changes.html
-[couch-api-document]: http://docs.couchdb.org/en/2.0.0/api/document/common.html 
 [couch-api-attachments]: http://docs.couchdb.org/en/2.0.0/api/document/attachments.html
 [couch-api-document]: http://docs.couchdb.org/en/2.0.0/api/document/common.html 
 [couch-api-bulk-api]: http://docs.couchdb.org/en/2.0.0/api/database/bulk-api.html
-[couch-api-document]: http://docs.couchdb.org/en/2.0.0/api/document/common.html 
 [couch-api-views]: http://docs.couchdb.org/en/2.0.0/api/ddoc/views.html
