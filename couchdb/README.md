@@ -1,5 +1,5 @@
 # CouchDB
-TODO
+This exercise is divided into several sections. The first part of each section introduces a new concept and describes how to perform certain actions on the database. Then there is a set of exercises where you need to figure out yourself how to solve the problem. Take the opportunity to discuss with a neighbour and skim through the API-reference for guidelines.
 
 ## Resources
 - CouchDB API reference: [http://docs.couchdb.org/en/2.0.0/http-api.html](http://docs.couchdb.org/en/2.0.0/http-api.html)
@@ -11,24 +11,23 @@ Clone the repository into a directory of your choice.
 ```
 $ git clone http://github.com/cygni/cygni-competence-7-databases
 ```
-
 Pull the docker images we will use in this exercise and create a new docker network called 'couchdb'.
-
 ```
 $ docker pull cygni/7-databases:couchdb
 $ docker pull cygni/7-databases:couchdb-shell
 $ docker network create couchdb
 ```
 
-## Running CouchDB
-Start a new container from the 'cygni/7-databases:couchdb' image using the following command (WINDOWS or bash):
+Ensure that your current directory is the `cygni-competence-7-databases/couchdb` directory. Then start a new container from the 'cygni/7-databases:couchdb' image using the following command (WINDOWS or bash):
 
 ```
 WINDOWS > docker run -d --name couch -p 5984:80 -v %cd%\db:/couchdb/data --net couchdb cygni/7-databases:couchdb
 BASH    $ docker run -d --name couch -p 5984:80 -v $(pwd)/db:/couchdb/data --net couchdb cygni/7-databases:couchdb
 ```
 
-Verify that your database is up and running at [localhost:5984/_utils][fauxton]. You should be presented to 'Fauxton', the web interface that comes with CouchDB.
+Note: `-v %cd%\db:couchdb/data` and `-v $(pwd)/db:/couchdb/data` _mounts_ the `db` directory inside the container so that your database files are kept when you delete the container.
+
+Now verify that your database is up and running at [localhost:5984/_utils][fauxton]. You should be presented to 'Fauxton', the web interface that comes with CouchDB. If not, something is wrong with your setup. Post your issue in the #7-databases channel on slack to get it resolved before the occasion.
 
 ![alt text][fauxton-first-page]
 
@@ -220,28 +219,21 @@ The jamendo-data.json file contains artist data in the following format: ('rando
 ```
 
 ## Views 
-In CouchDB you access documents through *views*. Each database created in CouchDB comes with a few predefined views that allows you to query data from the documents. A view consists of a *map* and a *reduce* function that generates an ordered list of key-value pairs.
-
-TODO: View query parameters
-
-### Querying default views
-The simplest predefined view is called *_all_docs* and is accessible through `localhost:5984/{db}/_all_docs`. Issue a GET request on the music database.
+In CouchDB you access documents through *views*. The simplest predefined view is called [_all_docs][couch-api-views] and is accessible through `couch/{db}/_all_docs`. The following request will retrieve the revision values of the first 10 documents in the 'music' database ordered by document id:
 
 ```
-$ curl couch/music/_all_docs
+$ curl couch/music/_all_docs?limit=10
 ```
 
 Append the query parameter *include_docs=true* to include the entire documents in the response.
 
 ```
-$ curl couch/music/_all_docs?include_docs=true
+$ curl 'couch/music/_all_docs?include_docs=true&limit=10
 ```
 
-### Writing views
-Fauxton provides a way to write your own views with map and reduce functions. Views are stored in *design documents*. These are special documents, prefixed with _design/.
+In general, a view consists of a *map* and a *reduce* function. Fauxton provides a pretty decent interface for writing your own views. Views are stored in *design documents*. These are special documents, prefixed with _design/. The map function generates an ordered list of key-value pairs which can then be reduced by the optional reduce function.
 
-In Fauxton, go to the *music* database page. Click the '+' sign next to 'Design Documents' and add a new view. Name it 'by_name' and add it to a new design document called 'artists'.
-
+Go to the *music* database page in Fauxton and click the '+' sign next to 'Design Documents' to add a new view. Name it 'by_name' and add it to a new design document called 'artists'.
 ![alt text][fauxton-music-new-view]
 
 Write the following map function then hit 'Create Document' to save the design document:
@@ -254,8 +246,37 @@ function(doc) {
 }
 ```
 
-Aslo create another view that finds albums by name: go back to the *music* database page and create a new design document named 'albums' with a view named 'by_name' with the following map function:
+[This][couch-api-views] page describes how views are queried. In short, they are accessed from the path:
 
+```
+/{database}/_design/{design-document}/_view/{view-name}
+```
+
+Try your new view by running the following command in curl:
+
+```
+$ curl couch/music/_design/artists/_view/by_name?limit=2 | jq .
+{
+  "total_rows": 2721,
+  "offset": 0,
+  "rows": [
+    {
+      "id": "5385",
+      "key": " A.n.K.h // ",
+      "value": "5385"
+    },
+    {
+      "id": "338149",
+      "key": " Bsl & Bass",
+      "value": "338149"
+    }
+  ]
+}
+```
+
+Each row in the response is a result of the 'emit' call in the map function. The key is the first parameter and the value is the second parameter.
+
+Now go back to the *music* database page and create a new design document named 'albums' with a view named 'by_name'. Enter the following map function:
 ```javascript
 function(doc) {
   if ('name' in doc && 'albums' in doc) {
@@ -268,29 +289,51 @@ function(doc) {
 }
 ```
 
-### Querying views
-Views are queried using the following path:
+Execute a similar request to retrieve albums by name:
 
 ```
-/{database}/_design/{design-document}/_view/{view-name}
+$ curl couch/music/_design/albums/_view/by_name?limit=2
+{
+  "total_rows": 5474,
+  "offset": 0,
+  "rows": [
+    {
+      "id": "354152",
+      "key": "     la classe",
+      "value": {
+        "by": "N.M. mthy",
+        "album": {
+          "id": "53416",
+          "name": "     la classe",
+          "tracks": [ ... ],
+          "random": 18812
+        }
+      }
+    },
+    {
+      "id": "367144",
+      "key": "  beautiful moments of your life",
+      "value": {
+        "by": "Jay Daniel Producer",
+        "album": {
+          "id": "94769",
+          "name": "  beautiful moments of your life",
+          "tracks": [ ... ],
+          "random": 23039
+        }
+      }
+    }
+  ]
+}
 ```
 
-So, for example to find artists by name:
-
-```
-$ curl couch/music/_design/artists/_view/by_name
-```
-And albums:
-```
-$ curl couch/music/_design/albums/_view/by_name
-```
+Note that the 'value' field contains the entire album as well as the artist name. This is exactly what we specified in the map function.
 
 ## Exercises: Views
 1. Using the artists/by_name view, find all artists that start with the letter "J".
 2. Create a new artist view that returns artist names keyed by their country. Then use cURL to find all artists from france ('FRA').
-3. Create a new view that returns tracks keyed by their tag. Use cURL to inspect the result.
-4. Remember the 'weight' field for tags? A track with a low weighted 'rock' tag might not be considered as 'rock'. Therefore, modify the above view so that it is possible to specify the minimum weight for the tag. Then find all tracks with a 'rock' tag weight of 0.8 or more.
-5. Create a new view that returns artist documents keyed by their random number. Then use cURL to get a random artist. (Use $RANDOM in bash to generate a random nummber.)
+3. Create a new view that returns tracks keyed by their tag. Use cURL to retrieve all tracks tagged with 'rock'.
+4. Remember the 'weight' field for tags? A track with a low weighted 'rock' tag might not be considered as 'rock'. Therefore, modify the view from the previous exercise so that it is possible to specify the minimum weight for the tag. Then find all tracks with a 'rock' tag weight of 0.8 or more.
 
 ## Advanced Views
 Create a new design document for 'tags' with a 'by_name' view. Add the following map function
@@ -333,7 +376,7 @@ jq .rows | jq 'sort_by(.value)' | jq reverse | jq .[0:10]
 ```
 
 ### Exercises: Advanced views
-1. ?
+1. Modify our artist-by-country view so that it can reduce the number of artists per country.
 
 ## Changes API
 CouchDB provides a [_change][couch-api-change] resource for each database which enables you to listen for changes.
@@ -358,7 +401,7 @@ Will retrieve information about all changes in the 'music' database since creati
 }
 ```
 
-Like other views you can specify the 'include_docs' and 'limit' query parameters.
+Just like with views you can specify the 'include_docs' and 'limit' query parameters.
 
 ## Exercises: Changes API
 1. Create a cURL request that gets the latest changes for a document with an id of your choice, e.g. 'nirvana'. Then go to fauxton and create/edit that document and execute your curl request again.
@@ -366,18 +409,71 @@ Like other views you can specify the 'include_docs' and 'limit' query parameters
 3. Create a cURL request that uses the *continuous* feed to get document updates for the entire database since the last update sequence. Then go to fauxton and update documents at your will. Inspect the output from cURL.
 
 ## Replicating Data
-CouchDB provides an easy way to replicate data between databases.
+CouchDB provides an easy way to replicate data between databases. Go to Fauxton and navigate to the 'Replication' page. Replicate the 'music' database into a new database called 'music-repl'.
 
-TODO:
+![alt text][fauxton-replicate]
+
+After a few seconds, the new database should have been created so it can be viewed on the 'Databases' page:
+
+![alt text][fauxton-music-repl]
+
+Go back to the shell and enter the following command to insert a new artist document that we are going to use to investigate conflicts:
+
+```
+$ curl -X PUT couch/music/theconflicts \
+-H "Content-Type: application/json" \
+-d '{ "name": "The Conflicts" }'
+```
+
+Then trigger a new replications from Fauxton. So you should be able to get 'theconflicts' artist from the `music-repl` database as well:
+
+```
+$ curl couch/music-repl/theconflicts 
+{"_id":"theconflicts","_rev":"1-...","name":"The Conflicts"}
+```
+
+Now, update the document in `music-repl` database by adding a new album:
+
+```
+$ curl -X PUT couch/music-repl/theconflicts?rev=1-... \
+-H "Content-Type: application/json" \
+-d '{
+  "name": "The Conflicts",
+  "albums": ["Conflicts of Interest"] 
+}'
+```
+
+Before doing any replication, also update the document in the original database by adding _different_ album:
+
+```
+$ curl -X PUT couch/music/theconflicts?rev=1-... \
+-H "Content-Type: application/json" \
+-d '{
+  "name": "The Conflicts",
+  "albums": ["Conflicting Opinions"] 
+}'
+```
+
+Now we have two conflicting versions of the same document in our two databases. So, trigger a new replication to see what happens. You should notice that both `curl couch/music/theconflicts` and `curl couch/music-repl/theconflicts` returns the same version. I.e., CouchDB picked a winning version using a deterministic algorithm.
+
+View the conflicting versions version by appending the `conflicts=true` query parameter: 
+
+```
+$ curl couch/music-repl/theconflicts?conflicts=true
+```
+
+Retrieve the 'losing' version of the document using the `rev={rev}` query parameter:
+
+```
+$ curl couch/music-repl/theconflicts?rev={conflict-rev}
+```
 
 ## Exercises: Replicating
-TODO
-## Mango queries
-TODO
-## Exercises: Mango queries
-TODO
+1. Figure out how to resolve the conflict using cURL.
 
 [fauxton-first-page]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fuxton-first-page.PNG?raw=true "Fauxton First Page"
+[fauxton-replicate]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-replicate.png?raw=true "Fauxton replicate"
+[fauxton-music-repl]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-music-repl.png?raw=true "Replicated database"
 [fauxton-new-document]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-new-document.png?raw=true "Fauxton new document"
 [fauxton-all-docs]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-all-docs.png?raw=true "Fauxton all documents"
 [fauxton-music-db]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-music-db.png?raw=true "Fauxton 'music' database"
@@ -385,5 +481,7 @@ TODO
 [couch-download]: http://couchdb.apache.org/#download 
 [fauxton]: http://localhost:5984/_utils/
 [couch-api-change]: http://docs.couchdb.org/en/2.0.0/api/database/changes.html
-[couch-api-document]: http://docs.couchdb.org/en/2.0.0/api/document/common.html 
 [couch-api-attachments]: http://docs.couchdb.org/en/2.0.0/api/document/attachments.html
+[couch-api-document]: http://docs.couchdb.org/en/2.0.0/api/document/common.html 
+[couch-api-bulk-api]: http://docs.couchdb.org/en/2.0.0/api/database/bulk-api.html
+[couch-api-views]: http://docs.couchdb.org/en/2.0.0/api/ddoc/views.html
