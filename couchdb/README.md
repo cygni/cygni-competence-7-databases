@@ -472,7 +472,7 @@ $ curl couch/music-repl/theconflicts?rev={conflict-rev}
 1. Figure out how to resolve the conflict using cURL.
 
 [fauxton-first-page]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fuxton-first-page.PNG?raw=true "Fauxton First Page"
-[fauxton-replicate]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-replicate?raw=true "Fauxton replicate"
+[fauxton-replicate]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-replicate.png?raw=true "Fauxton replicate"
 [fauxton-music-repl]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-music-repl.png?raw=true "Replicated database"
 [fauxton-new-document]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-new-document.png?raw=true "Fauxton new document"
 [fauxton-all-docs]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/couchdb/fauxton-all-docs.png?raw=true "Fauxton all documents"
