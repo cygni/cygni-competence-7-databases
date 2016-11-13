@@ -1,6 +1,6 @@
 #Cygni competence - 7 databases
 
-This course is based on the book [Seven Databases in Seven Weeks](https://pragprog.com/book/rwdata/seven-databases-in-seven-weeks). However, Riak has been replaced with ElasticSearch. Apart from that, each chapter will be covered on the following occassions:
+This course is based on the book [Seven Databases in Seven Weeks](https://pragprog.com/book/rwdata/seven-databases-in-seven-weeks). Each chapter will be covered on the following occassions. Note that the chapter on Riak has been replaced with ElasticSearch.
 
 | Date       | Database        | Trainer               |
 | ---------- | --------------- | --------------------- |
@@ -13,7 +13,7 @@ This course is based on the book [Seven Databases in Seven Weeks](https://pragpr
 | 2017-04-27 | ElasticSearch   | Henrik L. + Breding   |
 
 ## Course structure
-For each occasion, we have prepared [docker images](https://hub.docker.com/r/cygni/7-databases/tags/) to reduce the time and effort needed to get database instances up and running. See the  `README.md` for each database for specific guidelines. Please make sure that you have read the chapter in the book as well as the 'Before we start' section in the `README.md` for the applicable database *before* the occasion. Also, please make sure that you have a docker installation that is working on your computer. Docker installtion instructions for different platforms follows below.
+We have prepared [docker images](https://hub.docker.com/r/cygni/7-databases/tags/) for each occasion to reduce the time and effort needed to get database instances up and running. See the `README.md` for each database for specific guidelines. Please make sure that you have read the chapter in the book as well as the 'Before we start' section in the `README.md` for the applicable database *before* the occasion. Also ensure that you have a docker installation that is working on your computer. See below for installation instructions on different platforms.
 
 ## Docker on Windows 10
 On windows 10, you should install 'Docker for Windows'. This installation uses Hyper-V to run the Docker host.
