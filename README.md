@@ -2,6 +2,8 @@
 
 This course is based on the book [Seven Databases in Seven Weeks](https://pragprog.com/book/rwdata/seven-databases-in-seven-weeks). Each chapter will be covered on the following occassions. Note that the chapter on Riak has been replaced with ElasticSearch.
 
+### Stockholm
+
 | Date       | Database        | Trainer               |
 | ---------- | --------------- | --------------------- |
 | 2016-11-17 | CouchDB         | Daniel Lenksjö        |
@@ -11,6 +13,20 @@ This course is based on the book [Seven Databases in Seven Weeks](https://pragpr
 | 2017-03-09 | MongoDB         | Fortunato Flores Ando |
 | 2017-03-27 | HBase           | Pär Tjärnberg         |
 | 2017-04-27 | ElasticSearch   | Henrik L. + Breding   |
+
+
+### Göteborg
+| Date       | Database        | Trainer               |
+| ---------- | --------------- | --------------------- |
+| 2016-11-24 | CouchDB         | Daniel Lenksjö        |
+| 2016-12-20 | Neo4J           | Johannes Dolk         |
+| 2017-01-31 | Redis           | Emil Bergström        |
+| 2017-02-21 | PostgreSQL      | Rickard Lindström     |
+| 2017-03-13 | MongoDB         | Fortunato Flores Ando |
+| 2017-04-10 | HBase           | Pär Tjärnberg         |
+| 2017-05-11 | ElasticSearch   | Henrik L. + Breding   |
+
+
 
 ## Course structure
 We have prepared [docker images](https://hub.docker.com/r/cygni/7-databases/tags/) for each occasion to reduce the time and effort needed to get database instances up and running. See the `README.md` for each database for specific guidelines. Please make sure that you have read the chapter in the book as well as the 'Before we start' section in the `README.md` for the applicable database *before* the occasion. Also ensure that you have a docker installation that is working on your computer. See below for installation instructions on different platforms.
