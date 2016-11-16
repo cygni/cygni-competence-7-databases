@@ -43,6 +43,7 @@ On Windows 7 or 8, you have to install 'Docker Toolbox'.
 - Instructions: https://docs.docker.com/toolbox/toolbox_install_windows/ 
 
 ## Docker for Mac
+Note that the old way of using Docker on OSX with docker-machine is not recommended!
 
 - Instructions: https://docs.docker.com/docker-for-mac/
 
