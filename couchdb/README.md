@@ -404,7 +404,7 @@ Will retrieve information about all changes in the 'music' database since creati
 Just like with views you can specify the 'include_docs' and 'limit' query parameters.
 
 ## Exercises: Changes API
-1. Create a cURL request that gets the latest changes for a document with an id of your choice, e.g. 'nirvana'. Then go to fauxton and create/edit that document and execute your curl request again. (Hint: use doc_ids query parameter)
+1. Create a cURL request that gets the latest changes for a document with an id of your choice, e.g. 'nirvana'. Then go to fauxton and create/edit that document and execute your curl request again. (Hint: see API reference linked above for \_changes and use filter=_doc_id and doc_ids query parameters)
 2. Create a cURL request that uses the *longpolling* feed to get document updates to the same document since the last update sequence. Go to fauxton and edit the document to see what happends.
 3. Create a cURL request that uses the *continuous* feed to get document updates for the entire database since the last update sequence. Then go to fauxton and update documents at your will. Inspect the output from cURL.
 
