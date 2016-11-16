@@ -175,8 +175,8 @@ $ curl couch/music/5dd92d287619477369ec87e4ef00d73b
 ## Exercises: CRUD with cURL
 1. Use cURL to PUT a new artist document into the database with a specific *_id* of your choice.
 2. Use cURL to create a new database with a name of your choice. Then delete it, also using cURL.
-3. Use cURL to add the 'data/ramones.jpg' image as an [attachment][couch-api-attachments] to the 'Ramones' document. Then, look it up in Fauxton. (Hint: content type is image/jpeg, and binary data can be passed from using the --data-binary option)
-4. Use cURL to retrieve the image attachment.
+3. \* Use cURL to add the 'data/ramones.jpg' image as an [attachment][couch-api-attachments] to the 'Ramones' document. Then, look it up in Fauxton. (Hint: content type is image/jpeg, and binary data can be passed from using the --data-binary option)
+4. \* Use cURL to retrieve the image attachment.
 
 ## Import data
 Execute the following command to add some music data to our database. It uses the CouchDB *_bulk_docs* feature to add a batch of documents in a single POST request.
@@ -332,8 +332,8 @@ Note that the 'value' field contains the entire album as well as the artist name
 ## Exercises: Views
 1. Using the artists/by_name view, find all artists that start with the letter "J".
 2. Create a new artist view that returns artist names keyed by their country. Then use cURL to find all artists from france ('FRA').
-3. Create a new view that returns tracks keyed by their tag. Use cURL to retrieve all tracks tagged with 'rock'.
-4. Remember the 'weight' field for tags? A track with a low weighted 'rock' tag might not be considered as 'rock'. Therefore, modify the view from the previous exercise so that it is possible to specify the minimum weight for the tag. Then find all tracks with a 'rock' tag weight of 0.8 or more.
+3. \* Create a new view that returns tracks keyed by their tag. Use cURL to retrieve all tracks tagged with 'rock'.
+4. \*\* Remember the 'weight' field for tags? A track with a low weighted 'rock' tag might not be considered as 'rock'. Therefore, modify the view from the previous exercise so that it is possible to specify the minimum weight for the tag. Then find all tracks with a 'rock' tag weight of 0.8 or more.
 
 ## Advanced Views
 Create a new design document for 'tags' with a 'by_name' view. Add the following map function
@@ -404,7 +404,7 @@ Will retrieve information about all changes in the 'music' database since creati
 Just like with views you can specify the 'include_docs' and 'limit' query parameters.
 
 ## Exercises: Changes API
-1. Create a cURL request that gets the latest changes for a document with an id of your choice, e.g. 'nirvana'. Then go to fauxton and create/edit that document and execute your curl request again.
+1. Create a cURL request that gets the latest changes for a document with an id of your choice, e.g. 'nirvana'. Then go to fauxton and create/edit that document and execute your curl request again. (Hint: use doc_ids query parameter)
 2. Create a cURL request that uses the *longpolling* feed to get document updates to the same document since the last update sequence. Go to fauxton and edit the document to see what happends.
 3. Create a cURL request that uses the *continuous* feed to get document updates for the entire database since the last update sequence. Then go to fauxton and update documents at your will. Inspect the output from cURL.
 
