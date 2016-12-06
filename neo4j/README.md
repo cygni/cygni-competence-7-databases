@@ -14,7 +14,7 @@ cd cygni-competence-7-databases/
 $ git pull --rebase
 cd neo4j
 ```
-Pull 
+Pull neo4j image:
 
 ```
 -install docker (if you don't already have it) or make sure docker is up to date
@@ -43,24 +43,24 @@ We are going to create a graph consisting of a Winery, three wines, a Wine Magas
 some more stuff that all have different relations to each other.
 
 
-Create a Wine node, with [name: Prancing Wolf Ice Wine 2007]
+1. Create a Wine node, with [name: Prancing Wolf Ice Wine 2007]
 ```
-1.CREATE (:Wine {name: 'Prancing Wolf Ice Wine 2007'})
-```
-
-Create a Magazine with [name: 'Wine Expert Monthly']
-```
-2.CREATE (:Magazine {name: 'Wine Expert Monthly'})
+ CREATE (:Wine {name: 'Prancing Wolf Ice Wine 2007'})
 ```
 
-3.Create a relationship of reported_on from magasine to wine  
+2. Create a Magazine with [name: 'Wine Expert Monthly']
+```
+ CREATE (:Magazine {name: 'Wine Expert Monthly'})
+```
+
+3. Create a relationship of reported_on from magasine to wine  
 ```
 match (w:Wine {name: 'Prancing Wolf Ice Wine 2007'}), 
 match (m:Magazine {name: 'Wine Expert Monthly'})
 create (m)-[:REPORTED_ON]->(w)
 ```
 
-4.A relationship can have properties as well so lets add rating to the reported_on relationship
+4. A relationship can have properties as well so lets add rating to the reported_on relationship
 ```
 match ()-[r:REPORTED_ON]->() set r.rating = 92 return r
 ```
@@ -74,12 +74,12 @@ create(g:Grape {name: 'Reisling'})<-[:GRAPE_TYPE {style: 'ice_wine'}]-(w)
 ```
 
 6. Let look at our present graph 
-To view everything in graph
+_To view everything in graph_
 ```
 match (n) return n
 ```
 
-7.To get all relationships in a graph 
+7. To get all relationships in a graph 
 ```
 match ()-[r]-() return r
 ```
@@ -89,28 +89,28 @@ match ()-[r]-() return r
 Match (n) where ID(n) = <id> return n
 ```
 
-9.Get properties for a specific node
+9. Get properties for a specific node
 ```
 Match (n) where ID(n) = 0 return properties(n)
 ```
 
-10.Filter graph on specific value
+10. Filter graph on specific value
 ```
 Match (n {name: 'Reisling'}) return n
 ```
 
-11.Get relations from all specific node 
-Get all relations from a node
+11. Get relations from all specific node 
+  * Get all relations from a node
 ```
 MATCH (:Grape {name: 'Reisling'})-[r]-() 
 RETURN r 
 ```
-Get all incoming relations from a node
+  * Get all incoming relations from a node
 ```
 MATCH (:Grape {name: 'Reisling'})<-[r]-() 
 RETURN r
 ```
-Get all outgoing relations from a node
+  * Get all outgoing relations from a node
 ```
 MATCH (:Grape {name: 'Reisling'})-[r]->() 
 RETURN r
@@ -128,7 +128,7 @@ match (wine:Wine)
 create (winery:Winery {name: 'Prancing Wolf Winery'})-[:PRODUCED]->(wine)
 ```
  
-14. Create two more wines produced by Prancing wolf, of type reisling with styles
+14.Create two more wines produced by Prancing wolf, of type reisling with styles
 ```
 match (winery:Winery)
 match (grape:Grape {name: 'Reisling'})
@@ -138,8 +138,8 @@ create(w1)-[:GRAPE_TYPE {style: 'kabinett'}]->(grape)
 create(w2)-[:GRAPE_TYPE {style: 'spatlese'}]->(grape)
 ```
 
-15. Add three people with relationships and wine preferences
-//Add Alice
+15.Add three people with relationships and wine preferences
+ * Add Alice
 ```
 create (alice:Person {name: 'Alice'})
 with alice
@@ -147,7 +147,7 @@ match (wine:Wine {name: 'Prancing Wolf Ice Wine 2007'})
 create (alice)-[r:LIKES]->(wine)
 ```
 
-//Add Tom
+ * Add Tom
 ```
 create (tom:Person {name: 'Tom'})
 with tom
@@ -160,7 +160,7 @@ match (m:Magazine)
 create (tom)-[:TRUSTS]->(m)
 ```
 
-//Add Patty
+ * Add Patty
 ```
 create (patty:Person {name: 'Patty'})
 with patty
@@ -181,20 +181,20 @@ match (alice:Person {name: 'Alice'})-[:FRIENDS*0..]-(w)
 return w
 ```
 
-//Find all of Alice friends and friend of friends
+ * Find all of Alice friends and friend of friends
 ```
 match (p:Person {name: 'Alice'})-[:FRIENDS*1..]-(f) 
 where not f.name = 'Alice'
 return  f
 ```
 
-//Find Alices friends of friends
+ * Find Alices friends of friends
 ```
 match (alice:Person {name: 'Alice'})-[:FRIENDS*1..2]-(w)
 return w
 ```
 
-18. Count how many times each name occurs in graph
+18.Count how many times each name occurs in graph
 ```
 match (n) 
 with count(n.name) as groupCount,n 
@@ -222,7 +222,7 @@ with [w.name, p.name] AS common
 return common
 ```
 
-22. match people with wines
+22.match people with wines
 ```
 match (p:Person)
 optional match (p)-[:LIKES]-(w:Wine)
@@ -242,10 +242,4 @@ match (p:Person {name: 'Alice'})-[l:LIKES]->()
 set l.weight = null
 return l
 ```
-
-Exercise time:
-
-
-
-
 
