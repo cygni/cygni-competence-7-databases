@@ -24,9 +24,22 @@ $ docker run \
      --volume=$HOME/neo4j/data:/data \
      --net neo4j \
      neo4j:3.0
-$ curl --user neo4j:neo4j http://localhost:7474/db/data/ 
 ```
-if curl returns data, you are all set!
+Then go to:
+[http://localhost:7474/browser/](http://localhost:7474/browser/)
+
+![alt text][login1]
+
+default login to neo4j is neo4j:neo4j, enter this then change password to abc123 (you can of course use something else here but then you have to remember this for curl examples@!) 
+
+![alt text][login2]
+
+If you now see this view:
+
+![alt text][login3]
+
+You are all set!
+
 
 ###Before reading the chapter:
 A lot of things has happened since the book was written:
@@ -34,23 +47,22 @@ The localhost:7474/webadmin is no longer apart of neo4j instead we are going to 
 Cypher is the preferred language for neo4j, it is made specifically for graphs and is less complex than gremlin.
 Therefore we are still going to use most of the books examples but I have rewritten them using Cypher.
 
+
 ##First exercises:
-In the first exercises we are going to be working from the browser view provided by neo4j.
-
-
-
+In the first exercises we are going to be working from the browser view provided by neo4j. 
+So go to: [http://localhost:7474/browser/](http://localhost:7474/browser/)
 We are going to create a graph consisting of a Winery, three wines, a Wine Magasine, three people and 
 some more stuff that all have different relations to each other.
 
 
 1. Create a Wine node, with [name: Prancing Wolf Ice Wine 2007]
 ```
- CREATE (:Wine {name: 'Prancing Wolf Ice Wine 2007'})
+ CREATE (w:Wine {name: 'Prancing Wolf Ice Wine 2007'})
 ```
 
 2. Create a Magazine with [name: 'Wine Expert Monthly']
 ```
- CREATE (:Magazine {name: 'Wine Expert Monthly'})
+ CREATE (m:Magazine {name: 'Wine Expert Monthly'})
 ```
 
 3. Create a relationship of reported_on from magasine to wine  
@@ -65,7 +77,7 @@ create (m)-[:REPORTED_ON]->(w)
 match ()-[r:REPORTED_ON]->() set r.rating = 92 return r
 ```
 
-since we only have one relationsship of type reported_on, we do not have to be specific on which one
+since we only have one relationship of type reported_on, we do not have to be specific on which one
 
 5. Add a the grape type reisling,  Prancing Wolf Ice Wine is a reisling so lets add a relationship between them a the same time of type grape_type and style ice_wine
 ```
@@ -242,4 +254,3 @@ match (p:Person {name: 'Alice'})-[l:LIKES]->()
 set l.weight = null
 return l
 ```
-
