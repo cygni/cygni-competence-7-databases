@@ -4,6 +4,7 @@
 ##Resources
 - Neo4j API reference: [https://neo4j.com/docs/developer-manual/current/](https://neo4j.com/docs/developer-manual/current/)
 - Intro to cypher: [https://neo4j.com/developer/cypher-query-language/](https://neo4j.com/developer/cypher-query-language/)
+- Cypher ref: [https://neo4j.com/docs/cypher-refcard/current/](https://neo4j.com/docs/cypher-refcard/current/)
 
 ##Before we start
 ###Things to prepare:
