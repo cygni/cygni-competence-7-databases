@@ -46,63 +46,63 @@ We are going to create a graph consisting of a Winery, three wines, a Wine Magas
 some more stuff that all have different relations to each other.
 
 
-1. Create a Wine node, with [name: Prancing Wolf Ice Wine 2007]
+1.Create a Wine node, with [name: Prancing Wolf Ice Wine 2007]
 ```
  CREATE (w:Wine {name: 'Prancing Wolf Ice Wine 2007'})
 ```
 
-2. Create a Magazine with [name: 'Wine Expert Monthly']
+2.Create a Magazine with [name: 'Wine Expert Monthly']
 ```
  CREATE (m:Magazine {name: 'Wine Expert Monthly'})
 ```
 
-3. Create a relationship of reported_on from magasine to wine  
+3.Create a relationship of reported_on from magasine to wine  
 ```
 match (w:Wine {name: 'Prancing Wolf Ice Wine 2007'}), 
 match (m:Magazine {name: 'Wine Expert Monthly'})
 create (m)-[:REPORTED_ON]->(w)
 ```
 
-4. A relationship can have properties as well so lets add rating to the reported_on relationship
+4.A relationship can have properties as well so lets add rating to the reported_on relationship
 ```
 match ()-[r:REPORTED_ON]->() set r.rating = 92 return r
 ```
 
 since we only have one relationship of type reported_on, we do not have to be specific on which one
 
-5. Add a the grape type reisling,  Prancing Wolf Ice Wine is a reisling so lets add a relationship between them a the same time of type grape_type and style ice_wine
+5.Add a the grape type reisling,  Prancing Wolf Ice Wine is a reisling so lets add a relationship between them a the same time of type grape_type and style ice_wine
 ```
 match (w:Wine {name: 'Prancing Wolf Ice Wine 2007'})
 create(g:Grape {name: 'Reisling'})<-[:GRAPE_TYPE {style: 'ice_wine'}]-(w)
 ```
 
-6. Let look at our present graph 
+6.Let look at our present graph 
 _To view everything in graph_
 ```
 match (n) return n
 ```
 
-7. To get all relationships in a graph 
+7.To get all relationships in a graph 
 ```
 match ()-[r]-() return r
 ```
 
-8. Get a specific node by built-in id using cypher method ID(<node>)
+8.Get a specific node by built-in id using cypher method ID(<node>)
 ```
 Match (n) where ID(n) = <id> return n
 ```
 
-9. Get properties for a specific node
+9.Get properties for a specific node
 ```
 Match (n) where ID(n) = 0 return properties(n)
 ```
 
-10. Filter graph on specific value
+10.Filter graph on specific value
 ```
 Match (n {name: 'Reisling'}) return n
 ```
 
-11. Get relations from all specific node 
+11.Get relations from all specific node 
   * Get all relations from a node
 ```
 MATCH (:Grape {name: 'Reisling'})-[r]-() 
@@ -257,12 +257,12 @@ Day 2:
 Using Neo4j with cUrl:
 
 
-1. check if it is running
+1.Check if it is running
 ```
 curl -u neo4j:abc123 http://localhost:7474/db/data/
 ```
 
-2. Create a node with curl
+2.Create a node with curl
 ```
 curl -u neo4j:abc123 -i -X POST http://localhost:7474/db/data/node \
 -H "Content-Type: application/json" \
@@ -270,19 +270,19 @@ curl -u neo4j:abc123 -i -X POST http://localhost:7474/db/data/node \
 ```
 returns a json with different paths for created node
  
-3.
+3.Create another node with curl
 ```
 curl -u neo4j:abc123 -i -X POST http://localhost:7474/db/data/node \
 -H "Content-Type: application/json" \
 -d '{"name": "Jeeves Takes Charge", "style": "short story"}'
 ```
-4.
+4.Add a relationship with curl
 ```
 curl -u neo4j:abc123 -i -X POST http://localhost:7474/db/data/node/371/relationships \
 -H "Content-Type: application/json" \
 -d '{"to": "http://localhost:7474/db/data/node/372", "type": "WROTE", "data" : {"published" : "November 28,1916"}}'
 ```
-5. 
+5.Use curl to find shortest path
 ```
 curl -u neo4j:abc123 -i -X POST http://localhost:7474/db/data/node/371/paths \
 -H "Content-Type: application/json" \
@@ -290,7 +290,7 @@ curl -u neo4j:abc123 -i -X POST http://localhost:7474/db/data/node/371/paths \
 ```
 //Other algoritms djikstra, allPath, allSimplePaths
 
-6. Data cleanup and load movie graph
+6.Data cleanup and load movie graph
 ```
 Open localhost:7474/browser
 match (n) detach delete n
@@ -303,14 +303,14 @@ follow instructions
 MATCH (bacon:Person {name:"Kevin Bacon"})-[*1..4]-(hollywood)
 RETURN DISTINCT hollywood
 ```
-8. Shortest path Kevin Bacon - Meg Ryan
+8.Shortest path Kevin Bacon - Meg Ryan
 ```
 MATCH p=shortestPath(
      (bacon:Person {name:"Kevin Bacon"})-[*]-(meg:Person {name:"Meg Ryan"})
    )
 RETURN p
 ```
-9. Random data
+9.Random data
 ```
 MATCH (a)-[:ACTED_IN]->(t) 
 with  rand() as r, a
