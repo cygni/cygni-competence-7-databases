@@ -256,53 +256,67 @@ Day 2:
 
 Using Neo4j with cUrl:
 
-check if it is running
-1. curl -u neo4j:abc123 http://localhost:7474/db/data/
 
-2.curl -u neo4j:abc123 -i -X POST http://localhost:7474/db/data/node \
+1. check if it is running
+```
+curl -u neo4j:abc123 http://localhost:7474/db/data/
+```
+
+2. Create a node with curl
+```
+curl -u neo4j:abc123 -i -X POST http://localhost:7474/db/data/node \
 -H "Content-Type: application/json" \
 -d '{"name": "P.G. WodeHouse", "genre": "Brittish humour"}'
-
+```
 returns a json with different paths for created node
  
 3.
+```
 curl -u neo4j:abc123 -i -X POST http://localhost:7474/db/data/node \
 -H "Content-Type: application/json" \
 -d '{"name": "Jeeves Takes Charge", "style": "short story"}'
-
+```
 4.
+```
 curl -u neo4j:abc123 -i -X POST http://localhost:7474/db/data/node/371/relationships \
 -H "Content-Type: application/json" \
 -d '{"to": "http://localhost:7474/db/data/node/372", "type": "WROTE", "data" : {"published" : "November 28,1916"}}'
-
+```
 5. 
+```
 curl -u neo4j:abc123 -i -X POST http://localhost:7474/db/data/node/371/paths \
 -H "Content-Type: application/json" \
 -d '{"to": "http://localhost:7474/db/data/node/372", "type": "WROTE", "algorithm" : "shortestPath"}'
-
+```
 //Other algoritms djikstra, allPath, allSimplePaths
 
-6. Data cleanup
+6. Data cleanup and load movie graph
+```
 Open localhost:7474/browser
 match (n) detach delete n
- press start
- example graphs
- movie graph
- 
+example graphs
+movie graph
+follow instructions
+ ```
 7.Four degrees of Kevin Bacon
+```
 MATCH (bacon:Person {name:"Kevin Bacon"})-[*1..4]-(hollywood)
 RETURN DISTINCT hollywood
-
-8. MATCH p=shortestPath(
+```
+8. Shortest path Kevin Bacon - Meg Ryan
+```
+MATCH p=shortestPath(
      (bacon:Person {name:"Kevin Bacon"})-[*]-(meg:Person {name:"Meg Ryan"})
    )
-   RETURN p
-   
+RETURN p
+```
 9. Random data
+```
 MATCH (a)-[:ACTED_IN]->(t) 
 with  rand() as r, a
 where r<0.1
 RETURN a, r
 ORDER BY r
-   
+```
+
 Exercise time:
