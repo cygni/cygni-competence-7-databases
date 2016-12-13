@@ -231,7 +231,7 @@ match (p:Person)
 optional match (p)-[:LIKES]-(w:Wine)
 with [p.name, collect(w.name)] AS common return common
 ```
-###CRUD
+###(CR)UD
 23.Add/Update property
 ```
 match (p:Person {name: 'Alice'})-[l:LIKES]->() 
@@ -246,15 +246,34 @@ set l.weight = null
 return l
 ```
 
-Exercise time:
+##Exercise time:
+###Setup
+
+-delete database
+```
+match (n) detach delete n
+
+```
+
+-Load family nodes from github
+```
+LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/cygni/cygni-competence-7-databases/master/neo4j/family.csv" AS row
+CREATE (n:Person)
+SET n = row
+```
+
+-Create relations 
+```
+LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/cygni/cygni-competence-7-databases/master/neo4j/relations.csv" AS row
+MATCH (p1:Person {personId: row.pid1})
+MATCH (p2:Person {personId: row.pid2})
+CREATE (p1)-[:PARENT_OF {type: row.type}]->(p2)
+```
 
 
+##Day 2:
 
-
-
-Day 2:
-
-Using Neo4j with cUrl:
+#Using Neo4j with cUrl:
 
 
 1.Check if it is running

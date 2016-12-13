@@ -1,48 +1,38 @@
 exercise 1
 1.
-create (johannes:Person {name: 'Johannes Dolk', age:34})
-create (johannes)-[:SIBLING {type: 'sister'}]->(klara:Person {name: 'Klara', age:37})
-create (johannes)-[:SIBLING {type: 'sister'}]->(zandra:Person {name: 'Zandra', age:44})
-create (johannes)-[:SIBLING {type: 'sister'}]->(chrillan:Person {name: 'Christel', age:52})
-create (johannes)<-[:PARENT_OF {type: 'Father'}]-(dad:Person {name: 'Leif', age:73})
-create (johannes)<-[:PARENT_OF {type: 'Mother'}]-(mom:Person {name: 'Katrin', age:69})
-create (zandra)<-[:PARENT_OF {type: 'Mother'}]-(birgitta:Person {name: 'Birgitta', age:71})
-create (chrillan)<-[:PARENT_OF {type: 'Mother'}]-(birgitta)
-create (klara)-[:SIBLING {type: 'sister'}]->(zandra)
-create (klara)-[:SIBLING {type: 'sister'}]->(chrillan)
-create (zandra)-[:SIBLING {type: 'sister'}]->(chrillan)
-create (chrillan)-[:MARRIED]->(ulle:Person {name: 'Ulrika', age:52})
-create (klara)<-[:PARENT_OF {type: 'Mother'}]-(mom)
-create (klara)<-[:PARENT_OF {type: 'Father'}]-(dad)
-create (chrillan)<-[:PARENT_OF {type: 'Father'}]-(dad)
-create (zandra)<-[:PARENT_OF {type: 'Father'}]-(dad)
-create (iris:Person {name: 'Iris' ,age:2})<-[:PARENT_OF {type: 'Mother'}]-(klara)
-create (aniara:Person {name: 'Aniara', age:13})<-[:PARENT_OF {type: 'Mother'}]-(zandra)
-create (eli:Person {name: 'Eli', age:10})<-[:PARENT_OF {type: 'Mother'}]-(zandra)
-create (aniara)<-[:PARENT_OF {type: 'Father'}]-(jocke:Person {name: 'Joakim', age:47})
-create (eli)<-[:PARENT_OF {type: 'Father'}]-(jocke)
-create (jim:Pet {name: 'Jim', type: 'dog'})-[:OWNED_BY]->(chrillan)
-create (fred:Pet {name: 'Fred', type: 'dog'})-[:OWNED_BY]->(chrillan)
-create (jim)-[:OWNED_BY]->(ulle)
-create (fred)-[:OWNED_BY]->(ulle)
-create (cat1:Pet {name: 'Cat1', type: 'cat'})-[:OWNED_BY]->(zandra)
-create (cat2:Pet {name: 'Cat2', type: 'cat'})-[:OWNED_BY]->(zandra)
-
+match (joh:Person {name: 'Johannes'})
+match (kla:Person {name: 'Klara'})
+match (zan:Person {name: 'Zandra'})
+match (chr:Person {name: 'Christel'})
+create (leif:Person {name: 'Leif', age: 73})-[:PARENT_OF {type: 'father'}]->(joh)
+create (leif)-[:PARENT_OF {type: 'father'}]->(kla)
+create (leif)-[:PARENT_OF {type: 'father'}]->(zan)
+create (leif)-[:PARENT_OF {type: 'father'}]->(chr)
+return leif
 
 2.
-match (p:Person {name: 'Eli'})-[:PARENT]->()-[:PARENT]->(p2:Person)
+match (zan:Person {name: 'Zandra'})
+match (chr:Person {name: 'Christel'})
+create (:Pet {name: 'Jim', type: 'Dog'})-[:OWNED_BY]->(chr)
+create (:Pet {name: 'Fred', type: 'Dog'})-[:OWNED_BY]->(chr)
+create (:Pet {name: 'Revolver', type: 'Cat'})-[:OWNED_BY]->(zan)
+create (:Pet {name: 'Cat2', type: 'Cat'})-[:OWNED_BY]->(zan)
+
+
+3.
+match (p:Person {name: 'Eli'})<-[:PARENT_OF]-()<-[:PARENT_OF]-(p2:Person)
 return p2
 
 alt
-match (p:Person {name: 'Eli'})-[:PARENT*2]->(p2)
+match (p:Person {name: 'Eli'})<-[:PARENT_OF*2]-(p2)
 return p2
 
-3.
-match (p:Person)<-[:OWNED_BY]-(a) return p, a
+4.
+match (p:Person)<-[:OWNED_BY]-(a:Pet) return p, a
 
 5.
 match (p:Person)
-return p
+return p.name as name, p.age as age
 order by p.age desc
 
 
@@ -58,6 +48,7 @@ ORDER BY row desc
 
 2.
 match (p1:Person)-[:ACTED_IN]->(m:Movie)<-[:ACTED_IN]-(p2:Person)
+where p1.name < p2.name
 with p1,p2, count(m) as movies
 return p1.name,p2.name, movies
 order by movies desc, p1.name, p2.name 
@@ -73,3 +64,8 @@ return distinct p2, age
 4.
 match (p1:Person {name: 'Tom Hanks'})-[:ACTED_IN]->(m1:Movie)<-[:ACTED_IN]-(p2:Person)-[:ACTED_IN]->(m2:Movie)<-[:ACTED_IN]-(p3:Person {name: 'Meg Ryan'})
 return p2.name, m1.title, m2.title
+
+
+
+LOAD CSV FROM "file:///Users/johannesdolk/Work/eniro/productmaster/server/src/main/resources/cypher/products/online/searchWord.csv" AS line
+CREATE (item:_Item {itemId: line[0], key: line[1], value: line[2]});
