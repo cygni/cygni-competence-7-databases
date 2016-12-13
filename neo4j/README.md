@@ -70,10 +70,10 @@ match ()-[r:REPORTED_ON]->() set r.rating = 92 return r
 
 since we only have one relationship of type reported_on, we do not have to be specific on which one
 
-5.Add a the grape type reisling,  Prancing Wolf Ice Wine is a reisling so lets add a relationship between them a the same time of type grape_type and style ice_wine
+5.Add a the grape type riesling,  Prancing Wolf Ice Wine is a riesling so lets add a relationship between them a the same time of type grape_type and style ice_wine
 ```
 match (w:Wine {name: 'Prancing Wolf Ice Wine 2007'})
-create(g:Grape {name: 'Reisling'})<-[:GRAPE_TYPE {style: 'ice_wine'}]-(w)
+create(g:Grape {name: 'Riesling'})<-[:GRAPE_TYPE {style: 'ice_wine'}]-(w)
 ```
 
 6.Let look at our present graph 
@@ -99,23 +99,23 @@ Match (n) where ID(n) = 0 return properties(n)
 
 10.Filter graph on specific value
 ```
-Match (n {name: 'Reisling'}) return n
+Match (n {name: 'Riesling'}) return n
 ```
 
 11.Get relations from all specific node 
   * Get all relations from a node
 ```
-MATCH (:Grape {name: 'Reisling'})-[r]-() 
+MATCH (:Grape {name: 'Riesling'})-[r]-() 
 RETURN r 
 ```
   * Get all incoming relations from a node
 ```
-MATCH (:Grape {name: 'Reisling'})<-[r]-() 
+MATCH (:Grape {name: 'Riesling'})<-[r]-() 
 RETURN r
 ```
   * Get all outgoing relations from a node
 ```
-MATCH (:Grape {name: 'Reisling'})-[r]->() 
+MATCH (:Grape {name: 'Riesling'})-[r]->() 
 RETURN r
 ```
 
@@ -131,10 +131,10 @@ match (wine:Wine)
 create (winery:Winery {name: 'Prancing Wolf Winery'})-[:PRODUCED]->(wine)
 ```
  
-14.Create two more wines produced by Prancing wolf, of type reisling with styles
+14.Create two more wines produced by Prancing wolf, of type riesling with styles
 ```
 match (winery:Winery)
-match (grape:Grape {name: 'Reisling'})
+match (grape:Grape {name: 'Riesling'})
 create(winery)-[:PRODUCED]->(w1:Wine {name:'Prancing Wolf Kabinett 2002'})
 create(winery)-[:PRODUCED]->(w2:Wine {name:'Prancing Wolf Spatlese 2007'})
 create(w1)-[:GRAPE_TYPE {style: 'kabinett'}]->(grape)
