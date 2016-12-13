@@ -58,7 +58,7 @@ some more stuff that all have different relations to each other.
 
 3.Create a relationship of reported_on from magasine to wine  
 ```
-match (w:Wine {name: 'Prancing Wolf Ice Wine 2007'}), 
+match (w:Wine {name: 'Prancing Wolf Ice Wine 2007'}) 
 match (m:Magazine {name: 'Wine Expert Monthly'})
 create (m)-[:REPORTED_ON]->(w)
 ```
