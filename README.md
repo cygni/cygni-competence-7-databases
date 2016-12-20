@@ -8,7 +8,7 @@ This course is based on the book [Seven Databases in Seven Weeks](https://pragpr
 | ---------- | --------------- | --------------------- |
 | 2016-11-17 | CouchDB         | Daniel Lenksjö        |
 | 2016-12-12 | Neo4J           | Johannes Dolk         |
-| 2017-01-26 | Redis           | Emil Bergström        |
+| 2017-01-31 | Redis           | Emil Bergström        |
 | 2017-02-15 | PostgreSQL      | Rickard Lindström     |
 | 2017-03-09 | MongoDB         | Fortunato Flores Ando |
 | 2017-03-27 | HBase           | Pär Tjärnberg         |
