@@ -63,7 +63,9 @@ https://www.postgresql.org/docs/9.6/static/index.html
     So by now, anytime you want to connect to your `book` database, use the gui app of your choice or step 4 above.
     
     
-![alt text](https://github.com/cygni/cygni-competence-7-databases/blob/master/postgresql/intellij_setup.png "Setup of connection properties")
+#### Setup in intellij
+
+![alt text](https://github.com/cygni/cygni-competence-7-databases/blob/master/postgresql/intellij_setup.png "Setup in intellij")
    
 
 ## Day 1 - CRUD operations
