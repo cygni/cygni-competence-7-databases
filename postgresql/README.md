@@ -45,6 +45,8 @@ https://www.postgresql.org/docs/9.6/static/index.html
         
         \d
         
+    output:
+    
                    List of relations
          Schema |   Name    | Type  |  Owner   
         --------+-----------+-------+----------
@@ -59,11 +61,13 @@ https://www.postgresql.org/docs/9.6/static/index.html
     https://www.dbvis.com/
   
     So by now, anytime you want to connect to your `book` database, use the gui app of your choice or step 4 above.
+    
+    ![alt text](https://github.com/cygni/cygni-competence-7-databases/blob/master/postgresql/intellij_setup.png "Setup of connection properties")
    
 
 ## Day 1 - CRUD operations
 
-![alt text](https://github.com/cygni/cygni-competence-7-databases/blob/master/postgresql/day1_relations.png "Day 1 table realations")
+![alt text](https://github.com/cygni/cygni-competence-7-databases/blob/master/postgresql/day1_relations.png "Day 1 table relations")
 
 1)  Insert rows to table `countries`.
 
@@ -85,6 +89,8 @@ https://www.postgresql.org/docs/9.6/static/index.html
 
         SELECT * FROM countries;
         
+    output:
+    
          country_code |  country_name  
         --------------+----------------
          us           | United States
@@ -121,7 +127,8 @@ https://www.postgresql.org/docs/9.6/static/index.html
         FROM cities
           INNER JOIN countries ON cities.country_code = countries.country_code;
           
-          
+    output:
+      
              name   | postal_code | country_code | country_name  
           ----------+-------------+--------------+---------------
            Portland | 97205       | us           | United States
@@ -157,11 +164,14 @@ https://www.postgresql.org/docs/9.6/static/index.html
         FROM venues v
           INNER JOIN cities c ON v.postal_code = c.postal_code AND v.country_code = c.country_code;
         
-        venue_id |       name       |   name
+    output:
+    
+         venue_id |       name       |   name   
         ----------+------------------+----------
-        2 | Voodoo Donuts    | Portland
-        1 | Crystal Ballroom | Portland
+                2 | Voodoo Donuts    | Portland
+                1 | Crystal Ballroom | Portland
         (2 rows)
+
         
 9) Create an `events` table with some rows
         
@@ -180,25 +190,32 @@ https://www.postgresql.org/docs/9.6/static/index.html
           ('April Fools Day', '2012-04-01 00:00:00', '2012-04-01 23:59:00', NULL),
           ('Christmas Day', '2012-12-25 00:00:00', '2012-12-25 23:59:00', NULL);
 
-10. Inner joins vs. outer joins
+10) Inner joins vs. outer joins
 
+    inner join:
+    
         SELECT
           e.title,
           v.name
         FROM events e
           INNER JOIN venues v ON e.venue_id = v.venue_id;
+
+    output:
           
         title   |     name
         -----------+---------------
         LARP Club | Voodoo Donuts
         (1 row)
          
+     outer join:
          
         SELECT
           e.title,
           v.name
         FROM events e
           LEFT OUTER JOIN venues v ON e.venue_id = v.venue_id;
+    
+    output:      
           
               title      |     name      
         -----------------+---------------
