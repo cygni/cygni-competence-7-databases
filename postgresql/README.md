@@ -229,7 +229,13 @@ https://www.postgresql.org/docs/9.6/static/index.html
 
 ## Day 1 - exercises
 
-    TODO
+
+1)  Write a query to select all tables we have created.
+(Hint: Check the postgres documentation for the table 'pg_class')
+
+2) Write a query that finds the country name of the LARP Club event.
+
+3) Alter the `venues` table to contain a boolean column called `active`, with the default value of TRUE.
 
 ## Day 2 - Advanced queries, code, rules
 
