@@ -239,7 +239,62 @@ https://www.postgresql.org/docs/9.6/static/index.html
 
 ## Day 2 - Advanced queries, code, rules
 
-    TODO
+1) Insert a few more rows, notice the sub-selects to get the venue_id
+
+        INSERT INTO countries (country_code, country_name) VALUES ('se', 'Sweden');
+        
+        INSERT INTO cities (name, postal_code, country_code)
+        VALUES
+          ('Stockholm', '111 44', 'se'),
+          ('Göteborg', '411 08', 'se');
+          
+        INSERT INTO venues (name, street_address, postal_code, country_code)
+        VALUES
+          ('Cygni AB', 'Jakobsbergsgatan 22', '111 44', 'se'),
+          ('Cygni Väst AB', 'St. Nygatan 31', '411 08', 'se');
+          
+        INSERT INTO events (title, starts, ends, venue_id)
+        VALUES
+          ('Kompetensutveckling postgres, Stockholm', '2017-02-15 17:30:00', '2017-02-15 20:00:00', (SELECT venue_id
+                                                                                          FROM venues
+                                                                                          WHERE name = 'Cygni AB')),
+          ('Kompetensutveckling postgres, Göteborg', '2017-02-21 17:30:00', '2017-02-21 20:00:00', (SELECT venue_id
+                                                                                          WHERE name = 'Cygni Väst AB'));
+
+2) Select the number of events matching 'Kompetensutveckling postgres' using the aggregate function count.
+
+Expected output:
+
+            count 
+            -------
+                 2
+            (1 row)
+
+3) Display the number of events located in each country (using the keyword `GROUP BY`)
+
+Expected output:
+
+              country_name  | count 
+            ----------------+-------
+             Germany        |     0
+             Mexico         |     0
+             Australia      |     0
+             United States  |     1
+             Sweden         |     2
+             United Kingdom |     0
+            (6 rows)
+
+
+4) Modify your previous query to only display country names where there are events, using the keyword `HAVING`
+
+Expected output:
+
+             country_name  | count 
+            ---------------+-------
+             United States |     1
+             Sweden        |     2
+            (2 rows)
+
 
 ## Day 2 - exercises
            
