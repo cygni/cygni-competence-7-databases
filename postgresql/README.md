@@ -295,9 +295,5 @@ Expected output:
              Sweden        |     2
             (2 rows)
 
-
-## Day 2 - exercises
-           
-    TODO       
            
         
