@@ -261,7 +261,7 @@ https://www.postgresql.org/docs/9.6/static/index.html
           ('Kompetensutveckling postgres, Göteborg', '2017-02-21 17:30:00', '2017-02-21 20:00:00', (SELECT venue_id
                                                                                           WHERE name = 'Cygni Väst AB'));
 
-2) Select the number of events matching 'Kompetensutveckling postgres' using the aggregate function count.
+2) Select the number of events matching 'Kompetensutveckling postgres' using the aggregate function `count`.
 
 Expected output:
 
@@ -269,8 +269,19 @@ Expected output:
             -------
                  2
             (1 row)
+            
+            
+3) Write a query to show the number of events per year (`extract` and `GROUP BY`).
+            
+Expected output:
+            
+             year | events 
+            ------+--------
+             2017 |      2
+             2012 |      3
+            (2 rows)
 
-3) Display the number of events located in each country (using the keyword `GROUP BY`)
+4) Display the number of events located in each country (`GROUP BY`).
 
 Expected output:
 
@@ -285,7 +296,7 @@ Expected output:
             (6 rows)
 
 
-4) Modify your previous query to only display country names where there are events, using the keyword `HAVING`
+5) Modify your previous query to only display country names where there are events, using the keyword `HAVING`.
 
 Expected output:
 
