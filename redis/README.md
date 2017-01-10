@@ -19,7 +19,7 @@ $ docker pull redis
 Start redis and connect with redis cli
 
 ```
-$ docker run --name cygni-redis -d redis
+$ docker run -v $pwd/redis.conf:/usr/local/etc/redis/redis.conf --name cygni-redis -d redis redis-server /usr/local/etc/redis/redis.conf
 
 $ docker run -it --link cygni-redis:redis --rm redis redis-cli -h redis -p 6379
 
@@ -93,6 +93,22 @@ Try out:
 ## Pub Sub
 
 ## Configuration
+
+use redis-benchmark to test your updates
+
+docker exec -it cygni-redis redis-benchmark
+
+stuff to play around with.
+- save
+- slave
+
+### First way, update config file
+ - docker restart cygni-redis
+ 
+### Second way, CONFIGSET CONFIGREWRITE
+
+ - CONFIG SET SAVE "900 1 300 10".
+ - CONFIG REWRITE
 
 
 
