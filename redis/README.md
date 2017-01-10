@@ -28,7 +28,7 @@ redis:6379> PING
 "PONG"
 ```
 
-## CRUD exercises
+## Day 1 CRUD
 
 ### Create:
 
@@ -88,6 +88,12 @@ Try out:
 - Difference (SDIFF)
 - Storing the difference of the sets (SDIFFSTORE)
 
+# Day 2 Pub/Sub and Configuration
+
 ## Pub Sub
+
+## Configuration
+
+
 
 
