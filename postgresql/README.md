@@ -307,4 +307,33 @@ Expected output:
             (2 rows)
 
            
-        
+6) A very simple function (stored procedure) is written in the following way:
+         
+         
+            CREATE [OR REPLACE] FUNCTION function_name (arguments) 
+            RETURNS return_datatype AS $variable_name$
+              DECLARE
+                declaration;
+                [...]
+              BEGIN
+                < function_body >
+                [...]
+                RETURN { variable_name | value }
+              END; LANGUAGE plpgsql;
+
+6) Create a function `numberOfEvents` which returns the count of all rows in the table `events`.
+
+            select numberOfEvents();
+            
+             numberofevents 
+            ----------------
+                          5
+            (1 row)
+
+7) Postgres allows overloading! Create a new function with the same name `numberOfEvents`, that takes one argument `country_code`, 
+so when calling it with `select numberOfEvents('se');` you should get the number of events located in that country. 
+
+             numberofevents 
+            ----------------
+                          2
+            (1 row)
