@@ -321,7 +321,7 @@ Expected output:
                 RETURN { variable_name | value }
               END; LANGUAGE plpgsql;
 
-6) Create a function `numberOfEvents` which returns the count of all rows in the table `events`.
+Create a function `numberOfEvents` which returns the count of all rows in the table `events`.
 
             select numberOfEvents();
             
