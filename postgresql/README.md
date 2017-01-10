@@ -229,14 +229,111 @@ https://www.postgresql.org/docs/9.6/static/index.html
 
 ## Day 1 - exercises
 
-    TODO
+
+1)  Write a query to select all tables we have created.
+(Hint: Check the postgres documentation for the table 'pg_class')
+
+2) Write a query that finds the country name of the LARP Club event.
+
+3) Alter the `venues` table to contain a boolean column called `active`, with the default value of TRUE.
 
 ## Day 2 - Advanced queries, code, rules
 
-    TODO
+1) Insert a few more rows, notice the sub-selects to get the venue_id
 
-## Day 2 - exercises
-           
-    TODO       
-           
+        INSERT INTO countries (country_code, country_name) VALUES ('se', 'Sweden');
         
+        INSERT INTO cities (name, postal_code, country_code)
+        VALUES
+          ('Stockholm', '111 44', 'se'),
+          ('Göteborg', '411 08', 'se');
+          
+        INSERT INTO venues (name, street_address, postal_code, country_code)
+        VALUES
+          ('Cygni AB', 'Jakobsbergsgatan 22', '111 44', 'se'),
+          ('Cygni Väst AB', 'St. Nygatan 31', '411 08', 'se');
+          
+        INSERT INTO events (title, starts, ends, venue_id)
+        VALUES
+          ('Kompetensutveckling postgres, Stockholm', '2017-02-15 17:30:00', '2017-02-15 20:00:00', (SELECT venue_id
+                                                                                          FROM venues
+                                                                                          WHERE name = 'Cygni AB')),
+          ('Kompetensutveckling postgres, Göteborg', '2017-02-21 17:30:00', '2017-02-21 20:00:00', (SELECT venue_id
+                                                                                          WHERE name = 'Cygni Väst AB'));
+
+2) Select the number of events matching 'Kompetensutveckling postgres' using the aggregate function `count`.
+
+Expected output:
+
+            count 
+            -------
+                 2
+            (1 row)
+            
+            
+3) Write a query to show the number of events per year (`extract` and `GROUP BY`).
+            
+Expected output:
+            
+             year | events 
+            ------+--------
+             2017 |      2
+             2012 |      3
+            (2 rows)
+
+4) Display the number of events located in each country (`GROUP BY`).
+
+Expected output:
+
+              country_name  | count 
+            ----------------+-------
+             Germany        |     0
+             Mexico         |     0
+             Australia      |     0
+             United States  |     1
+             Sweden         |     2
+             United Kingdom |     0
+            (6 rows)
+
+
+5) Modify your previous query to only display country names where there are events, using the keyword `HAVING`.
+
+Expected output:
+
+             country_name  | count 
+            ---------------+-------
+             United States |     1
+             Sweden        |     2
+            (2 rows)
+
+           
+6) A very simple function (stored procedure) is written in the following way:
+         
+         
+            CREATE [OR REPLACE] FUNCTION function_name (arguments) 
+            RETURNS return_datatype AS $variable_name$
+              DECLARE
+                declaration;
+                [...]
+              BEGIN
+                < function_body >
+                [...]
+                RETURN { variable_name | value }
+              END; LANGUAGE plpgsql;
+
+Create a function `numberOfEvents` which returns the count of all rows in the table `events`.
+
+            select numberOfEvents();
+            
+             numberofevents 
+            ----------------
+                          5
+            (1 row)
+
+7) Postgres allows overloading! Create a new function with the same name `numberOfEvents`, that takes one argument `country_code`, 
+so when calling it with `select numberOfEvents('se');` you should get the number of events located in that country. 
+
+             numberofevents 
+            ----------------
+                          2
+            (1 row)
