@@ -19,7 +19,7 @@ $ docker pull redis
 Start redis and connect with redis cli
 
 ```
-$ docker run -v $pwd/redis.conf:/usr/local/etc/redis/redis.conf --name cygni-redis -d redis redis-server /usr/local/etc/redis/redis.conf
+$ docker run -v $pwd/redis:/usr/local/etc/redis --name cygni-redis -d redis redis-server /usr/local/etc/redis/redis.conf
 
 $ docker run -it --link cygni-redis:redis --rm redis redis-cli -h redis -p 6379
 
@@ -109,7 +109,20 @@ stuff to play around with.
 
  - CONFIG SET SAVE "900 1 300 10".
  - CONFIG REWRITE
+ 
+# MOAR STUFFS, LUA scripting
 
+## EVAL
 
+takes a lua script as a string, a number of string arguments, and a list of those arguments.
+All arguments are stored within the KEYS array and lua is 1 indexed. So the first argument is located at KEYS[1].
 
+redis:6379> EVAL "return redis.call('set',KEYS[1],'bar')" 1 foo
 
+## Pass script file to EVAL
+
+ - Navigate into the redis folder in the repository
+ - Open said file
+ - Modify stuff
+ - run: docker exec -it cygni-redis redis-cli eval $(cat ./redislua.lua) 1 foo
+ 
