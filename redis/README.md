@@ -112,6 +112,7 @@ stuff to play around with.
  
 # MOAR STUFFS, LUA scripting
 
-
-
-
+ - Navigate into the redis folder in the repository
+ - Open said file
+ - Modify stuff
+ - run: docker exec -it cygni-redis redis-cli eval $(cat ./redislua.lua) 1 foo
