@@ -19,7 +19,7 @@ $ docker pull redis
 Start redis and connect with redis cli
 
 ```
-$ docker run -v $pwd/redis.conf:/usr/local/etc/redis/redis.conf --name cygni-redis -d redis redis-server /usr/local/etc/redis/redis.conf
+$ docker run -v $pwd/redis:/usr/local/etc/redis --name cygni-redis -d redis redis-server /usr/local/etc/redis/redis.conf
 
 $ docker run -it --link cygni-redis:redis --rm redis redis-cli -h redis -p 6379
 
@@ -109,6 +109,8 @@ stuff to play around with.
 
  - CONFIG SET SAVE "900 1 300 10".
  - CONFIG REWRITE
+ 
+# MOAR STUFFS, LUA scripting
 
 
 
