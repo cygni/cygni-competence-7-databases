@@ -337,3 +337,71 @@ so when calling it with `select numberOfEvents('se');` you should get the number
             ----------------
                           2
             (1 row)
+
+
+## Day 3 - Indexes etc
+
+Lets create a really large table with some data to experiment with.
+I´ve added a few different data types, such as integer, uuid, point, timestamp. 
+
+In order for us to generate uuid's in postgres we need an extension!
+
+Install that with: `CREATE EXTENSION "uuid-ossp";`
+
+Then create the table, expect it to take about 2 minutes :D
+
+            CREATE TABLE cygnus AS
+              SELECT
+                generate_series(1, 10000000)                        AS id,
+                uuid_generate_v1()                                  AS uuid,
+                point(ceil(random() * 1000), ceil(random() * 1000)) AS point,
+                random() * (TIMESTAMP '2017-02-21 20:00:00' - TIMESTAMP '2017-01-01 00:00:00') +
+                TIMESTAMP '2017-01-01 00:00:00'                     AS datetime;
+            
+Analyze the result from a query
+            
+            
+            book=# explain analyze select * from cygnus order by id limit 20;
+                                                                         QUERY PLAN                                                             
+            ------------------------------------------------------------------------------------------------------------------------------------
+             Limit  (cost=459554.62..459554.67 rows=20 width=44) (actual time=58204.630..58204.775 rows=20 loops=1)
+               ->  Sort  (cost=459554.62..484554.64 rows=10000006 width=44) (actual time=58204.622..58204.671 rows=20 loops=1)
+                     Sort Key: id
+                     Sort Method: top-N heapsort  Memory: 26kB
+                     ->  Seq Scan on cygnus  (cost=0.00..193458.06 rows=10000006 width=44) (actual time=0.031..29437.617 rows=10000000 loops=1)
+             Planning time: 0.108 ms
+             Execution time: 58204.901 ms
+            (7 rows)
+            
+            
+Create an index on the column id
+            
+            book=# create index idx_cygnus_id on cygnus(id);
+            CREATE INDEX
+            
+            book=# \d cygnus
+                           Table "public.cygnus"
+              Column  |            Type             | Modifiers 
+            ----------+-----------------------------+-----------
+             id       | integer                     | 
+             uuid     | uuid                        | 
+             point    | point                       | 
+             datetime | timestamp without time zone | 
+            Indexes:
+                "idx_cygnus_id" btree (id)
+            
+Analyze the result again            
+                        
+            book=# explain analyze select * from cygnus order by id limit 20;
+                                                                            QUERY PLAN                                                                
+            ------------------------------------------------------------------------------------------------------------------------------------------
+             Limit  (cost=0.43..1.14 rows=20 width=44) (actual time=0.040..0.238 rows=20 loops=1)
+               ->  Index Scan using idx_cygnus_id on cygnus  (cost=0.43..353149.43 rows=10000000 width=44) (actual time=0.033..0.100 rows=20 loops=1)
+             Planning time: 1.033 ms
+             Execution time: 0.339 ms
+            (4 rows)
+            
+            book=# 
+
+
+
