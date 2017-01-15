@@ -44,11 +44,11 @@ you need to be within the redis folder of the repository.
 
 lets inspect the keys we got from this seeding script.
 
-Open up the shell where you had the redis-cli and run the command "KEYS *". Keys takes a pattern to match against and * is match all. (more info at [https://redis.io/commands/keys]https://redis.io/commands/keys)
+Open up the shell where you had the redis-cli and run the command "KEYS *". Keys takes a pattern to match against and * is match all. (more info at [https://redis.io/commands/keys](https://redis.io/commands/keys))
 
 You should now see a list of all the keys in our database.
 
-Since a lot of the operators in redis are type specific we need to figure out the type of the keys we are interested in. To get the type of a key use the command "TYPE" (more info at [https://redis.io/commands/type]https://redis.io/commands/type).
+Since a lot of the operators in redis are type specific we need to figure out the type of the keys we are interested in. To get the type of a key use the command "TYPE" (more info at [https://redis.io/commands/type](https://redis.io/commands/type)).
 
 As you might have noticed the redis-cli has intellisense so it will suggest what you need to give a command for it to be able to execute.
 
