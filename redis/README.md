@@ -19,9 +19,13 @@ $ docker pull redis
 Start redis and connect with redis cli
 
 ```
-$ docker run -v $pwd/redis:/usr/local/etc/redis --name cygni-redis -d redis redis-server /usr/local/etc/redis/redis.conf
+$ docker network create -d bridge cygni-redis
 
-$ docker run -it --link cygni-redis:redis --rm redis redis-cli -h redis -p 6379
+$ cd repo/redis
+
+$ docker run -v $(pwd)/redis:/usr/local/etc/redis --name redis1 --net cygni-redis -d redis redis-server /usr/local/etc/redis/redis.conf
+
+$ docker run -it --net cygni-redis --rm redis redis-cli -h redis1 -p 6379
 
 redis:6379> PING
 
@@ -29,6 +33,42 @@ redis:6379> PING
 ```
 
 ## Day 1 CRUD
+
+First run this seeding script:
+
+```
+$ docker exec -it redis1 redis-cli eval "$(cat ./redis/crud.lua)" 0
+```
+
+you need to be within the redis folder of the repository.
+
+lets inspect the keys we got from this seeding script.
+
+Open up the shell where you had the redis-cli and run the command "KEYS *". Keys takes a pattern to match against and * is match all. (more info at [https://redis.io/commands/keys]https://redis.io/commands/keys)
+
+You should now see a list of all the keys in our database.
+
+Since a lot of the operators in redis are type specific we need to figure out the type of the keys we are interested in. To get the type of a key use the command "TYPE" (more info at [https://redis.io/commands/type]https://redis.io/commands/type).
+
+As you might have noticed the redis-cli has intellisense so it will suggest what you need to give a command for it to be able to execute.
+
+```
+& TYPE foo
+
+> string
+
+
+$ TYPE jon
+
+> hash
+
+
+& TYPE jon:compentences
+
+> set
+```
+
+Lets start doing stuff.
 
 ### Create:
 
@@ -69,24 +109,40 @@ Delete count
 ## Hashes and Sets
 
 ### Hashes
-Create a hash for the information of a specific user in your system. A user has a name, an email and a rating.
- - Create one user where you specify each data point within its own query in a transaction. (HSET)
- - Create another user without the transaction and specify all data points within one query. (HMSET)
- - Read a specific key within one of your maps (HGET)
- - Read out the full contents within one of your maps (HGETALL)
- 
+
+Since the key jon was a hash we can get all the keys for the data points we have about Jon with the help of "HKEYS". As we can see we have a name and a speciality.
+
+Your assignment for hashes is to add two new people to our data set. Yourself and your favorite colleague. For one please use "HSET" and for the other "HMSET".
+
+Inspect your result with "HKEYS", "HGET" and "HGETALL"
+
+
 ### Sets
-- Create two sets with some arbitrary names make sure that atleast one name is present within both sets. (SADD)
-- Try to add an already existing name to one of the sets. (SADD)
-- Remove a name or two (SDEL)
-- Read the contents of your sets (SMEMBERS)
+
+There was one key within our initial set that was a set. To inspect this set with the help of "SMEMBERS".
+
+Your inital assignment for sets is to complete the hashes you created earlier with two sets of competences so we have the same type of data for everyone. Look at SADD, SDEL.
+
+After that answer these questions with the help of the set operators listed below.
+
+ - How many competences do you all have in total?
+ - Is there any competences that you have that Jon lack?
+ - Is there any competences that Jon has that you lack?
+ - Is there any competences that you all share?
+
 
 #### Set operators
-Try out:
-- Union (SUNION)
-- Storing the union of the sets (SUNIONSTORE)
-- Difference (SDIFF)
-- Storing the difference of the sets (SDIFFSTORE)
+
+- SUNION, returns the union of two or more sets
+- SUNIONSTORE, calculates the union of two or more sets and stores that at a specific key
+- SDIFF, returns the difference of two or more sets
+- SDIFFSTORE, calculates the difference of two or more sets and stores that at a specific key
+- SINTER, returns the intersection of two or more sets
+- SINTERSTORE, calculates the intersection of two or more sets and stores that at a specific key
+- SRANDMEMBER, returns a random member from a set
+- SCARD, calculates the cardinality (length) of a set
+
+
 
 # Day 2 Pub/Sub and Configuration
 
@@ -96,6 +152,14 @@ Try out:
 
 use redis-benchmark to test your updates
 
+we need to add another redis container to test replication
+
+```
+$ docker run -v $(pwd)/redis:/usr/local/etc/redis --name redis2 --net cygni-redis -d redis redis-server
+
+$ docker run -it --net cygni-redis --rm redis redis-cli -h redis2 -p 6379
+```
+
 docker exec -it cygni-redis redis-benchmark
 
 stuff to play around with.
@@ -104,12 +168,12 @@ stuff to play around with.
 
 ### First way, update config file
  - docker restart cygni-redis
- 
+
 ### Second way, CONFIGSET CONFIGREWRITE
 
  - CONFIG SET SAVE "900 1 300 10".
  - CONFIG REWRITE
- 
+
 # MOAR STUFFS, LUA scripting
 
 ## EVAL
@@ -125,4 +189,3 @@ redis:6379> EVAL "return redis.call('set',KEYS[1],'bar')" 1 foo
  - Open said file
  - Modify stuff
  - run: docker exec -it cygni-redis redis-cli eval $(cat ./redislua.lua) 1 foo
- 
