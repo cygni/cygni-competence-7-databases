@@ -3,6 +3,7 @@
 ## Resources
 - Redis official web: [https://redis.io/](https://redis.io/)
 - Redis API reference: [https://redis.io/commands](https://redis.io/commands)
+- Slide show: [google-drive](https://docs.google.com/presentation/d/12xN7uAy_w6xU-Iw2nM_zaAFsijIn966cgg80KTPLDes/edit?usp=sharing)
 
 ## Before we start
 
@@ -28,7 +29,6 @@ docker run -v $(pwd)/redis:/usr/local/etc/redis --name redis1 --net cygni-redis 
 docker run -it --net cygni-redis --rm redis redis-cli -h redis1 -p 6379
 
 redis:6379> PING
-
 "PONG"
 ```
 
