@@ -32,12 +32,14 @@ redis:6379> PING
 "PONG"
 ```
 
+By the way. Commands in Redis are not case sensitive but I've used that for the sake of clarity.
+
 ## Section 1 CRUD
 
 First run this seeding script:
 
 ```bash
-$ docker exec -it redis1 redis-cli eval "$(cat ./redis/crud.lua)" 0
+docker exec -it redis1 redis-cli eval "$(cat ./redis/crud.lua)" 0
 ```
 
 you need to be within the redis folder of the repository.
@@ -48,52 +50,85 @@ Open up the shell where you had the redis-cli and run the command "KEYS *". Keys
 
 You should now see a list of all the keys in our database.
 
+```bash
+redis:> KEYS *
+1) "jon"
+2) "jon:competences"
+3) "users"
+4) "foo"
+```
+
 Since a lot of the operators in redis are type specific we need to figure out the type of the keys we are interested in. To get the type of a key use the command "TYPE" (more info at [https://redis.io/commands/type](https://redis.io/commands/type)).
 
 As you might have noticed the redis-cli has intellisense so it will suggest what you need to give a command for it to be able to execute.
 
 ```bash
-& TYPE foo
+redis:6379> TYPE foo
+string
 
-> string
+redis:6379> TYPE users
+string
 
+redis:6379> TYPE jon
+hash
 
-$ TYPE jon
-
-> hash
-
-
-& TYPE jon:compentences
-
-> set
+redis:6379> TYPE jon:compentences
+set
 ```
 
 Lets start doing stuff.
 
-### Create:
+### Strings
 
-#### Permanent
+#### Read:
 
-Create an entry with the key count with a value of 1
+```bash
+redis:> GET foo
+"bar"
 
-#### Temporary (Expiry)
+redis:> GET users
+"1000"
+```
 
-Create an entry with the key tempcount with a value of 1 and an expiry time of 2 mins
+#### Create:
 
-### Read:
+##### Permanent
 
-Read both the count and the tempcount.
-Wait until the tempcount has expired and try to read it again.
+```bash
+redis:> SET name Emil
+OK
 
-### Update:
+redis:> SET count 1
+OK
+```
+
+##### Temporary (Expiry)
+
+```bash
+redis:6379> SET tempname Emil EX 10
+OK
+redis:6379> GET tempname
+"Emil"
+redis:6379> GET tempname
+(nil)
+
+redis:6379> SET tempname Emil PX 1000
+OK
+redis:6379> GET tempname
+"Emil"
+redis:6379> GET tempname
+(nil)
+```
+
+#### Update:
 
 Increase the count by 1 and then read it out
 
-### Delete:
+#### Delete:
 
 Delete count
 
-## Transactions
+### Transactions
 
 1. In a transaction
  - Create a key with a suitable name and give it an integer value
@@ -106,9 +141,9 @@ Delete count
 
 3. Do the same thing yet again but give the first key a string value. Still try to increment that value. Verify that we have now have two keys with the same string value. (There is no rollback within a transaction)
 
-## Hashes and Sets
+### Hashes and Sets
 
-### Hashes
+#### Hashes
 
 Since the key jon was a hash we can get all the keys for the data points we have about Jon with the help of "HKEYS". As we can see we have a name and a speciality.
 
@@ -117,7 +152,7 @@ Your assignment for hashes is to add two new people to our data set. Yourself an
 Inspect your result with "HKEYS", "HGET" and "HGETALL"
 
 
-### Sets
+#### Sets
 
 There was one key within our initial set that was a set. To inspect this set with the help of "SMEMBERS".
 
@@ -131,7 +166,7 @@ After that answer these questions with the help of the set operators listed belo
  - Is there any competences that you all share?
 
 
-#### Set operators
+##### Set operators
 
 - SUNION, returns the union of two or more sets
 - SUNIONSTORE, calculates the union of two or more sets and stores that at a specific key
@@ -144,10 +179,10 @@ After that answer these questions with the help of the set operators listed belo
 
 
 
-# Section 2 Configuration
+## Section 2 Configuration
 
 
-## Configuration
+### Configuration
 
 we need to add another redis container to test replication
 
@@ -157,19 +192,19 @@ docker run -v $(pwd)/redis:/usr/local/etc/redis --name redis2 --net cygni-redis 
 docker run -it --net cygni-redis --rm redis redis-cli -h redis2 -p 6379
 ```
 
-### Updating Redis Configuration
+#### Updating Redis Configuration
 
 ##### Testing
 
 use redis-benchmark to test your updates
 
 ```bash
-docker exec -it cygni-redis redis-benchmark
+docker exec -it redis1 redis-benchmark
 ```
 
 There are two ways of updating the Redis configuration.
 
-#### First way, update config file
+##### First way, update config file
 
 Within the repository within the redis folder there is a file named redis.conf.
 That is the config file used for the first redis instance that we deployed to a container.
@@ -182,26 +217,29 @@ docker run -v $(pwd)/redis:/usr/local/etc/redis --name redis1 --net cygni-redis 
 To update the config for that update the redis.conf and restart the container.
 
 ```bash
-docker restart cygni-redis
+docker restart redis1
 ```
 
-#### Second way, CONFIGSET CONFIGREWRITE
+##### Second way, CONFIGSET CONFIGREWRITE
 
 ```bash
  redis:6379> CONFIG SET SAVE "900 1 300 10".
+ OK
+
  redis:6379> CONFIG REWRITE
+ OK
 ```
 
 CONFIG SET requires a setting to alter and a string argument with the new options. This will be applied to the running database when executed.
 To save the current configuration the CONFIG REWRITE command is used. This will update the currently used configuration file for redis.
 
-### Persistence
+#### Persistence
 
-### Replication
+#### Replication
 
-### Security
+#### Security
 
-#### Password
+##### Password
 
 To setup basic password authentication against your redis instance the REQUIREPASS configuration option is used.
 That one wants the password as a plain text string as a password.
@@ -209,15 +247,18 @@ That one wants the password as a plain text string as a password.
 ```bash
 redis:6379> CONFIG SET REQUIREPASS "bestpassword"
 OK
+
 redis:6379> SET foo bar
 (error) NOAUTH Authentication required.
+
 redis:6379> AUTH bestpassword
 OK
+
 redis:6379> SET foo bar
 OK
 ```
 
-#### Command renaming
+##### Command renaming
 
 Done through the config file.
 Look at line 407 in the configuration file.
@@ -226,24 +267,31 @@ Look at line 407 in the configuration file.
 rename-command SET NEWSET
 ```
 
+Restart the docker instance with:
+
+```bash
+```
+
 Does not allow duplicates. If duplicates are found the instance wont start.
 
-# Section 3 Pub/Sub
+## Section 3 Pub/Sub
 
 
 
-# Section 4 LUA scripting
+## Section 4 LUA scripting
 
-## EVAL
+### EVAL
 
 takes a lua script as a string, a number of string arguments, and a list of those arguments.
 All arguments are stored within the KEYS array and lua is 1 indexed. So the first argument is located at KEYS[1].
 
+```bash
 redis:6379> EVAL "return redis.call('set',KEYS[1],'bar')" 1 foo
+```
 
-## Pass script file to EVAL
+### Pass script file to EVAL
 
- - Navigate into the redis folder in the repository
- - Open said file
- - Modify stuff
- - run: docker exec -it cygni-redis redis-cli eval $(cat ./redislua.lua) 1 foo
+
+```bash
+docker exec -it redis1 redis-cli eval "$(cat ./redis/redislua.lua)" 1 foo
+```

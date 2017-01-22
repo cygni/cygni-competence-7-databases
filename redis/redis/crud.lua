@@ -1,3 +1,8 @@
+-- Strings
+
+redis.call('SET', 'foo', 'bar')
+redis.call('SET', 'users', 1000)
+
 -- Hashes
 
 redis.call('HSET', 'jon', 'name', 'Jon Persson')
