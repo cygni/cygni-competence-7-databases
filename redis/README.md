@@ -83,10 +83,10 @@ Lets start doing stuff.
 #### Read:
 
 ```bash
-redis:> GET foo
+redis:6379> GET foo
 "bar"
 
-redis:> GET users
+redis:6379> GET users
 "1000"
 ```
 
@@ -95,10 +95,10 @@ redis:> GET users
 ##### Permanent
 
 ```bash
-redis:> SET name Emil
+redis:6379> SET name Emil
 OK
 
-redis:> SET count 1
+redis:6379> SET count 1
 OK
 ```
 
@@ -112,7 +112,7 @@ redis:6379> GET tempname
 redis:6379> GET tempname
 (nil)
 
-redis:6379> SET tempname Emil PX 1000
+redis:6379> SET tempname Emil PX 10000
 OK
 redis:6379> GET tempname
 "Emil"
@@ -122,41 +122,93 @@ redis:6379> GET tempname
 
 #### Update:
 
-Increase the count by 1 and then read it out
+```bash
+redis:6379> APPEND name " Bergstrom"
+(integer) 14
+
+redis:6379> GET name
+"Emil Bergstrom"
+
+redis:6379> INCR count
+(integer) 2
+
+redis:6379> GET count
+"2"
+```
 
 #### Delete:
 
-Delete count
+```bash
+redis:6379> DEL name
+(integer) 1
+
+redis:6379> DEL count foo
+(integer) 2
+
+redis:6379> DEL doesnotexist
+(integer) 0
+```
 
 ### Transactions
 
-1. In a transaction
- - Create a key with a suitable name and give it an integer value
- - Copy that value over to a new key.
- - Increment the first value
- - Read out both keys
- - Execute the transaction.
+```bash
+redis:6379> MULTI
+OK
 
-2. Do the same thing again but before you fire off the transaction discard it and verify that nothing was added to the database.
+redis:6379> SET name Emil
+QUEUED
 
-3. Do the same thing yet again but give the first key a string value. Still try to increment that value. Verify that we have now have two keys with the same string value. (There is no rollback within a transaction)
+...
+QUEUED
 
-### Hashes and Sets
+redis:6379> EXEC
+OK
+```
 
-#### Hashes
+With the help of everything above. Your assignment is to, within a transaction:
+ - Create a counter
+ - Increment that counter by 5 (INCR or INCRBY)
+ - Read the counter.
 
-Since the key jon was a hash we can get all the keys for the data points we have about Jon with the help of "HKEYS". As we can see we have a name and a speciality.
+Do the same thing again but before you fire off the transaction discard it and verify that the db didn't change. (DISCARD)
+
+
+#### Error example
+
+```bash
+redis:6379> MULTI
+OK
+
+redis:6379> SET name Emil
+QUEUED
+
+redis:6379> HGET name a
+QUEUED
+
+redis:6379> SET lastname Bergstrom
+QUEUED
+
+redis:6379> EXEC
+1) OK
+2) (error) WRONGTYPE Operation against a key holding the wrong kind of value
+3) OK
+```
+
+
+### Hashes
+
+Since the key jon was a hash we can get all the keys for the data points we have about Jon with the help of "HKEYS". As we can see we have a name and a specialty.
 
 Your assignment for hashes is to add two new people to our data set. Yourself and your favorite colleague. For one please use "HSET" and for the other "HMSET".
 
 Inspect your result with "HKEYS", "HGET" and "HGETALL"
 
 
-#### Sets
+### Sets
 
 There was one key within our initial set that was a set. To inspect this set with the help of "SMEMBERS".
 
-Your inital assignment for sets is to complete the hashes you created earlier with two sets of competences so we have the same type of data for everyone. Look at SADD, SDEL.
+Your inital assignment for sets is to complete the hashes you created earlier with two sets of competences so we have the same type of data for everyone. Look at SADD, SREM.
 
 After that answer these questions with the help of the set operators listed below.
 
@@ -166,7 +218,7 @@ After that answer these questions with the help of the set operators listed belo
  - Is there any competences that you all share?
 
 
-##### Set operators
+#### Set operators
 
 - SUNION, returns the union of two or more sets
 - SUNIONSTORE, calculates the union of two or more sets and stores that at a specific key
@@ -184,23 +236,9 @@ After that answer these questions with the help of the set operators listed belo
 
 ### Configuration
 
-we need to add another redis container to test replication
-
-```bash
-docker run -v $(pwd)/redis:/usr/local/etc/redis --name redis2 --net cygni-redis -d redis redis-server
-
-docker run -it --net cygni-redis --rm redis redis-cli -h redis2 -p 6379
-```
-
 #### Updating Redis Configuration
 
 ##### Testing
-
-use redis-benchmark to test your updates
-
-```bash
-docker exec -it redis1 redis-benchmark
-```
 
 There are two ways of updating the Redis configuration.
 
@@ -214,7 +252,7 @@ How we created the  first container:
 docker run -v $(pwd)/redis:/usr/local/etc/redis --name redis1 --net cygni-redis -d redis redis-server /usr/local/etc/redis/redis.conf
 ```
 
-To update the config for that update the redis.conf and restart the container.
+To update the config for that update the redis.conf and restart the container. I.e. change the timeout at line 79 in the config.
 
 ```bash
 docker restart redis1
@@ -223,7 +261,7 @@ docker restart redis1
 ##### Second way, CONFIGSET CONFIGREWRITE
 
 ```bash
- redis:6379> CONFIG SET SAVE "900 1 300 10".
+ redis:6379> CONFIG SET TIMEOUT "5000".
  OK
 
  redis:6379> CONFIG REWRITE
@@ -235,7 +273,58 @@ To save the current configuration the CONFIG REWRITE command is used. This will 
 
 #### Persistence
 
+Use redis-benchmark to examine the differences between different persistance models.
+
+First lets get a base line.
+
+```bash
+docker exec -it redis1 redis-benchmark > benchmarkbase.txt
+```
+
+Lets enable append-only. The append-only file is an alternative, fully-durable strategy for Redis. It became available in version 1.1.
+From now on, every time Redis receives a command that changes the dataset it will append it to the AOF. When you restart Redis it will re-play the AOF to rebuild the state.
+
+```bash
+appendonly yes
+
+# appendfsync always
+appendfsync everysec
+# appendfsync no
+```
+
 #### Replication
+
+we need to add another redis container to test replication
+
+```bash
+docker run -v $(pwd)/redis:/usr/local/etc/redis --name redis2 --net cygni-redis -d redis redis-server
+
+docker run -it --net cygni-redis --rm redis redis-cli -h redis2 -p 6379
+```
+
+One way to setup replication is through the CLI.
+
+```bash
+redis1:6379> SLAVEOF redis2 6379
+OK
+
+redis2:6379> SET name Jon
+OK
+
+redis1:6379> GET name
+"Jon"
+
+redis1:6379> SLAVEOF NO ONE
+OK
+
+redis2:6379> SET name Emil
+OK
+
+redis1:6379> GET name
+"Jon"
+```
+
+The other way is through the config file. Your assignment is now to setup replication through the config file. Look at line 194 in the config file.
 
 #### Security
 
@@ -258,10 +347,12 @@ redis:6379> SET foo bar
 OK
 ```
 
+Your assignment is to setup the password through the config file. Look at line 383 in the config file.
+
 ##### Command renaming
 
 Done through the config file.
-Look at line 407 in the configuration file.
+Look at line 398 in the configuration file.
 
 ```bash
 rename-command SET NEWSET
@@ -270,6 +361,7 @@ rename-command SET NEWSET
 Restart the docker instance with:
 
 ```bash
+docker restart redis1
 ```
 
 Does not allow duplicates. If duplicates are found the instance wont start.
