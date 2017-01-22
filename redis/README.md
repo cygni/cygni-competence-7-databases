@@ -8,35 +8,35 @@
 
 Clone the repository into a directory of your choice.
 
-```
-$ git clone http://github.com/cygni/cygni-competence-7-databases
+```bash
+git clone http://github.com/cygni/cygni-competence-7-databases
 ```
 Pull the official docker image for redis
-```
-$ docker pull redis
+```bash
+docker pull redis
 ```
 
 Start redis and connect with redis cli
 
-```
-$ docker network create -d bridge cygni-redis
+```bash
+docker network create -d bridge cygni-redis
 
-$ cd repo/redis
+cd REPOSITORY_PATH/redis
 
-$ docker run -v $(pwd)/redis:/usr/local/etc/redis --name redis1 --net cygni-redis -d redis redis-server /usr/local/etc/redis/redis.conf
+docker run -v $(pwd)/redis:/usr/local/etc/redis --name redis1 --net cygni-redis -d redis redis-server /usr/local/etc/redis/redis.conf
 
-$ docker run -it --net cygni-redis --rm redis redis-cli -h redis1 -p 6379
+docker run -it --net cygni-redis --rm redis redis-cli -h redis1 -p 6379
 
 redis:6379> PING
 
 "PONG"
 ```
 
-## Day 1 CRUD
+## Section 1 CRUD
 
 First run this seeding script:
 
-```
+```bash
 $ docker exec -it redis1 redis-cli eval "$(cat ./redis/crud.lua)" 0
 ```
 
@@ -52,7 +52,7 @@ Since a lot of the operators in redis are type specific we need to figure out th
 
 As you might have noticed the redis-cli has intellisense so it will suggest what you need to give a command for it to be able to execute.
 
-```
+```bash
 & TYPE foo
 
 > string
@@ -144,37 +144,51 @@ After that answer these questions with the help of the set operators listed belo
 
 
 
-# Day 2 Pub/Sub and Configuration
+# Section 2 Configuration
 
-## Pub Sub
 
 ## Configuration
 
-use redis-benchmark to test your updates
-
 we need to add another redis container to test replication
 
-```
-$ docker run -v $(pwd)/redis:/usr/local/etc/redis --name redis2 --net cygni-redis -d redis redis-server
+```bash
+docker run -v $(pwd)/redis:/usr/local/etc/redis --name redis2 --net cygni-redis -d redis redis-server
 
-$ docker run -it --net cygni-redis --rm redis redis-cli -h redis2 -p 6379
+docker run -it --net cygni-redis --rm redis redis-cli -h redis2 -p 6379
 ```
 
+### Updating Redis Configuration
+
+##### Testing
+
+use redis-benchmark to test your updates
+
+```bash
 docker exec -it cygni-redis redis-benchmark
+```
 
-stuff to play around with.
-- save
-- slave
+There are two ways of updating the Redis configuration.
 
-### First way, update config file
+#### First way, update config file
  - docker restart cygni-redis
 
-### Second way, CONFIGSET CONFIGREWRITE
+#### Second way, CONFIGSET CONFIGREWRITE
 
  - CONFIG SET SAVE "900 1 300 10".
  - CONFIG REWRITE
 
-# MOAR STUFFS, LUA scripting
+### Persistence
+
+### Replication
+
+### Authentication
+
+
+# Section 3 Pub/Sub
+
+
+
+# Section 4 LUA scripting
 
 ## EVAL
 
