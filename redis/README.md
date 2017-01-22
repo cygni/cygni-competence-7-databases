@@ -174,10 +174,12 @@ There are two ways of updating the Redis configuration.
 Within the repository within the redis folder there is a file named redis.conf.
 That is the config file used for the first redis instance that we deployed to a container.
 
-How we created that container:
+How we created the  first container:
 ```bash
-docker run -v <pre><b>$(pwd)/redis:/usr/local/etc/redis</b></pre> --name redis1 --net cygni-redis -d redis redis-server <pre><b>/usr/local/etc/redis/redis.conf</b></pre>
+docker run -v $(pwd)/redis:/usr/local/etc/redis --name redis1 --net cygni-redis -d redis redis-server /usr/local/etc/redis/redis.conf
 ```
+
+To update the config for that update the redis.conf and restart the container.
 
 ```bash
 docker restart cygni-redis
@@ -185,15 +187,46 @@ docker restart cygni-redis
 
 #### Second way, CONFIGSET CONFIGREWRITE
 
- - CONFIG SET SAVE "900 1 300 10".
- - CONFIG REWRITE
+```bash
+ redis:6379> CONFIG SET SAVE "900 1 300 10".
+ redis:6379> CONFIG REWRITE
+```
+
+CONFIG SET requires a setting to alter and a string argument with the new options. This will be applied to the running database when executed.
+To save the current configuration the CONFIG REWRITE command is used. This will update the currently used configuration file for redis.
 
 ### Persistence
 
 ### Replication
 
-### Authentication
+### Security
 
+#### Password
+
+To setup basic password authentication against your redis instance the REQUIREPASS configuration option is used.
+That one wants the password as a plain text string as a password.
+
+```bash
+redis:6379> CONFIG SET REQUIREPASS "bestpassword"
+OK
+redis:6379> SET foo bar
+(error) NOAUTH Authentication required.
+redis:6379> AUTH bestpassword
+OK
+redis:6379> SET foo bar
+OK
+```
+
+#### Command renaming
+
+Done through the config file.
+Look at line 407 in the configuration file.
+
+```bash
+rename-command SET NEWSET
+```
+
+Does not allow duplicates. If duplicates are found the instance wont start.
 
 # Section 3 Pub/Sub
 
