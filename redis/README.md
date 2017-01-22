@@ -381,10 +381,12 @@ After that try to PUBLISH to either of the two channels within the other shell.
 
 Remember that the CLI has auto-complete suggestions on what to supply to different commands.
 
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
 
-
-
-
+Redis-cli1 (Subscriber):
 
 ```bash
 redis1:6370> SUBSCRIBE foo bar
@@ -404,6 +406,8 @@ Reading messages... (press Ctrl-C to quit)
 2) "bar"
 3) "bar message"
 ```
+
+Redis-cli2 (Publisher):
 
 ```bash
 redis:6379>PUBLISH foo "foo message"
