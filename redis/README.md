@@ -385,6 +385,11 @@ Remember that the CLI has auto-complete suggestions on what to supply to differe
 &nbsp;
 &nbsp;
 &nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
 
 Redis-cli1 (Subscriber):
 
