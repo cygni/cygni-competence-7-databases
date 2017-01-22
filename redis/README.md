@@ -170,7 +170,18 @@ docker exec -it cygni-redis redis-benchmark
 There are two ways of updating the Redis configuration.
 
 #### First way, update config file
- - docker restart cygni-redis
+
+Within the repository within the redis folder there is a file named redis.conf.
+That is the config file used for the first redis instance that we deployed to a container.
+
+How we created that container:
+```bash
+docker run -v <pre><b>$(pwd)/redis:/usr/local/etc/redis</b></pre> --name redis1 --net cygni-redis -d redis redis-server <pre><b>/usr/local/etc/redis/redis.conf</b></pre>
+```
+
+```bash
+docker restart cygni-redis
+```
 
 #### Second way, CONFIGSET CONFIGREWRITE
 
