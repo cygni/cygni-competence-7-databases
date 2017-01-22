@@ -51,7 +51,7 @@ Open up the shell where you had the redis-cli and run the command "KEYS *". Keys
 You should now see a list of all the keys in our database.
 
 ```bash
-redis:> KEYS *
+redis1:> KEYS *
 1) "jon"
 2) "jon:competences"
 3) "users"
@@ -63,16 +63,16 @@ Since a lot of the operators in redis are type specific we need to figure out th
 As you might have noticed the redis-cli has intellisense so it will suggest what you need to give a command for it to be able to execute.
 
 ```bash
-redis:6379> TYPE foo
+redis1:6379> TYPE foo
 string
 
-redis:6379> TYPE users
+redis1:6379> TYPE users
 string
 
-redis:6379> TYPE jon
+redis1:6379> TYPE jon
 hash
 
-redis:6379> TYPE jon:compentences
+redis1:6379> TYPE jon:compentences
 set
 ```
 
@@ -83,10 +83,10 @@ Lets start doing stuff.
 #### Read:
 
 ```bash
-redis:6379> GET foo
+redis1:6379> GET foo
 "bar"
 
-redis:6379> GET users
+redis1:6379> GET users
 "1000"
 ```
 
@@ -95,73 +95,77 @@ redis:6379> GET users
 ##### Permanent
 
 ```bash
-redis:6379> SET name Emil
+redis1:6379> SET name Emil
 OK
 
-redis:6379> SET count 1
+redis1:6379> SET count 1
 OK
 ```
 
 ##### Temporary (Expiry)
 
 ```bash
-redis:6379> SET tempname Emil EX 10
+redis1:6379> SET tempname Emil EX 10
 OK
-redis:6379> GET tempname
+
+redis1:6379> GET tempname
 "Emil"
-redis:6379> GET tempname
+
+redis1:6379> GET tempname
 (nil)
 
-redis:6379> SET tempname Emil PX 10000
+redis1:6379> SET tempname Emil PX 10000
 OK
-redis:6379> GET tempname
+
+redis1:6379> GET tempname
 "Emil"
-redis:6379> GET tempname
+
+redis1:6379> GET tempname
 (nil)
 ```
 
 #### Update:
 
 ```bash
-redis:6379> APPEND name " Bergstrom"
+redis1:6379> APPEND name " Bergstrom"
 (integer) 14
 
-redis:6379> GET name
+redis1:6379> GET name
 "Emil Bergstrom"
 
-redis:6379> INCR count
+redis1:6379> INCR count
 (integer) 2
 
-redis:6379> GET count
+redis1:6379> GET count
 "2"
 ```
 
 #### Delete:
 
 ```bash
-redis:6379> DEL name
+redis1:6379> DEL name
 (integer) 1
 
-redis:6379> DEL count foo
+redis1:6379> DEL count foo
 (integer) 2
 
-redis:6379> DEL doesnotexist
+redis1:6379> DEL doesnotexist
 (integer) 0
 ```
 
 ### Transactions
 
 ```bash
-redis:6379> MULTI
+redis1:6379> MULTI
 OK
 
-redis:6379> SET name Emil
+redis1:6379> SET name Emil
 QUEUED
 
 ...
 QUEUED
 
-redis:6379> EXEC
+redis1:6379> EXEC
 OK
 ```
 
@@ -176,19 +180,19 @@ Do the same thing again but before you fire off the transaction discard it and v
 #### Error example
 
 ```bash
-redis:6379> MULTI
+redis1:6379> MULTI
 OK
 
-redis:6379> SET name Emil
+redis1:6379> SET name Emil
 QUEUED
 
-redis:6379> HGET name a
+redis1:6379> HGET name a
 QUEUED
 
-redis:6379> SET lastname Bergstrom
+redis1:6379> SET lastname Bergstrom
 QUEUED
 
-redis:6379> EXEC
+redis1:6379> EXEC
 1) OK
 2) (error) WRONGTYPE Operation against a key holding the wrong kind of value
 3) OK
@@ -230,9 +234,7 @@ After that answer these questions with the help of the set operators listed belo
 - SCARD, calculates the cardinality (length) of a set
 
 
-
 ## Section 2 Configuration
-
 
 ### Configuration
 
@@ -261,11 +263,11 @@ docker restart redis1
 ##### Second way, CONFIGSET CONFIGREWRITE
 
 ```bash
- redis:6379> CONFIG SET TIMEOUT "5000".
- OK
+redis1:6379> CONFIG SET TIMEOUT "5000".
+OK
 
- redis:6379> CONFIG REWRITE
- OK
+redis1:6379> CONFIG REWRITE
+OK
 ```
 
 CONFIG SET requires a setting to alter and a string argument with the new options. This will be applied to the running database when executed.
@@ -334,16 +336,16 @@ To setup basic password authentication against your redis instance the REQUIREPA
 That one wants the password as a plain text string as a password.
 
 ```bash
-redis:6379> CONFIG SET REQUIREPASS "bestpassword"
+redis1:6379> CONFIG SET REQUIREPASS "bestpassword"
 OK
 
-redis:6379> SET foo bar
+redis1:6379> SET foo bar
 (error) NOAUTH Authentication required.
 
-redis:6379> AUTH bestpassword
+redis1:6379> AUTH bestpassword
 OK
 
-redis:6379> SET foo bar
+redis1:6379> SET foo bar
 OK
 ```
 
@@ -364,11 +366,54 @@ Restart the docker instance with:
 docker restart redis1
 ```
 
-Does not allow duplicates. If duplicates are found the instance wont start.
+Command renaming does not allow duplicates. If duplicates are found the instance wont start.
 
 ## Section 3 Pub/Sub
 
+Now we need to connect two CLIs to the same redis instance. Run the following command in two shells:
 
+```bash
+docker exec -it redis1 redis-cli
+```
+
+Your assignment is to, within one of the shells, subscribe to two channels with the help of the SUBSCRIBE command.
+After that try to PUBLISH to either of the two channels within the other shell.
+
+Remember that the CLI has auto-complete suggestions on what to supply to different commands.
+
+
+
+
+
+
+```bash
+redis1:6370> SUBSCRIBE foo bar
+Reading messages... (press Ctrl-C to quit)
+1) "subscribe"
+2) "foo"
+3) (integer) 1
+1) "subscribe"
+2) "bar"
+3) (integer) 2
+
+1) "message"
+2) "foo"
+3) "foo message"
+
+1) "message"
+2) "bar"
+3) "bar message"
+```
+
+```bash
+redis:6379>PUBLISH foo "foo message"
+(integer) 1
+
+redis:6379>PUBLISH bar "bar message"
+(integer) 1
+```
+
+One cool thing to note is that even the publishes are replicated to slaves so one can subscribe to the channel of a slave and receive the messages published to master.
 
 ## Section 4 LUA scripting
 
@@ -378,7 +423,7 @@ takes a lua script as a string, a number of string arguments, and a list of thos
 All arguments are stored within the KEYS array and lua is 1 indexed. So the first argument is located at KEYS[1].
 
 ```bash
-redis:6379> EVAL "return redis.call('set',KEYS[1],'bar')" 1 foo
+redis1:6379> EVAL "return redis.call('set',KEYS[1],'bar')" 1 foo
 ```
 
 ### Pass script file to EVAL
