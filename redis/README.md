@@ -382,13 +382,13 @@ After that try to PUBLISH to either of the two channels within the other shell.
 Remember that the CLI has auto-complete suggestions on what to supply to different commands.
 
 &nbsp;
+
 &nbsp;
+
 &nbsp;
+
 &nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
+
 &nbsp;
 
 Redis-cli1 (Subscriber):
