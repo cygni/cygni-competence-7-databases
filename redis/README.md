@@ -441,3 +441,7 @@ redis1:6379> EVAL "return redis.call('set',KEYS[1],'bar')" 1 foo
 ```bash
 docker exec -it redis1 redis-cli eval "$(cat ./redis/redislua.lua)" 1 foo
 ```
+
+#### More information about lua:
+ - Lua programming language [https://www.lua.org/](https://www.lua.org/)
+ - Tutorial [https://www.lua.org/pil/1.html](https://www.lua.org/pil/1.html)
