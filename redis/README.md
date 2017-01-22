@@ -286,6 +286,13 @@ docker exec -it redis1 redis-benchmark > benchmarkbase.txt
 Lets enable append-only. The append-only file is an alternative, fully-durable strategy for Redis. It became available in version 1.1.
 From now on, every time Redis receives a command that changes the dataset it will append it to the AOF. When you restart Redis it will re-play the AOF to rebuild the state.
 
+There are three modes for when commands are written to the AOF.
+ - always - Every write command to Redis results in a write to disk. This slows Redis down substantially if used.
+ - everysec - Once per second, explicitly syncs write commands to disk.
+ - no - Lets the operating system control syncing to disk.
+
+Look at line 489 and 515 in the config file.
+
 ```bash
 appendonly yes
 
@@ -293,6 +300,8 @@ appendonly yes
 appendfsync everysec
 # appendfsync no
 ```
+
+Your assignment is to try the different versions of appendfsync and notice the differneces in speed.
 
 #### Replication
 
