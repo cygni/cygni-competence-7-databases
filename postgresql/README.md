@@ -339,14 +339,14 @@ so when calling it with `select numberOfEvents('se');` you should get the number
             (1 row)
 
 
-## Day 3 - Indexes etc
+## Day 3 - Indexes, extensions, json etc
 
 Lets create a really large table with some data to experiment with.
 I´ve added a few different data types, such as integer, uuid, point, timestamp. 
 
 In order for us to generate uuid's in postgres we need an extension!
 
-Install that with: `CREATE EXTENSION "uuid-ossp";`
+Configure that with: `CREATE EXTENSION "uuid-ossp";`
 
 Then create the table, expect it to take about 2 minutes :D
 
@@ -402,6 +402,75 @@ Analyze the result again
             (4 rows)
             
             book=# 
+            
+1) Play around with the large table cygnus and see which scan method postgres uses for diffent queries, and how that changes when applying an index of your choice.            
+            
+2) Configure postgres to use the extension `cube`
+
+3) Run `code/create_movies.sql` and `code/movies_data.sql` 
+   (hint: -v /Library/Projects/cygni-competence-7-databases/postgresql/code/:/tmp/code)
+
+4) Create a new table `movies_json` with the following structure, where the field `json` contains a json represention 
+   of the table structure above.
+
+Table structure:
+
+            book=# \d movies_json
+             Table "public.movies_json"
+             Column | Type  | Modifiers 
+            --------+-------+-----------
+             id     | uuid  | 
+             json   | jsonb |
+              
+              
+Where the data looks something like this:
+              
+            {
+              "title": "Star Wars",
+              "actors": [
+                {
+                  "name": "Mark Hamill",
+                  "actor_id": 3165
+                },
+                {
+                  "name": "Carrie Fisher",
+                  "actor_id": 644
+                },
+                {
+                  "name": "Harrison Ford",
+                  "actor_id": 1753
+                },
+                {
+                  "name": "Peter Cushing",
+                  "actor_id": 3768
+                }
+              ],
+              "genres": [
+                {
+                  "name": "Adventure",
+                  "score": 7
+                },
+                {
+                  "name": "Fantasy",
+                  "score": 7
+                },
+                {
+                  "name": "SciFi",
+                  "score": 10
+                }
+              ],
+              "movie_id": 1
+            }  
+            
+5) Try querying the data using json specific functions (check the doc)     
+       
+6) Using explain or explain analyze, see how postgres fetches the data
+       
+7) Apply an index to your json data and see if and how it changes with the query you ran.       
+            
+            
+            
+            
 
 
 
