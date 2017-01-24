@@ -24,7 +24,7 @@ docker network create -d bridge cygni-redis
 
 cd REPOSITORY_PATH/redis
 
-docker run -v $(pwd)/redis:/usr/local/etc/redis --name redis1 --net cygni-redis -d redis redis-server /usr/local/etc/redis/redis.conf
+docker run -v "$(pwd)"/redis:/usr/local/etc/redis --name redis1 --net cygni-redis -d redis redis-server /usr/local/etc/redis/redis.conf
 
 docker run -it --net cygni-redis --rm redis redis-cli -h redis1 -p 6379
 
@@ -251,7 +251,7 @@ That is the config file used for the first redis instance that we deployed to a 
 
 How we created the  first container:
 ```bash
-docker run -v $(pwd)/redis:/usr/local/etc/redis --name redis1 --net cygni-redis -d redis redis-server /usr/local/etc/redis/redis.conf
+docker run -v "$(pwd)"/redis:/usr/local/etc/redis --name redis1 --net cygni-redis -d redis redis-server /usr/local/etc/redis/redis.conf
 ```
 
 To update the config for that update the redis.conf and restart the container. I.e. change the timeout at line 79 in the config.
@@ -308,7 +308,7 @@ Your assignment is to try the different versions of appendfsync and notice the d
 we need to add another redis container to test replication
 
 ```bash
-docker run -v $(pwd)/redis:/usr/local/etc/redis --name redis2 --net cygni-redis -d redis redis-server
+docker run -v "$(pwd)"/redis:/usr/local/etc/redis --name redis2 --net cygni-redis -d redis redis-server
 
 docker run -it --net cygni-redis --rm redis redis-cli -h redis2 -p 6379
 ```
