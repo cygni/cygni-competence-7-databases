@@ -17,50 +17,42 @@ https://www.postgresql.org/docs/9.6/static/index.html
 2) Pull down the postgres image
         
         docker pull postgres
-        
-3) Startup a container `cygni` based on the image we downloaded
 
-        docker run --publish=5432:5432 --name cygni -e POSTGRES_PASSWORD=cygni -d postgres
-         
-4) Connect to the database using a psql prompt (password: cygni)
+3) Build our own image `postgres-plv8` with javascript support pre-installed
+
+        cd build
+        docker build -t postgres-plv8 .
+               
+4) Startup a container `cygni` based on the image we downloaded
+
+        docker run --publish=5432:5432 --name cygni -e POSTGRES_PASSWORD=cygni -d postgres-plv8
+                 
+5) Connect to the database using a psql prompt (password: cygni)
          
         docker run -it --rm --link cygni:postgres postgres psql -h postgres -U postgres
-
-5) Create the database `book`
+        
+6) Create the database `book`
 
         CREATE DATABASE book;
         
-6) Connect to `book`
+7) Connect to `book`
         
         \c book
+        
+    Output:
+        
+        postgres=# \c book
+        You are now connected to database "book" as user "postgres".
 
-7) Create the table `countries`
-        
-        CREATE TABLE countries (
-        country_code char(2) PRIMARY KEY,
-        country_name text UNIQUE
-        );
-        
-8) List relations
-        
-        \d
-        
-    output:
-    
-                   List of relations
-         Schema |   Name    | Type  |  Owner   
-        --------+-----------+-------+----------
-         public | countries | table | postgres
-        (1 row)
 
-9) Quit the prompt (and disconnect from the db)
+7) Quit the prompt (and disconnect from the db)
 
         \q
         
-10) (Optional) Install a gui-client (i.e dbvisualizer or simply use intellij 'database')
+8) (Optional) Install a gui-client (i.e dbvisualizer or simply use intellij 'database')
     https://www.dbvis.com/
   
-    So by now, anytime you want to connect to your `book` database, use the gui app of your choice or step 4 above.
+    So by now, anytime you want to connect to your `book` database, use the gui app of your choice or step 5 above.
     
 
 ## Preparations - end   
@@ -69,8 +61,13 @@ https://www.postgresql.org/docs/9.6/static/index.html
 
 ![alt text](https://github.com/cygni/cygni-competence-7-databases/blob/master/postgresql/day1_relations.png "Day 1 table relations")
 
-1)  Insert rows to table `countries`.
+1)  Create the table `countries` and insert rows.
 
+        CREATE TABLE countries (
+        country_code char(2) PRIMARY KEY,
+        country_name text UNIQUE
+        );
+        
         INSERT INTO countries (country_code, country_name)
         VALUES
         ('us', 'United States'),
@@ -336,6 +333,14 @@ so when calling it with `select numberOfEvents('se');` you should get the number
                           2
             (1 row)
 
+8) (Optional) Create the function `numberOfEvents_<language>` using your preferred coding langauge that is available as an extension to postgres.
+The image built from `build/Dockerfile` has javascript capabilities pre-installed 
+(https://github.com/plv8/plv8)
+
+So if you want to keep this simple, choose to write one with javascript :-) 
+Don't forget to load it with: `CREATE EXTENSION plv8;`
+ 
+ 
 
 ## Day 3 - Indexes, extensions, json
 
@@ -406,7 +411,7 @@ Analyze the result again
 2) Configure postgres to use the extension `cube`
 
 3) Run `code/create_movies.sql` and `code/movies_data.sql` 
-   (hint: -v /Library/Projects/cygni-competence-7-databases/postgresql/code/:/tmp/code)
+   (hint: -v /Users/rikard/dev/cygni-competence-7-databases/postgresql/code/:/tmp/code)
 
 4) Create a new table `movies_json` with the following structure, where the field `json` contains a json represention 
    of the table structure above.
