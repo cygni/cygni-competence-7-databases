@@ -62,13 +62,10 @@ https://www.postgresql.org/docs/9.6/static/index.html
   
     So by now, anytime you want to connect to your `book` database, use the gui app of your choice or step 4 above.
     
-    
-#### Setup in intellij
 
-![alt text](https://github.com/cygni/cygni-competence-7-databases/blob/master/postgresql/intellij_setup.png "Setup in intellij")
-   
-
-## Day 1 - CRUD operations
+## Preparations - end   
+       
+## Day 1 - CRUD operations (together)
 
 ![alt text](https://github.com/cygni/cygni-competence-7-databases/blob/master/postgresql/day1_relations.png "Day 1 table relations")
 
@@ -229,7 +226,6 @@ https://www.postgresql.org/docs/9.6/static/index.html
 
 ## Day 1 - exercises
 
-
 1)  Write a query to select all tables we have created.
 (Hint: Check the postgres documentation for the table 'pg_class')
 
@@ -237,7 +233,7 @@ https://www.postgresql.org/docs/9.6/static/index.html
 
 3) Alter the `venues` table to contain a boolean column called `active`, with the default value of TRUE.
 
-## Day 2 - Advanced queries, code, rules
+## Day 2 - Advanced queries, functions etc.
 
 1) Insert a few more rows, notice the sub-selects to get the venue_id
 
@@ -341,7 +337,7 @@ so when calling it with `select numberOfEvents('se');` you should get the number
             (1 row)
 
 
-## Day 3 - Indexes, extensions, json etc
+## Day 3 - Indexes, extensions, json
 
 Lets create a large table with some data to experiment with.
 I´ve added a few different data types, such as integer, uuid, point, timestamp. 
