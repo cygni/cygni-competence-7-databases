@@ -247,19 +247,21 @@ https://www.postgresql.org/docs/9.6/static/index.html
         VALUES
           ('Stockholm', '111 44', 'se'),
           ('Göteborg', '411 08', 'se');
-          
+        
         INSERT INTO venues (name, street_address, postal_code, country_code)
         VALUES
           ('Cygni AB', 'Jakobsbergsgatan 22', '111 44', 'se'),
           ('Cygni Väst AB', 'St. Nygatan 31', '411 08', 'se');
-          
+        
         INSERT INTO events (title, starts, ends, venue_id)
         VALUES
           ('Kompetensutveckling postgres, Stockholm', '2017-02-15 17:30:00', '2017-02-15 20:00:00', (SELECT venue_id
-                                                                                          FROM venues
-                                                                                          WHERE name = 'Cygni AB')),
+                                                                                                     FROM venues
+                                                                                                     WHERE name = 'Cygni AB')),
           ('Kompetensutveckling postgres, Göteborg', '2017-02-21 17:30:00', '2017-02-21 20:00:00', (SELECT venue_id
-                                                                                          WHERE name = 'Cygni Väst AB'));
+                                                                                                    FROM venues
+                                                                                                    WHERE
+                                                                                                      name = 'Cygni Väst AB'));
 
 2) Select the number of events matching 'Kompetensutveckling postgres' using the aggregate function `count`.
 
@@ -341,22 +343,22 @@ so when calling it with `select numberOfEvents('se');` you should get the number
 
 ## Day 3 - Indexes, extensions, json etc
 
-Lets create a really large table with some data to experiment with.
+Lets create a large table with some data to experiment with.
 I´ve added a few different data types, such as integer, uuid, point, timestamp. 
 
 In order for us to generate uuid's in postgres we need an extension!
 
-Configure that with: `CREATE EXTENSION "uuid-ossp";`
+Install that with: `CREATE EXTENSION "uuid-ossp";`
 
-Then create the table, expect it to take about 2 minutes :D
 
-            CREATE TABLE cygnus AS
-              SELECT
-                generate_series(1, 10000000)                        AS id,
-                uuid_generate_v1()                                  AS uuid,
-                point(ceil(random() * 1000), ceil(random() * 1000)) AS point,
-                random() * (TIMESTAMP '2017-02-21 20:00:00' - TIMESTAMP '2017-01-01 00:00:00') +
-                TIMESTAMP '2017-01-01 00:00:00'                     AS datetime;
+            CCREATE TABLE cygnus AS
+               SELECT
+                 generate_series(1, 20000)                           AS id,
+                 uuid_generate_v1()                                  AS uuid,
+                 point(ceil(random() * 1000), ceil(random() * 1000)) AS point,
+                 random() * (TIMESTAMP '2017-02-21 20:00:00' - TIMESTAMP '2017-01-01 00:00:00') +
+                 TIMESTAMP '2017-01-01 00:00:00'                     AS datetime;
+
             
 Analyze the result from a query
             
@@ -403,7 +405,7 @@ Analyze the result again
             
             book=# 
             
-1) Play around with the large table cygnus and see which scan method postgres uses for diffent queries, and how that changes when applying an index of your choice.            
+1) Play around with the table `cygnus` and see which scan method postgres uses for diffent queries, and how that changes when applying an index of your choice.            
             
 2) Configure postgres to use the extension `cube`
 
