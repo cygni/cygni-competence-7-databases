@@ -352,7 +352,7 @@ In order for us to generate uuid's in postgres we need an extension!
 Install that with: `CREATE EXTENSION "uuid-ossp";`
 
 
-            CCREATE TABLE cygnus AS
+            CREATE TABLE cygnus AS
                SELECT
                  generate_series(1, 20000)                           AS id,
                  uuid_generate_v1()                                  AS uuid,
