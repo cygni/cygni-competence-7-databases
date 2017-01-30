@@ -31,7 +31,10 @@ docker run -it --net cygni-redis --rm redis redis-cli -h redis1 -p 6379
 redis:6379> PING
 "PONG"
 ```
-
+On windows, use Docker for windows and a powershell prompt. In the above script, use $pwd instead of "$(pwd)". So the command becomes
+```bash
+docker run -v $pwd/redis:/usr/local/etc/redis --name redis1 --net cygni-redis -d redis redis-server /usr/local/etc/redis/redis.conf
+```
 By the way. Commands in Redis are not case sensitive but I've used that for the sake of clarity.
 
 ## Section 1 CRUD
@@ -41,8 +44,17 @@ First run this seeding script:
 ```bash
 docker exec -it redis1 redis-cli eval "$(cat ./redis/crud.lua)" 0
 ```
+You need to be within the redis folder of the repository.
 
-you need to be within the redis folder of the repository.
+On windows, use this powershell script instead
+```bash
+foreach ($line in get-content ./redis/crud.lua){	
+	if ($line)
+	{
+		iex "docker exec -it redis1 redis-cli eval `"$line`" 0"
+	}
+}
+```
 
 lets inspect the keys we got from this seeding script.
 
