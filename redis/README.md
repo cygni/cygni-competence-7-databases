@@ -222,9 +222,9 @@ Inspect your result with "HKEYS", "HGET" and "HGETALL"
 
 ### Sets
 
-There was one key within our initial set that was a set. To inspect this set with the help of "SMEMBERS".
+There was one key within our initial dataset that was a set. To inspect this set with the help of "SMEMBERS".
 
-Your inital assignment for sets is to complete the hashes you created earlier with two sets of competences so we have the same type of data for everyone. Look at SADD, SREM.
+Your inital assignment for sets is to complete the dataset you created earlier with two sets of competences so we have the same type of data for everyone. Look at SADD, SREM.
 
 After that answer these questions with the help of the set operators listed below.
 
