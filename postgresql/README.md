@@ -18,29 +18,24 @@ https://www.postgresql.org/docs/9.6/static/index.html
 
         docker pull postgres
 
-3) Build our own image `postgres-plv8` with javascript support pre-installed
-
-        cd build
-        docker build -t postgres-plv8 .
-
-4) Build our own image `postgres-client` with the code samples pre-installed
+3) Build our own image `postgres-client` with the code samples and javascript support pre-installed
 
         cd build-client
         docker build -t postgres-client .
 
-5) Startup a container `cygni` based on the image we downloaded
+4) Startup a container `cygni_db` based on the image we downloaded
 
-        docker run --publish=5432:5432 --name cygni_db -e POSTGRES_PASSWORD=cygni -d postgres-plv8
+        docker run --publish=5432:5432 --name cygni_db -e POSTGRES_PASSWORD=cygni -d postgres-client
 
-6) Connect to the database using a psql prompt (password: cygni)
+5) Connect to the database using a psql prompt (password: cygni)
 
-        docker run -it --rm --link cygni_db postgres-client psql -h postgres -U postgres
+        docker run -it --rm --link cygni_db:postgres postgres-client psql -h postgres -U postgres
 
-7) Create the database `book`
+6) Create the database `book`
 
         CREATE DATABASE book;
 
-8) Connect to `book`
+7) Connect to `book`
 
         \c book
 
@@ -50,11 +45,11 @@ https://www.postgresql.org/docs/9.6/static/index.html
         You are now connected to database "book" as user "postgres".
 
 
-9) Quit the prompt (and disconnect from the db)
+8) Quit the prompt (and disconnect from the db)
 
         \q
 
-10) (Optional) Install a gui-client (i.e dbvisualizer or simply use intellij 'database')
+9) (Optional) Install a gui-client (i.e dbvisualizer or simply use intellij 'database')
     https://www.dbvis.com/
 
     So by now, anytime you want to connect to your `book` database, use the gui app of your choice or step 5 above.
