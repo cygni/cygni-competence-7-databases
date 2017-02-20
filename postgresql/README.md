@@ -256,7 +256,7 @@ https://www.postgresql.org/docs/9.6/static/index.html
                                                                                                     WHERE
                                                                                                       name = 'Cygni Väst AB'));
 
-2) Select the number of events matching 'Kompetensutveckling postgres' using the aggregate function `count`.
+2) Select the number of events that contains 'Kompetensutveckling postgres' using the aggregate function `count`.
 
 Expected output:
 
@@ -344,7 +344,136 @@ Don't forget to load it with: `CREATE EXTENSION plv8;`
 
 ## Day 3 - Indexes, extensions, json
 
-Lets create a large table with some data to experiment with.
+During the first couple of exercises we will import the movies/actors structure and write queries that involves using the extension `cube`
+
+1)  Configure postgres to use the extension `cube`. 
+    Run `/code/create_movies.sql` and `/code/movies_data.sql` 
+   (hint: if using postgres-client docker image the sql files are in /code)
+
+2) Select all action movies from the imported structure
+
+                             title                     
+        -----------------------------------------------
+         Apocalypse Now
+         Blade Runner
+         Raiders of the Lost Ark
+         Indiana Jones and the Temple of Doom
+         Indiana Jones and the Last Crusade
+         Beverly Hills Cop
+         ...
+
+3) Select all comedy movies where arnold is an actor
+
+               title        
+        --------------------
+         True Lies
+         The Running Man
+         Kindergarten Cop
+         Stay Hungry
+         Junior
+         Jingle All the Way
+         Twins
+         Commando
+         
+4) Find all movies that are categorized as `Action` and `SciFi`
+       
+                          title                   
+       -------------------------------------------
+        Aliens
+        Alive
+        Bad Blood
+        Barbarella
+        Blade Runner
+        Cyborg
+        ...
+
+5) Find the top 5 best ranked movies (average of all scores in different categories)
+
+
+                  title          | score 
+        -------------------------+-------
+         The Island              |    12
+         The Blair Witch Project |  11.5
+         Mars Attacks!           |    11
+         Cruel Intentions        |    11
+         Edward Scissorhands     |    11
+
+
+6) (Optional) Now when you are familiarized with the structure and how to query the movies-structure using `cube` etc, we have an optional task to play around with json. 
+Create a new table `movies_json` with the following structure, where the field `json` contains a json represention
+of the table structure above.
+If you want to jump directly into querying with json, copy and paste the code from `answers\3_6_movies_json.sql`
+
+Table structure:
+
+            book=# \d movies_json
+             Table "public.movies_json"
+             Column | Type  | Modifiers
+            --------+-------+-----------
+             id     | uuid  |
+             json   | jsonb |
+
+
+Where the data looks something like this:
+
+            {
+              "title": "Star Wars",
+              "actors": [
+                {
+                  "name": "Mark Hamill",
+                  "actor_id": 3165
+                },
+                {
+                  "name": "Carrie Fisher",
+                  "actor_id": 644
+                },
+                {
+                  "name": "Harrison Ford",
+                  "actor_id": 1753
+                },
+                {
+                  "name": "Peter Cushing",
+                  "actor_id": 3768
+                }
+              ],
+              "genres": [
+                {
+                  "name": "Adventure",
+                  "score": 7
+                },
+                {
+                  "name": "Fantasy",
+                  "score": 7
+                },
+                {
+                  "name": "SciFi",
+                  "score": 10
+                }
+              ],
+              "movie_id": 1
+            }  
+
+7) Query the new structure to find the movie with movie_id = 1
+    
+            title    
+        -------------
+         "Star Wars"
+        (1 row)
+
+8) Find movies where Tom Hanks is an actor in the json structure above.
+
+                   title            
+        -----------------------------
+         Forrest Gump
+         The Green Mile
+         Apollo 13
+         Saving Private Ryan
+         Sleepless in Seattle
+         Toy Story
+         Toy Story 2
+         ...
+
+9) Lets create a large table with some data to experiment with.
 I´ve added a few different data types, such as integer, uuid, point, timestamp.
 
 In order for us to generate uuid's in postgres we need an extension!
@@ -406,67 +535,7 @@ Analyze the result again
 
             book=#
 
-1) Play around with the table `cygnus` and see which scan method postgres uses for diffent queries, and how that changes when applying an index of your choice.            
+10) Play around with the table `cygnus` and see which scan method postgres uses for diffent queries, and how that changes when applying an index of your choice.
+            
+            
 
-2) Configure postgres to use the extension `cube`
-
-3) Run `/code/create_movies.sql` and `/code/movies_data.sql` 
-   (hint: if using postgres-client docker image the sql files are in /code)
-
-4) Create a new table `movies_json` with the following structure, where the field `json` contains a json represention
-   of the table structure above.
-
-Table structure:
-
-            book=# \d movies_json
-             Table "public.movies_json"
-             Column | Type  | Modifiers
-            --------+-------+-----------
-             id     | uuid  |
-             json   | jsonb |
-
-
-Where the data looks something like this:
-
-            {
-              "title": "Star Wars",
-              "actors": [
-                {
-                  "name": "Mark Hamill",
-                  "actor_id": 3165
-                },
-                {
-                  "name": "Carrie Fisher",
-                  "actor_id": 644
-                },
-                {
-                  "name": "Harrison Ford",
-                  "actor_id": 1753
-                },
-                {
-                  "name": "Peter Cushing",
-                  "actor_id": 3768
-                }
-              ],
-              "genres": [
-                {
-                  "name": "Adventure",
-                  "score": 7
-                },
-                {
-                  "name": "Fantasy",
-                  "score": 7
-                },
-                {
-                  "name": "SciFi",
-                  "score": 10
-                }
-              ],
-              "movie_id": 1
-            }  
-
-5) Try querying the data using json specific functions (check the doc)     
-
-6) Using explain or explain analyze, see how postgres fetches the data
-
-7) Apply an index to your json data and see if and how it changes with the query you ran.       
