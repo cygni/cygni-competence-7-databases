@@ -59,7 +59,7 @@ https://www.postgresql.org/docs/9.6/static/index.html
 
 ## Day 1 - CRUD operations (together)
 
-![alt text](https://github.com/cygni/cygni-competence-7-databases/blob/master/postgresql/day1_relations.png "Day 1 table relations")
+![alt text](https://github.com/cygni/cygni-competence-7-databases/blob/master/postgresql/events_diagram.png "Day 1 table relations")
 
 1)  Create the table `countries` and insert rows.
 
@@ -349,6 +349,8 @@ During the first couple of exercises we will import the movies/actors structure 
 1)  Configure postgres to use the extension `cube`. 
     Run `/code/create_movies.sql` and `/code/movies_data.sql` 
    (hint: if using postgres-client docker image the sql files are in /code)
+   
+![alt text](https://github.com/cygni/cygni-competence-7-databases/blob/master/postgresql/movies_diagram.png "Movies")   
 
 2) Select all action movies from the imported structure
 
