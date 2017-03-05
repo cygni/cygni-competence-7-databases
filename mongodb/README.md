@@ -23,7 +23,7 @@ We can now use the mongo shell within the container:
     
 ##Basic CRUD
     
-1. Change db and insert some documents:
+1.Change db and insert some documents:
     
         use mydb
     
@@ -39,19 +39,19 @@ We can now use the mongo shell within the container:
         )
 
 
-2. Read all documents:
+2.Read all documents:
 
         db.mycollection.find()
         
-3. Read document by matching on a field:
+3.Read document by matching on a field:
 
         db.mycollection.find(
             { x : 5 }
         )
         
-(Later we'll work with more advanced queries.)
+ (Later we'll work with more advanced queries.)
 
-4. Replace a document (keep the _id):
+4.Replace a document (keep the _id):
 
         db.mycollection.update(
             { x : 5 },
@@ -60,7 +60,7 @@ We can now use the mongo shell within the container:
         
         db.mycollection.find()
         
-5. Set a field:       
+5.Set a field:       
 
         db.mycollection.update(
             { z : 1 },
@@ -69,7 +69,7 @@ We can now use the mongo shell within the container:
         
         db.mycollection.find()
         
-6. Increment a field:
+6.Increment a field:
 
         db.mycollection.update(
             { z : 1 },
@@ -78,7 +78,7 @@ We can now use the mongo shell within the container:
                 
         db.mycollection.find()
         
-7. Remove a document:
+7.Remove a document:
         
         db.mycollection.remove(
             { y : "hello" }
@@ -86,7 +86,7 @@ We can now use the mongo shell within the container:
         
         db.mycollection.find()
         
-8. Remove all documents:
+8.Remove all documents:
 
         db.mycollection.remove({})
         
@@ -96,33 +96,33 @@ We can now use the mongo shell within the container:
 
 We'll be using the data we imported when setting up our database.
 
-9. Change db and read a document:
+9.Change db and read a document:
 
         use test
     
         db.restaurants.findOne()
     
-10. Find by exact match on field (as in 3):
+10.Find by exact match on field (as in 3):
     
         db.restaurants.find(
             { name : "Wendy'S" }
         )
     
-11. Same query but retrieve only _id and name:
+11.Same query but retrieve only _id and name:
     
         db.restaurants.find(
             { name : "Wendy'S" }, 
             { name : 1 }
         )
         
-12. Remove _id:
+12.Remove _id:
     
         db.restaurants.find(
             { name : "Wendy'S" },
             { _id : 0, name : 1 }
         )
         
-13. Match several fields (implicit 'and'):
+13.Match several fields (implicit 'and'):
     
         db.restaurants.find(
             { name : "Wendy'S",
@@ -131,35 +131,35 @@ We'll be using the data we imported when setting up our database.
             { _id : 0, name : 1, borough : 1 }
         )
 
-14. Match using regular expressions:
+14.Match using regular expressions:
     
         db.restaurants.find(
             { name : /^W/i },
             { _id : 0, name : 1 }
         )
         
-15. 'Or':
+15.'Or':
     
         db.restaurants.find(
             { $or : [ { name : "Wendy'S" }, { borough : "Bronx" } ] },
             { _id : 0, name : 1, borough : 1 }
         )
     
-16. Nested documents:
+16.Nested documents:
     
         db.restaurants.find(
             { 'address.zipcode' :  /^111/ },
             { _id : 0, name : 1, 'address.zipcode' : 1 }
         )
     
-17. Arrays:
+17.Arrays:
     
         db.restaurants.find(
             { 'grades.score' : { $gte : 90 } },
             { _id : 0, name : 1, grades : 1 }
         )
     
-18. And & or:
+18.And & or:
     
         db.restaurants.find(
             { $or: [ { cuisine : "Hotdogs" }, { cuisine : "Hamburgers" } ],
@@ -168,7 +168,7 @@ We'll be using the data we imported when setting up our database.
             { _id : 0, name : 1, cuisine : 1 }
         )
     
-19. The same but using '$in':
+19.The same but using '$in':
     
         db.restaurants.find(
             { cuisine : { $in : ["Hotdogs", "Hamburgers" ] },
@@ -177,7 +177,7 @@ We'll be using the data we imported when setting up our database.
             { _id : 0, name : 1, cuisine : 1 }
         )
     
-20. Element that completely matches criteria:
+20.Element that completely matches criteria:
     
         db.restaurants.find(
             { grades : 
@@ -192,17 +192,17 @@ Exercise 2: Find name of all restaurants which where not graded in 2012.
         
 ## Indexes (aka Indices)
 
-21. Analyse execution of a query:
+21.Analyse execution of a query:
 
         db.restaurants.find(
             { name : /^W/ }
         ).explain("executionStats")
         
-22. Create an index on name:
+22.Create an index on name:
     
         db.restaurants.createIndex({ name : 1 })
         
-23. Analyse again as in 21. Boom.
+23.Analyse again as in 21. Boom.
 
 
 ## Aggregation (i.e. queries + processing)
@@ -211,25 +211,25 @@ Exercise 2: Find name of all restaurants which where not graded in 2012.
 
 ### Simple aggregation
 
-24. Count all:
+24.Count all:
 
         db.restaurants.count()
         
-25. Count after filtering:
+25.Count after filtering:
     
         db.restaurants.count( { name : "White Castle"} )
     
-26. Distinct field values on all documents:
+26.Distinct field values on all documents:
 
         db.restaurants.distinct('cuisine')
 
-27. Distinct filed values after filtering:
+27.Distinct filed values after filtering:
     
         db.restaurants.distinct('name', { cuisine : 'Japanese' })
         
 ### Aggregation pipelines        
     
-28. Number of restaurants of each "cuisine" in the Bronx:
+28.Number of restaurants of each "cuisine" in the Bronx:
 
         db.restaurants.aggregate(
             { $match : { borough : "Bronx" } },
@@ -237,7 +237,7 @@ Exercise 2: Find name of all restaurants which where not graded in 2012.
             { $sort : { count : -1} } 
         )
         
-29. Distribution of scores (of last "grade") of american-cuisine restaurants in Manhattan:
+29.Distribution of scores (of last "grade") of american-cuisine restaurants in Manhattan:
 
         db.restaurants.aggregate(
             { $match : { borough: "Manhattan", cuisine: "American" } },
@@ -249,7 +249,7 @@ Exercise 2: Find name of all restaurants which where not graded in 2012.
             { $bucket: { groupBy: "$lastScore", boundaries: [-10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100], default: "not scored" }}
         )
 
-30. Same as before but also list top 5 by last score:
+30.Same as before but also list top 5 by last score:
 
         db.restaurants.aggregate(
             { $match : { borough: "Manhattan", cuisine: "American" } },
@@ -270,7 +270,7 @@ Exercise 2: Find name of all restaurants which where not graded in 2012.
             }   }
         )
         
-31. The pipeline gets optimized. In this case the stages get rearranged:
+31.The pipeline gets optimized. In this case the stages get rearranged:
         
         db.restaurants.aggregate(
             [
@@ -280,7 +280,7 @@ Exercise 2: Find name of all restaurants which where not graded in 2012.
             { explain : true }
         )
            
-32. All three stages get fused into one, thanks to optimization and index:
+32.All three stages get fused into one, thanks to optimization and index:
 
         db.restaurants.aggregate(
             [
@@ -291,7 +291,7 @@ Exercise 2: Find name of all restaurants which where not graded in 2012.
             { explain : true }
         )
 
-33. Compare previous to this. Some optimization but not as thorough:
+33.Compare previous to this. Some optimization but not as thorough:
 
          db.restaurants.aggregate(
             [
@@ -306,7 +306,7 @@ Exercise: With a pipeline, find out the number of Turkish restaurants and the na
 
 ### mapReduce
 
-34. Number of restaurants of each "cuisine" in the Bronx (same as 28):
+34.Number of restaurants of each "cuisine" in the Bronx (same as 28):
     
         db.restaurants.mapReduce(
             function() { emit(this.cuisine,  1 ); },
@@ -317,7 +317,7 @@ Exercise: With a pipeline, find out the number of Turkish restaurants and the na
             }
         )
         
-35. Distribution of scores (of last "grade") of american-cuisine restaurants in Manhattan (same as 29):
+35.Distribution of scores (of last "grade") of american-cuisine restaurants in Manhattan (same as 29):
 
         db.restaurants.mapReduce(
             function() { 
