@@ -14,7 +14,7 @@ After doing this in subsequent sessions just run `docker start my-mongo` to rest
    
 Load data. This executes `mongoimport` in a shell in the running container:
 
-    docker exec -it my-mongo bash -c 'mongoimport --db test --collection restaurants --drop --file /data/restaurants.json'
+    docker exec -it my-mongo bash -c 'mongoimport --db test --collection restaurants --drop --file /my-data/restaurants.json'
 
 We can now use the mongo shell within the container:
   
@@ -204,7 +204,6 @@ Exercise 2: Find name of all restaurants which where not graded in 2012.
         
 23.Analyse again as in 21. Boom.
 
-
 ## Aggregation (i.e. queries + processing)
  
  There's 3 ways to do it. Simple, pipelines and mapReduce.
@@ -340,3 +339,126 @@ Exercise: With a pipeline, find out the number of Turkish restaurants and the na
         )
         
 Exercise: Using mapReduce, find out the number of Turkish restaurants and the name of the best one per borough. 
+
+
+### Replication and sharding
+
+We'll create a cluster with 2 shards in which each shard is a replica set. 
+In total there will be 6 data-bearing nodes, 3 config nodes and 1 router node.
+
+36.Create network
+        
+        docker network create -d bridge mongo-cluster
+   
+37.Run and init config replica set
+
+        docker run --name mongoconf0 -d --network=mongo-cluster cygni/mongo --configsvr --replSet "rsconf" --port 27017
+        docker run --name mongoconf1 -d --network=mongo-cluster cygni/mongo --configSvr --replSet "rsconf" --port 27017
+        docker run --name mongoconf2 -d --network=mongo-cluster cygni/mongo --configSvr --replSet "rsconf" --port 27017
+        
+        docker exec -it mongoconf0 mongo
+        
+        rs.initiate( {
+           _id : "rsconf",
+           configsvr: true,
+           members: [
+            { _id : 0, host : "mongoconf0" },
+            { _id : 1, host : "mongoconf1" },
+            { _id : 2, host : "mongoconf2" }
+           ]
+        })
+        
+38.Run and init data-bearing replica sets
+
+        docker run --name mongo00 -d --network=mongo-cluster cygni/mongo --shardsvr --replSet "rs0" --port 27017
+        docker run --name mongo01 -d --network=mongo-cluster cygni/mongo --shardsvr --replSet "rs0" --port 27017
+        docker run --name mongo02 -d --network=mongo-cluster cygni/mongo --shardsvr --replSet "rs0" --port 27017
+        
+        docker exec -it mongo00 mongo
+        
+        rs.initiate( {
+           _id : "rs0",
+           members: [
+            { _id : 0, host : "mongo00" },
+            { _id : 1, host : "mongo01" },
+            { _id : 2, host : "mongo02" }
+           ]
+        })
+        
+        
+        docker run --name mongo10 -d --network=mongo-cluster cygni/mongo --shardsvr --replSet "rs1" --port 27017
+        docker run --name mongo11 -d --network=mongo-cluster cygni/mongo --shardsvr --replSet "rs1" --port 27017
+        docker run --name mongo12 -d --network=mongo-cluster cygni/mongo --shardsvr --replSet "rs1" --port 27017
+        
+        
+        docker exec -it mongo10 mongo
+        
+        rs.initiate( {
+           _id : "rs1",
+           members: [
+            { _id : 0, host : "mongo10" },
+            { _id : 1, host : "mongo11" },
+            { _id : 2, host : "mongo12" }
+           ]
+        })
+        
+39.Run router and register shards
+
+        docker run --name mongos -d --network=mongo-cluster cygni/mongo mongos --port 27017 --configdb "rsconf"/mongoconf0:27017
+        
+        docker exec -it mongos mongo
+        
+        sh.addShard("rs0/mongo00")
+        sh.addShard("rs1/mongo10")
+        
+40.Configure sharding for the collection
+
+        sh.enableSharding("test")
+        
+        sh.shardCollection("test.restaurants", { name: "hashed" })
+     
+41.Upload data (from another terminal)
+    
+        docker exec -it mongos bash -c 'mongoimport --db test --collection restaurants --drop --file /my-data/restaurants.json'
+    
+42.Run aggregation queries from router (mongos)
+
+        db.restaurants.aggregate(
+                    { $match : { borough: "Manhattan", cuisine: "American" } },
+                    { $project: { name: 1, grades: 1} },
+                    { $unwind: { path: "$grades", preserveNullAndEmptyArrays: true }},
+                    { $project: { name: 1, grade: "$grades" } },
+                    { $sort: { 'grade.date': -1, 'grade.score': -1 } },
+                    { $group: { _id: {id: "$_id", name: "$name"} , lastScore: { $first: "$grade.score" } } },
+                    { $facet: {
+                        "scoreDistribution": [ 
+                            { $bucket: { groupBy: "$lastScore", boundaries: [-10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100], default: "not scored" }} 
+                        ],
+                        "topFive": [ 
+                            { $sort: { lastScore: -1 } }, 
+                            { $limit: 5 },
+                            { $project: { name: "$_id.name", _id:0, lastScore: 1}} 
+                        ]
+                    }   }
+                )
+                
+        db.restaurants.aggregate(
+                    { $match : { borough: "Manhattan", cuisine: "American" } },
+                    { $project: { name: 1, grades: 1} },
+                    { $unwind: { path: "$grades", preserveNullAndEmptyArrays: true }},
+                    { $project: { name: 1, grade: "$grades" } },
+                    { $sort: { 'grade.date': -1, 'grade.score': -1 } },
+                    { $group: { _id: {id: "$_id", name: "$name"} , lastScore: { $first: "$grade.score" } } },
+                    { $facet: {
+                        "scoreDistribution": [ 
+                            { $bucket: { groupBy: "$lastScore", boundaries: [-10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100], default: "not scored" }} 
+                        ],
+                        "topFive": [ 
+                            { $sort: { lastScore: -1 } }, 
+                            { $limit: 5 },
+                            { $project: { name: "$_id.name", _id:0, lastScore: 1}} 
+                        ]
+                    }   }
+                )
+                
+43.Take down some nodes and see what happens
