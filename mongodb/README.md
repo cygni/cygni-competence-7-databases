@@ -14,7 +14,7 @@ After doing this in subsequent sessions just run `docker start my-mongo` to rest
    
 Load data. This executes `mongoimport` in a shell in the running container:
 
-    docker exec -it my-mongo bash -c 'mongoimport --db test --collection restaurants --drop --file /data/restaurants.json'
+    docker exec -it my-mongo bash -c 'mongoimport --db test --collection restaurants --drop --file /my-data/restaurants.json'
 
 We can now use the mongo shell within the container:
   
