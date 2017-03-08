@@ -176,8 +176,25 @@ We'll be using the data we imported when setting up our database.
             },
             { _id : 0, name : 1, cuisine : 1 }
         )
+        
+20.Explicit 'and':
+
+         db.restaurants.find(
+                     { 
+                        $and: [{'grades.score' : { $lte : 10 }}, {'grades.score' : { $gte : 90 }} ]
+                     },
+                     { _id : 0, name : 1, grades : 1 }  
+                 )
     
-20.Element that completely matches criteria:
+20.5.Element that completely matches criteria:
+
+        db.restaurants.find(
+            { grades : 
+                { $elemMatch : { $and: [{'grades.score' : { $lte : 10 }}, {'grades.score' : { $gte : 90 }} ] } 
+                } 
+            },
+            { _id : 0, name : 1, grades : 1 }  
+        )
     
         db.restaurants.find(
             { grades : 
@@ -187,8 +204,14 @@ We'll be using the data we imported when setting up our database.
             { _id : 0, name : 1, grades : 1 }  
         )
         
-Exercise 1: Find name and street of all bakeries in Queens with a score (in any year) between 25 and 75. 
-Exercise 2: Find name of all restaurants which where not graded in 2012.
+### Querying Exercises  
+1. Find name and street of all bakeries in Queens with a score (in any year) between 25 and 75. 
+2. Find name of all restaurants which were not graded in 2012. 
+
+[Query operators](https://docs.mongodb.com/manual/reference/operator/query/)
+    
+
+
         
 ## Indexes (aka Indices)
 
@@ -269,6 +292,11 @@ Exercise 2: Find name of all restaurants which where not graded in 2012.
             }   }
         )
         
+#### Pipeline exercise
+Find out the number of Turkish restaurants per borough and the name of the best one in 2011 per borough.
+
+[Aggregation pipeline operators docs](https://docs.mongodb.com/manual/reference/operator/aggregation/)
+        
 31.The pipeline gets optimized. In this case the stages get rearranged:
         
         db.restaurants.aggregate(
@@ -301,7 +329,7 @@ Exercise 2: Find name of all restaurants which where not graded in 2012.
             { explain : true }
          )
                   
-Exercise: With a pipeline, find out the number of Turkish restaurants and the name of the best one per borough. 
+
 
 ### mapReduce
 
@@ -337,9 +365,12 @@ Exercise: With a pipeline, find out the number of Turkish restaurants and the na
                 out: "mr_results"
             }
         )
-        
-Exercise: Using mapReduce, find out the number of Turkish restaurants and the name of the best one per borough. 
 
+#### mapReduce exercise
+
+Find out the number of Turkish restaurants per borough and the name of the best one in 2011 per borough. (Same as in pipeline) 
+
+[mapReduce docs](https://docs.mongodb.com/manual/reference/command/mapReduce/#dbcmd.mapReduce)
 
 ### Replication and sharding
 
