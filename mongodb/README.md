@@ -384,8 +384,8 @@ In total there will be 6 data-bearing nodes, 3 config nodes and 1 router node.
 37.Run and init config replica set
 
         docker run --name mongoconf0 -d --network=mongo-cluster cygni/mongo --configsvr --replSet "rsconf" --port 27017
-        docker run --name mongoconf1 -d --network=mongo-cluster cygni/mongo --configSvr --replSet "rsconf" --port 27017
-        docker run --name mongoconf2 -d --network=mongo-cluster cygni/mongo --configSvr --replSet "rsconf" --port 27017
+        docker run --name mongoconf1 -d --network=mongo-cluster cygni/mongo --configsvr --replSet "rsconf" --port 27017
+        docker run --name mongoconf2 -d --network=mongo-cluster cygni/mongo --configsvr --replSet "rsconf" --port 27017
         
         docker exec -it mongoconf0 mongo
         
