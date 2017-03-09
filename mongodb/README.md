@@ -450,7 +450,7 @@ In total there will be 6 data-bearing nodes, 3 config nodes and 1 router node.
      
 41.Upload data (from another terminal)
     
-        docker exec -it mongos bash -c 'mongoimport --db test --collection restaurants --drop --file /my-data/restaurants.json'
+        docker exec -it mongos bash -c 'mongoimport --db test --collection restaurants --file /my-data/restaurants.json'
     
 42.Run aggregation queries from router (mongos)
 
