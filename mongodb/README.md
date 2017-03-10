@@ -190,7 +190,7 @@ We'll be using the data we imported when setting up our database.
 
         db.restaurants.find(
             { grades : 
-                { $elemMatch : { $and: [{'grades.score' : { $lte : 10 }}, {'grades.score' : { $gte : 90 }} ] } 
+                { $elemMatch : { $and: [{score : { $lte : 10 }}, {score : { $gte : 90 }} ] } 
                 } 
             },
             { _id : 0, name : 1, grades : 1 }  
