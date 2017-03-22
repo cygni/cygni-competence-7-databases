@@ -17,11 +17,11 @@ HBase is an implementation of Google's Bigtable. It is built on top of Hadoop an
     * [Streaming media into HBase](#streaming-media-into-hbase)
 
 ## <a name="resource"></a>Resources
-* HBase - [http://hbase.apache.org/](http://hbase.apache.org)
-* Hadoop - [http://hadoop.apache.org/](http://hadoop.apache.org)
+* HBase - [http://hbase.apache.org](http://hbase.apache.org)
+* Hadoop - [http://hadoop.apache.org](http://hadoop.apache.org)
 * HDFS - [https://wiki.apache.org/hadoop/HDFS](https://wiki.apache.org/hadoop/HDFS)
-* Zookeeper - [http://zookeeper.apache.org/](http://zookeeper.apache.org)
-* Hue - [http://gethue.com/](http://gethue.com)
+* Zookeeper - [http://zookeeper.apache.org](http://zookeeper.apache.org)
+* Hue - [http://gethue.com](http://gethue.com)
 
 ## <a name="preparations"></a>Preparations
 Before we start make sure you have cloned the repository to a directory of choice.
