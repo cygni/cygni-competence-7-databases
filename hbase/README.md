@@ -169,6 +169,6 @@ Verify you can visit [http://localhost:50070/explorer.html](http://localhost:500
     ```
     You probably want to shut it down after a while. Just press Ctrl+C
 
-[hue-first-page]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/hbase/hue-first-page.png?raw=true "Hue First Page"
-[hue-hbase-page]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/hbase/hue-hbase-page.png?raw=true "Hue Hbase Page"
-[hadooop-hdfs-explorer-page]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/hbase/hadoop-hdfs-explorer-page.png?raw=true "Hue Hbase Page"
+[hue-first-page]: https://github.com/partjarnberg/cygni-competence-7-databases/blob/screenshots/hbase/hue-first-page.png?raw=true "Hue First Page"
+[hue-hbase-page]: https://github.com/partjarnberg/cygni-competence-7-databases/blob/screenshots/hbase/hue-hbase-page.png?raw=true "Hue Hbase Page"
+[hadooop-hdfs-explorer-page]: https://github.com/partjarnberg/cygni-competence-7-databases/blob/screenshots/hbase/hadoop-hdfs-explorer-page.png?raw=true "Hue Hbase Page"
