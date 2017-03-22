@@ -119,12 +119,12 @@ Type _exit_ to leave hbase shell.
 ### <a name="browse-hue"></a>Browse HUE
 Verify you can visit [http://localhost:8888/hbase](http://localhost:8888/hbase)
 
-![alt text][hue-first-page]
-
-When prompted for username/password then enter:
+__IMPORTANT!__ When prompted for username/password then enter:
 
 username: __hue__
 password: __hue__
+
+![alt text][hue-first-page]
 
 ![alt text][hue-hbase-page]
 
