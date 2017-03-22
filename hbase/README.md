@@ -1,5 +1,5 @@
 # HBase
-HBase is an implementation of Google's Bigtable. It is built on top of Hadoop and HDFS. Because of the strong relationship with Hadoop we will first have a short introduction into Hadoop and some of its key components before digging into HBase. Furthermore we will look into Hue which is useful when working with and analysing data within HBase.
+HBase is an implementation of Google's Bigtable. It is built on top of Zookeeper, Hadoop and HDFS. Because of the strong relationship with Hadoop we will run HBase as it is most commonly used; together with Zookeeper and Hadoop.
 
 ## Table of Contents
 * [Resources](#resources)
