@@ -3,7 +3,7 @@ HBase is an implementation of Google's Bigtable. It is built on top of Zookeeper
 
 ## Table of Contents
 * [Resources](#resources)
-* [Preparations](#preparations)
+* [Before we start](#before-we-start)
     * [Create network](#create-network)
     * [Start Zookeeper+Hadoop+HBase+Hue](#start-zk-hdp-hbase-hue)
     * [Check logs](#check-logs)
@@ -23,7 +23,7 @@ HBase is an implementation of Google's Bigtable. It is built on top of Zookeeper
 * Zookeeper - [http://zookeeper.apache.org](http://zookeeper.apache.org)
 * Hue - [http://gethue.com](http://gethue.com)
 
-## <a name="preparations"></a>Preparations
+## <a name="before-we-start"></a>Before we start
 Before we start make sure you have cloned the repository to a directory of choice.
 ```
 git clone http://github.com/cygni/cygni-competence-7-databases
