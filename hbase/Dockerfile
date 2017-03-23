@@ -30,8 +30,6 @@ ADD ./config/core-site.xml /usr/local/hbase/conf/
 ADD ./script/hbase-server.sh /usr/local/hbase/
 RUN chmod +x /usr/local/hbase/hbase-server.sh
 
-VOLUME /data
-
 # Thrift
 EXPOSE 9090 9095
 
