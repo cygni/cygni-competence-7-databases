@@ -10,7 +10,7 @@ services:
     container_name: hadoop
     networks: ["vnet"]
     hostname: hadoop.vnet
-    build: ./hadoop
+    image: cygni/7-databases:hadoop
     depends_on:
       - zookeeper
     expose: ["8020", "8088", "9000", "19888", "50070"]
@@ -20,7 +20,7 @@ services:
       # Yarn
       - 8088:8088
   hbase:
-    build: .
+    image: cygni/7-databases:hbase
     container_name: hbase
     networks: ["vnet"]
     hostname: hbase.vnet
