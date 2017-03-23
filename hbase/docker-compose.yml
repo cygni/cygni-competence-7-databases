@@ -6,8 +6,6 @@ services:
     hostname: zookeeper.vnet
     image: wurstmeister/zookeeper:latest
     expose: ["2181", "9998"]
-    ports:
-      - 2181:2181
   hadoop:
     container_name: hadoop
     networks: ["vnet"]
@@ -18,27 +16,9 @@ services:
     expose: ["8020", "8088", "9000", "19888", "50070"]
     ports:
       # HDFS
-      - 50010:50010
-      - 50020:50020
       - 50070:50070
-      - 50075:50075
-      - 50090:50090
-      - 8020:8020
-      - 9000:9000
-      # MapRed
-      - 10020:10020
-      - 19888:19888
       # Yarn
-      - 8030:8030
-      - 8031:8031
-      - 8032:8032
-      - 8033:8033
-      - 8040:8040
-      - 8042:8042
       - 8088:8088
-      # Other
-      - 49707:49707
-      - 2122:2122
   hbase:
     build: .
     container_name: hbase
@@ -49,12 +29,8 @@ services:
       - zookeeper
     expose: ["9090", "9095"]
     ports:
-      - 9090:9090
       - 9095:9095
-      - 16000:16000
       - 16010:16010
-      - 16020:16020
-      - 16030:16030
   hue:
     container_name: hue
     networks: ["vnet"]

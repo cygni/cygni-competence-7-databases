@@ -45,8 +45,4 @@ EXPOSE 16010
 # The port the HBase RegionServer binds to.
 EXPOSE 16020
 
-# HBase Regionserver info port
-# The port for the HBase RegionServer web UI Set to -1 if you do not want the RegionServer UI to run.
-EXPOSE 16030
-
 CMD "/usr/local/hbase/hbase-server.sh"
