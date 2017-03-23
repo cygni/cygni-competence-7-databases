@@ -26,7 +26,7 @@ HBase is an implementation of Google's Bigtable. It is built on top of Zookeeper
 ## <a name="before-we-start"></a>Before we start
 Before we start make sure you have cloned the repository to a directory of choice.
 ```
-git clone http://github.com/cygni/cygni-competence-7-databases
+$ git clone http://github.com/cygni/cygni-competence-7-databases
 ```
 ### <a name="create-network"></a>Create network
 ```
@@ -41,7 +41,7 @@ ba4b3a730061   vnet     bridge      local
 ```
 ### <a name="start-zk-hdp-hbase-hue"></a>Start Zookeeper+Hadoop+HBase+Hue
 ```
-docker-compose up -d --build
+$ docker-compose up -d --build
 ```
 __Sample output:__
 ```
@@ -75,11 +75,11 @@ Creating hue
 
 ### <a name="check-logs"></a>Check logs
 ```
-docker-compose logs -f
+$ docker-compose logs -f
 ```
 ### <a name="check-ps"></a>Check ps
 ```
-docker-compose ps
+$ docker-compose ps
 ```
 __Sample output:__
 ```
@@ -93,7 +93,7 @@ zookeeper                     /bin/sh -c /usr/sbin/sshd  ...            Up      
 
 ### <a name="check-stats"></a>Check stats
 ```
-Run: docker ps --format {{.Names}} | xargs docker stats
+$  docker ps --format {{.Names}} | xargs docker stats
 ```
 __Sample output:__
 ```
@@ -106,7 +106,7 @@ zookeeper   0.21%    75.96 MiB / 1.952 GiB   3.80%     405 kB / 330 kB     39 MB
 ### <a name="run-hbase-shell"></a>Run HBase shell
 Verify you can access hbase shell by running the following command:
 ```
-docker exec -it hbase bash -c "hbase shell"
+$ docker exec -it hbase bash -c "hbase shell"
 ```
 __Sample output:__
 ```
@@ -135,7 +135,44 @@ Verify you can visit [http://localhost:50070/explorer.html](http://localhost:500
 
 ## <a name="excercises"></a>Exercises
 ### <a name="getting-used-to-the-hbase-shell"></a>Getting used to the HBase shell
-1. Figure out how to use the shell to do the following:
+1. Trying out various commands on tables, rows and columns.
+
+    Create __table__ _test_ with __column family__ _cf_ 
+    ```
+    > create 'test', 'cf'
+    ```
+    __List__ table test
+    ```
+    > list 'test'
+    ```
+    __Put__ some values to the table and column 
+    ```
+    > put 'test', 'row1', 'cf:a', 'value1'
+    > put 'test', 'row2', 'cf:b', 'value2'
+    > put 'test', 'row3', 'cf:c', 'value3'
+    ```
+    __Scan__ table _test_
+    ```
+    > scan 'test'
+    ```
+    __Get__ row from table _test_ based on row key 
+    ```
+    > get 'test', 'row1'
+    ```
+    __Disable__ table _test_ 
+    ```
+    > disable 'test'
+    ```
+    __Drop__ table _test_ 
+    ```
+    > drop 'test'
+    ```
+    __Exit__ hbase shell 
+    ```
+    > exit
+    ```
+
+2. Figure out how to use the shell to do the following:
     * Delete individual column values within a row
     * Delete an entire row
     
