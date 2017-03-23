@@ -38,7 +38,7 @@ services:
     depends_on:
       - hadoop
       - hbase
-    build: ./hue
+    image: cygni/7-databases:hue
     ports:
       - 8888:8888
     entrypoint: ["./build/env/bin/hue", "runserver_plus", "0.0.0.0:8888"]
