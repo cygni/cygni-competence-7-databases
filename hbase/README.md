@@ -14,7 +14,9 @@ HBase is an implementation of Google's Bigtable. It is built on top of Zookeeper
     * [Browse HDFS](#browse-hdfs)
 * [Exercises](#exercises)
     * [Getting used to the HBase shell](#getting-used-to-the-hbase-shell)
+    * [Filtering](#filtering)
     * [Streaming media into HBase](#streaming-media-into-hbase)
+    * [Regions and partitioning](#regions-and-partitioning)
 
 ## <a name="resource"></a>Resources
 * HBase - [http://hbase.apache.org](http://hbase.apache.org)
@@ -176,7 +178,7 @@ Verify you can visit [http://localhost:50070/explorer.html](http://localhost:500
     * Delete individual column values within a row
     * Delete an entire row
 
-### Filtering
+### <a name="filtering"></a>Filtering
 When reading data from HBase using Get or Scan operations, you can use custom filters to return a subset of results to the client. While this does not reduce server-side IO, it does reduce network bandwidth and reduces the amount of data the client needs to process. Filters are generally used using the Java API, but can be used from HBase Shell for testing and debugging purposes.
 
 #### Logical Operators, Comparison Operators and Comparators
@@ -219,10 +221,29 @@ Example4: =, 'substring:abc123' will match everything that begins with the subst
 
 __HBase shell sample__
 ```
-> scan 'users', { FILTER => SingleColumnValueFilter.new(Bytes.toBytes('cf'),
-      Bytes.toBytes('name'), CompareFilter::CompareOp.valueOf('EQUAL'),
-      BinaryComparator.new(Bytes.toBytes('abc')))}
+> scan 'wiki', {RAW => true, LIMIT => 2, FILTER => "SingleColumnValueFilter('revision','author',=,'binary:LlywelynII')"}
 ```
+
+### <a name="working-with-versions"></a>Working with versions
+1. Create table and alter column 'cf' for how to handle versions
+    ```
+    create 'mytable', 'cf'
+    alter 'mytable', NAME => 'cf', VERSIONS => 5
+    alter 'mytable', NAME => 'cf', MIN_VERSIONS => 2
+    alter 'mytable', NAME => 'cf', TTL => 15
+    ```
+2. Add some values to the column family on the very same row key
+    ```
+    put 'mytable', 'some fancy key', 'cf:a', 'old value'
+    put 'mytable', 'some fancy key', 'cf:a', 'newer value'
+    put 'mytable', 'some fancy key', 'cf:a', 'even newer value'
+    put 'mytable', 'some fancy key', 'cf:a', 'newest value'
+    ```
+3. Fetch values from column family a couple of times and watch old version be deleted. E.g.
+    ```
+    get 'mytable', 'some fancy key', {TIMERANGE => [0, 1690618847570], VERSIONS => 10}
+    ```
+
 ### <a name="streaming-media-into-hbase"></a>Streaming media into HBase   
 1. Create table 'wiki'
     ```
@@ -250,8 +271,13 @@ __HBase shell sample__
     ...
     ```
     You probably want to shut it down after a while. Just press Ctrl+C
+    
+5. Search all wiki articles written by some author (column=revision:author) 
+    
+    __Hint 1:__ List all available filters in hbase shell by typing _show_filters_
+    __Hint 2:__ scan 'table', {RAW => true ... } fetches all columns for matching row
 
-5. After stopping the script above visit [http://localhost:8888/filebrowser/#/hbase/data/default/wiki](http://localhost:8888/filebrowser/#/hbase/data/default/wiki)
+6. After stopping the script above visit [http://localhost:8888/filebrowser/#/hbase/data/default/wiki](http://localhost:8888/filebrowser/#/hbase/data/default/wiki)
    
     The long-named subdirectories you see represents individual regions.
     
