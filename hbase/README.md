@@ -175,7 +175,54 @@ Verify you can visit [http://localhost:50070/explorer.html](http://localhost:500
 2. Figure out how to use the shell to do the following:
     * Delete individual column values within a row
     * Delete an entire row
-   
+
+### Filtering
+When reading data from HBase using Get or Scan operations, you can use custom filters to return a subset of results to the client. While this does not reduce server-side IO, it does reduce network bandwidth and reduces the amount of data the client needs to process. Filters are generally used using the Java API, but can be used from HBase Shell for testing and debugging purposes.
+
+#### Logical Operators, Comparison Operators and Comparators
+Filters can be combined together with logical operators. Some filters take a combination of comparison operators and comparators. Following is the list of each.
+
+__Logical Operators__
+
+* AND - the key-value must pass both the filters to be included in the results.
+* OR - the key-value must pass at least one of the filters to be included in the results.
+* SKIP - for a particular row, if any of the key-values do not pass the filter condition, the entire row is skipped.
+* WHILE - For a particular row, it continues to emit key-values until a key-value is reached that fails the filter condition.
+* Compound Filters - Using these operators, a hierarchy of filters can be created. For example:
+    ```
+    (Filter1 AND Filter2)OR(Filter3 AND Filter4)
+    ```
+__Comparison Operators__
+
+* LESS (<)
+* LESS_OR_EQUAL (<=)
+* EQUAL (=)
+* NOT_EQUAL (!=)
+* GREATER_OR_EQUAL (>=)
+* GREATER (>)
+* NO_OP (no operation)
+
+__Comparators__
+
+* BinaryComparator - lexicographically compares against the specified byte array using the Bytes.compareTo(byte[], byte[]) method.
+* BinaryPrefixComparator - lexicographically compares against a specified byte array. It only compares up to the length of this byte array.
+* RegexStringComparator - compares against the specified byte array using the given regular expression. Only EQUAL and NOT_EQUAL comparisons are valid with this comparator.
+* SubStringComparator - tests whether or not the given substring appears in a specified byte array. The comparison is case insensitive. Only EQUAL and NOT_EQUAL comparisons are valid with this comparator.
+
+__Examples__ 
+```
+Example1: >, 'binary:abc' will match everything that is lexicographically greater than "abc"
+Example2: =, 'binaryprefix:abc' will match everything whose first 3 characters are lexicographically equal to "abc"
+Example3: !=, 'regexstring:ab*yz' will match everything that doesn't begin with "ab" and ends with "yz"
+Example4: =, 'substring:abc123' will match everything that begins with the substring "abc123"
+```
+
+__HBase shell sample__
+```
+> scan 'users', { FILTER => SingleColumnValueFilter.new(Bytes.toBytes('cf'),
+      Bytes.toBytes('name'), CompareFilter::CompareOp.valueOf('EQUAL'),
+      BinaryComparator.new(Bytes.toBytes('abc')))}
+```
 ### <a name="streaming-media-into-hbase"></a>Streaming media into HBase   
 1. Create table 'wiki'
     ```
@@ -207,6 +254,7 @@ Verify you can visit [http://localhost:50070/explorer.html](http://localhost:500
 5. After stopping the script above visit [http://localhost:8888/filebrowser/#/hbase/data/default/wiki](http://localhost:8888/filebrowser/#/hbase/data/default/wiki)
    
     The long-named subdirectories you see represents individual regions.
+    
 ### <a name="regions-and-partitioning"></a>Regions and partitioning   
 In HBase, rows are kept in order, sorted by the row key. A region is a chunk of rows, identified by the starting key (inclusive) and the ending key (exclusive).
 
