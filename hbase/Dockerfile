@@ -1,7 +1,7 @@
 FROM openjdk:8u111-jdk
 MAINTAINER Pär Tjärnberg <par.tjarnberg@cygni.se>
 
-ENV HBASE_VERSION                       1.2.4
+ENV HBASE_VERSION                       1.2.5
 ENV HBASE_HOME                          /usr/local/hbase
 ENV HBASE_CONF_DIR		                /usr/local/hbase/conf
 ENV HBASE_MANAGES_ZK                    false
@@ -27,6 +27,8 @@ RUN mkdir -p \
 # Add configuration
 ADD ./config/hbase-site.xml /usr/local/hbase/conf/
 ADD ./config/core-site.xml /usr/local/hbase/conf/
+ADD ./code /usr/local/code
+RUN chmod +x /usr/local/code/*
 ADD ./script/hbase-server.sh /usr/local/hbase/
 RUN chmod +x /usr/local/hbase/hbase-server.sh
 

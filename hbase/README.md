@@ -175,27 +175,25 @@ Verify you can visit [http://localhost:50070/explorer.html](http://localhost:500
 2. Figure out how to use the shell to do the following:
     * Delete individual column values within a row
     * Delete an entire row
-    
-2. Create a function called _put_many()_ that creates a Put instance, adds any number of column-value pairs to it, and commit it to a table. The signature should look like this:
-    ```jruby
-    def put_many( table_name, row, column_values)
-        # your code here
-    end
-    ```
-
-3. Define your _put_many()_ function by pasting it in the HBase shell, and then call it like so:
-    ```jruby
-    hbase> put_many 'wiki', 'Some title',  {
-    hbase*  "text:" => "Some article text",
-    hbase*  "revision:author" => "jschmoe",
-    hbase*  "revision:comment" => "no comment"}
-    ```
    
-### <a name="streaming-media-into-hbase"></a>Streaming media into HBase    
-1. Download, extract and feed HBase with wikipedia data via the following command:
+### <a name="streaming-media-into-hbase"></a>Streaming media into HBase   
+1. Create table 'wiki'
+    ```
+    $ docker exec -it hbase bash -c "hbase shell"
+    > create 'wiki', 'text'
+    ```
+2. Alter the table
+    ```
+    > alter 'wiki', { NAME => 'text', VERSIONS => org.apache.hadoop.hbase.HConstants::ALL_VERSIONS }
+    > alter 'wiki', { NAME => 'revision', VERSIONS => org.apache.hadoop.hbase.HConstants::ALL_VERSIONS }
+    ```
+3. Exit shell
+    ```
+    > exit
+    ```    
+4. Download, extract and feed HBase with wikipedia data via the following command:
     ```jruby
-    curl https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles.xml.bz2 | bzcat | \
-    ${HBASE_HOME}/bin/hbase shell import_from_wikipedia.rb
+    docker exec -it hbase bash -c "curl https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles.xml.bz2 | bzcat | hbase shell /usr/local/code/import_from_wikipedia.rb"
     ```
     You should see output like this eventually:
     ```
@@ -205,6 +203,28 @@ Verify you can visit [http://localhost:50070/explorer.html](http://localhost:500
     ...
     ```
     You probably want to shut it down after a while. Just press Ctrl+C
+
+5. After stopping the script above visit [http://localhost:8888/filebrowser/#/hbase/data/default/wiki](http://localhost:8888/filebrowser/#/hbase/data/default/wiki)
+   
+    The long-named subdirectories you see represents individual regions.
+### <a name="regions-and-partitioning"></a>Regions and partitioning   
+In HBase, rows are kept in order, sorted by the row key. A region is a chunk of rows, identified by the starting key (inclusive) and the ending key (exclusive).
+
+Regions never overlap, and each is assigned to a specific region server in the cluster. In our setup, there is only one region server, which will always be responsible for all regions.
+
+1. Split regions manually on table 'wiki'
+    ```
+    $ docker exec -it hbase bash -c "hbase shell"
+    > hbase split 'wiki'
+    ```
+    Verify number of regions increased in Hue as expected.
+
+2. Get info from meta-table regarding which region server is responsible.
+    ```
+    scan 'hbase:meta', {COLUMNS => [ 'info:server', 'info:regioninfo' ] }
+    ```
+    
+3. But also the hbase:meta table is split into regions and spread across the cluster. Discuss with your neighbor: _How do the region servers know which regions they're responsible for serving?_
 
 [hue-first-page]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/hbase/hue-first-page.png?raw=true "Hue First Page"
 [hue-hbase-page]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/hbase/hue-hbase-page.png?raw=true "Hue Hbase Page"

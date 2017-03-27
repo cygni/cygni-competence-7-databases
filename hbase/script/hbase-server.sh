@@ -33,20 +33,20 @@ cleanup() {
 
 trap cleanup SIGHUP SIGINT SIGTERM EXIT
 
-/usr/local/hbase/bin/hbase master start 2>&1 &
+hbase master start 2>&1 &
 master_pid=$!
 echo $master_pid ${MASTER_PID}
 sleep 1;
 
-/usr/local/hbase/bin/hbase regionserver start 2>&1 &
+hbase regionserver start 2>&1 &
 region_pid=$!
 echo $region_pid > ${REGION_PID}
 
-/usr/local/hbase/bin/hbase thrift start 2>&1 &
+hbase thrift start 2>&1 &
 thrift_pid=$!
 echo $thrift_pid > ${THRIFT_PID}
 
-/usr/local/hbase/bin/hbase rest start 2>&1 &
+hbase rest start 2>&1 &
 rest_pid=$!
 echo $rest_pid > ${REST_PID}
 
