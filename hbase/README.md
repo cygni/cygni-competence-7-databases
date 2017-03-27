@@ -15,6 +15,7 @@ HBase is an implementation of Google's Bigtable. It is built on top of Zookeeper
 * [Exercises](#exercises)
     * [Getting used to the HBase shell](#getting-used-to-the-hbase-shell)
     * [Filtering](#filtering)
+    * [Working with versions](#working-with-versions)
     * [Streaming media into HBase](#streaming-media-into-hbase)
     * [Regions and partitioning](#regions-and-partitioning)
 
