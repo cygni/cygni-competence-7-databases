@@ -138,6 +138,8 @@ Verify you can visit [http://localhost:50070/explorer.html](http://localhost:500
 
 ## <a name="excercises"></a>Exercises
 ### <a name="getting-used-to-the-hbase-shell"></a>Getting used to the HBase shell
+You can find good information regarding data modelling in HBase at [https://hbase.apache.org/book.html#datamodel](https://hbase.apache.org/book.html#datamodel)
+
 1. Trying out various commands on tables, rows and columns.
 
     Create __table__ _test_ with __column family__ _cf_ 
