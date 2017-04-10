@@ -20,10 +20,10 @@ services:
       # Yarn
       - 8088:8088
   hbase:
-    image: cygni/7-databases:hbase
     container_name: hbase
     networks: ["vnet"]
     hostname: hbase.vnet
+    image: cygni/7-databases:hbase
     depends_on:
       - hadoop
       - zookeeper
@@ -35,10 +35,11 @@ services:
     container_name: hue
     networks: ["vnet"]
     hostname: hue.vnet
+    image: cygni/7-databases:hue
     depends_on:
       - hadoop
       - hbase
-    image: cygni/7-databases:hue
+    dns: 8.8.8.8
     ports:
       - 8888:8888
     entrypoint: ["./build/env/bin/hue", "runserver_plus", "0.0.0.0:8888"]
