@@ -14,8 +14,8 @@ HBase is an implementation of Google's Bigtable. It is built on top of Zookeeper
     * [Browse HDFS](#browse-hdfs)
 * [Exercises](#exercises)
     * [Getting used to the HBase shell](#getting-used-to-the-hbase-shell)
-    * [Filtering](#filtering)
     * [Working with versions](#working-with-versions)
+    * [Filtering](#filtering)
     * [Streaming media into HBase](#streaming-media-into-hbase)
     * [Regions and partitioning](#regions-and-partitioning)
 
@@ -142,9 +142,15 @@ You can find good information regarding data modelling in HBase at [https://hbas
 
 1. Trying out various commands on tables, rows and columns.
 
+    Open HBase shell by running
+    ```
+    docker exec -it hbase bash -c "hbase shell"
+    ```
+
     Create __table__ _test_ with __column family__ _cf_ 
     ```
     > create 'test', 'cf'
+    > alter 'test', NAME => 'cf', VERSIONS => 5
     ```
     __List__ table test
     ```
@@ -153,6 +159,7 @@ You can find good information regarding data modelling in HBase at [https://hbas
     __Put__ some values to the table and column 
     ```
     > put 'test', 'row1', 'cf:a', 'value1'
+    > put 'test', 'row1', 'cf:a', 'some new value'
     > put 'test', 'row2', 'cf:b', 'value2'
     > put 'test', 'row3', 'cf:c', 'value3'
     ```
@@ -164,6 +171,14 @@ You can find good information regarding data modelling in HBase at [https://hbas
     ```
     > get 'test', 'row1'
     ```
+
+2. Figure out how to use the shell to do the following:
+    * Delete individual column values within a row
+    * Delete an entire row
+    * Get multiple versions on column
+    
+3. Cleanup
+
     __Disable__ table _test_ 
     ```
     > disable 'test'
@@ -172,16 +187,29 @@ You can find good information regarding data modelling in HBase at [https://hbas
     ```
     > drop 'test'
     ```
-    __Exit__ hbase shell 
+### <a name="working-with-versions"></a>Working with versions
+1. Create table and alter column 'cf' for how to handle versions
     ```
-    > exit
+    create 'mytable', 'cf'
+    alter 'mytable', NAME => 'cf', VERSIONS => 5
+    alter 'mytable', NAME => 'cf', MIN_VERSIONS => 2
+    alter 'mytable', NAME => 'cf', TTL => 15
     ```
-
-2. Figure out how to use the shell to do the following:
-    * Delete individual column values within a row
-    * Delete an entire row
-
+2. Add some values to the column family on the very same row key
+    ```
+    put 'mytable', 'some fancy key', 'cf:a', 'old value'
+    put 'mytable', 'some fancy key', 'cf:a', 'newer value'
+    put 'mytable', 'some fancy key', 'cf:a', 'even newer value'
+    put 'mytable', 'some fancy key', 'cf:a', 'newest value'
+    ```
+3. Fetch values from column family a couple of times and watch old version be deleted. E.g.
+    ```
+    get 'mytable', 'some fancy key', {TIMERANGE => [0, 1690618847570], VERSIONS => 10}
+    ```
+    
 ### <a name="filtering"></a>Filtering
+__HINT:__ Use command _show_filters_ to list all available filters within HBase shell.
+
 When reading data from HBase using Get or Scan operations, you can use custom filters to return a subset of results to the client. While this does not reduce server-side IO, it does reduce network bandwidth and reduces the amount of data the client needs to process. Filters are generally used using the Java API, but can be used from HBase Shell for testing and debugging purposes.
 
 #### Logical Operators, Comparison Operators and Comparators
@@ -226,26 +254,6 @@ __HBase shell sample__
 ```
 > scan 'wiki', {RAW => true, LIMIT => 2, FILTER => "SingleColumnValueFilter('revision','author',=,'binary:LlywelynII')"}
 ```
-
-### <a name="working-with-versions"></a>Working with versions
-1. Create table and alter column 'cf' for how to handle versions
-    ```
-    create 'mytable', 'cf'
-    alter 'mytable', NAME => 'cf', VERSIONS => 5
-    alter 'mytable', NAME => 'cf', MIN_VERSIONS => 2
-    alter 'mytable', NAME => 'cf', TTL => 15
-    ```
-2. Add some values to the column family on the very same row key
-    ```
-    put 'mytable', 'some fancy key', 'cf:a', 'old value'
-    put 'mytable', 'some fancy key', 'cf:a', 'newer value'
-    put 'mytable', 'some fancy key', 'cf:a', 'even newer value'
-    put 'mytable', 'some fancy key', 'cf:a', 'newest value'
-    ```
-3. Fetch values from column family a couple of times and watch old version be deleted. E.g.
-    ```
-    get 'mytable', 'some fancy key', {TIMERANGE => [0, 1690618847570], VERSIONS => 10}
-    ```
 
 ### <a name="streaming-media-into-hbase"></a>Streaming media into HBase   
 1. Create table 'wiki'
