@@ -300,7 +300,7 @@ Regions never overlap, and each is assigned to a specific region server in the c
 1. Split regions manually on table 'wiki'
     ```
     $ docker exec -it hbase bash -c "hbase shell"
-    > hbase split 'wiki'
+    > split 'wiki'
     ```
     Verify number of regions increased in Hue as expected.
 
