@@ -101,6 +101,7 @@ curl -XGET 'localhost:9200/twitter/tweet/_search?pretty' -H 'Content-Type: appli
 
 ## Läsa in testdata (ElasticSearch måste vara igång)
 ```bash
+unzip data/masters_all.json.zip -d data/
 cd tools
 npm install
 node loader.js
