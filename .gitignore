@@ -1,0 +1,5 @@
+node_modules
+.DS_Store
+yarn.lock
+elasticsearch/data/masters_all.json
+
