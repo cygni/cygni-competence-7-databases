@@ -35,7 +35,7 @@ rl.on('line', line => {
     batch = [];
     requestInProgress = true;
     flushBatch(toSend).then(() => {
-      console.log(`indexed ${count} docs`);
+      console.log(`indexed ${count / 2} docs`);
       requestInProgress = false;
       rl.resume();
     }).catch(err => {
@@ -50,7 +50,7 @@ rl.on('line', line => {
 rl.on('close', () => {
   if (batch.length > 0) {
     flushBatch(batch).then(() => {
-      console.log(`indexed ${count} docs`);
+      console.log(`indexed ${count / 2} docs`);
       console.log('Great success! \uD83D\uDC4D');
       process.exit();
     }).catch(err => {
