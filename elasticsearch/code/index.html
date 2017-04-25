@@ -1,20 +1,29 @@
 
-<!DOCTYPE html> 
-<html lang="en"> 
-<head> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="utf-8">
   <title>Elastic Search Autocomplete</title>
-  
+
   <link rel="stylesheet" href="stylesheets/ui-lightness/jquery-ui-1.8.14.custom.css" type="text/css" media="screen" title="no title" charset="utf-8">
-  
+
   <script src="javascripts/jquery-1.6.2.min.js" type="text/javascript" charset="utf-8"></script>
   <script src="javascripts/jquery-ui-1.8.14.custom.min.js" type="text/javascript" charset="utf-8"></script>
   <script src="javascripts/elasticsearch.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
-  <div class="ui-widget"> 
-    <label for="search">search: </label> 
-    <input id="search" /> 
+    <div class="ui-widget">
+      <label for="noofResponses"># hits: </label>
+      <div id="noofResponses" />
+    </div>
+    <div class="ui-widget">
+      <label for="time">response time (ms): </label>
+      <div id="time" />
+    </div>
+  <div class="ui-widget">
+    <label for="search">search: </label>
+    <input id="search" />
   </div>
+
 </body>
 </html>

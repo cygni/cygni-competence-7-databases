@@ -1,6 +1,7 @@
 $(function() {
   $( "#search" ).autocomplete({
     source: function( request, response ) {
+      var startTime = Date.now();
       var wildcard = { "title": "*" + request.term + "*" };
       var postData = {
         "query": {
@@ -15,6 +16,10 @@ $(function() {
         dataType: "json",
         data: JSON.stringify(postData),
         success: function( data ) {
+          var timeTaken = Date.now() - startTime;
+          $("#noofResponses").text(data.hits.hits.length);
+          $("#time").text(timeTaken + " ms");
+          
           response( $.map( data.hits.hits, function( item ) {
             return {
               label: item._source.title,
