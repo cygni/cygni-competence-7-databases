@@ -104,7 +104,11 @@ curl -XGET 'localhost:9200/masters/_count?pretty' -H 'Content-Type: application/
 3. Hitta alla masters av en artist med namn 'John' som släpptes före 2000.
 4.
 
-
+## Begrepp
+- att indexera
+- mappning (dynamic / explicit)
+- hit
+- score
 
 ******************
 

@@ -20,12 +20,6 @@ $ docker network create n-es-cygni
 
 Alla kommandon utgår från cygni-competence-7-databases/elasticsearch!
 
-## Begrepp
-- att indexera
-- mappning (dynamic / explicit)
-- hit
-- score
-
 ## Starta ES:
 ```bash
 *nix> docker run -d --name es-cygni --net n-es-cygni -p 9200:9200 -e "http.host=0.0.0.0" -e "transport.host=127.0.0.1" -v $(pwd)/elasticsearch.yaml:/usr/share/elasticsearch/config/elasticsearch.yml  docker.elastic.co/elasticsearch/elasticsearch:5.3.1
