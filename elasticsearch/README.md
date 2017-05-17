@@ -36,6 +36,11 @@ Under Body välj raw och JSON (application/json) som format.
 
 ## Vanliga operationer i ES (via curl eller Postman)
 
+### Lista alla index
+```bash
+curl -X GET "localhost:9200/_cat/indices/*?v=&s=index"
+```
+
 ### Skapa ett dokument
 Skapar ett nytt dokument med automatisk mappning. 'twitter' är indexet, 'tweet'
 är dokument-typen. 1 är dokumentets ID. ?pretty gör svaret finformaterat!
