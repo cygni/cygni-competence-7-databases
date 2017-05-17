@@ -12,23 +12,28 @@ tjänsten här: http://localhost:5601
 
 ## Val av index
 Kibana kräver att man väljer ett default-index att arbeta mot. Se screenshot nedan:
+
 ![alt][kibana-select-index]
 
 ## Fritextsökning
 Det går bra att skriva en vanlig sträng i sökfältet. Då söks i alla indexerade fält.
+
 ![alt][kibana-simple-search]
 
 ## Fältsökning
 Genom att skriva fältets namn - kolon - sökord så söks bara i det fältet.
+
 ![alt][kibana-field-search]
 
 ## Boolsksökning
 Sökparametrar kan kombineras med AND:
 title: demon AND artists: E-Type
+
 ![alt][kibana-and-search]
 
 ## Rangesökning
 Görs så här: year: [ 0 TO 2000]
+
 ![alt][kibana-range-search]
 
 ## Övningar frågor
@@ -38,12 +43,15 @@ Görs så här: year: [ 0 TO 2000]
 
 ## Övningar Grafer
 1. Gör en Tag Cloud över styles:
+
 ![alt][tagcloud-styles]
 
 2. Gör en Bar Chart över styles:
+
 ![alt][bar-styles]
 
 3. Gör en Bar Chart över masters per år och de fem vanligaste styles inom varje år:
+
 ![alt][year-sub-styles]
 
 

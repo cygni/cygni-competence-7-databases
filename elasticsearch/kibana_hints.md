@@ -11,12 +11,15 @@ artists: John AND year: [1 TO 1999]
 
 ## Övningar grafer
 1. Gör en Tag Cloud över styles:
+
 ![alt][tagcloud-styles]
 
 2. Gör en Bar Chart över styles:
+
 ![alt][bar-styles]
 
 3. Gör en Bar Chart över masters per år och de fem vanligaste styles inom varje år:
+
 ![alt][year-sub-styles]
 
 
