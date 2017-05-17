@@ -97,12 +97,39 @@ curl -XGET 'localhost:9200/masters/_count?pretty' -H 'Content-Type: application/
 '
 ```
 
+Aggregera masters per år:
+```bash
+curl -XGET 'localhost:9200/masters/_search?pretty' -H 'Content-Type: application/json' -d'
+{
+	"size": 0,
+    "aggs" : {
+        "genres" : {
+            "terms" : {
+                "field" : "year",
+                "size": 120,
+                "order" : { "_term" : "asc" }
+            }
+        }
+    }
+}
+'
+```
+
+{
+	"size": 0,
+    "aggs" : {
+        "genres" : {
+            "terms" : { "field" : "styles.keyword", "size": 1000 }
+        }
+    }
+}
+
 Övningar:
 
 1. Hur många masters har Rick Astley släppt?
 2. Hur många masters släpptes mellan 1980 och 1989?
 3. Hitta alla masters av en artist med namn 'John' som släpptes före 2000.
-4.
+4. Aggregera antalet masters per style.
 
 ## Begrepp
 - att indexera
