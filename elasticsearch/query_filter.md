@@ -170,19 +170,3 @@ curl -XGET 'localhost:9200/masters/_search?pretty' -H 'Content-Type: application
 2. Hur många masters släpptes mellan 1980 och 1989? [Range queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html)
 3. Hitta alla masters av en artist med namn 'John' som släpptes före 2000.
 4. Aggregera antalet masters per style.
-
-## Begrepp
-- att indexera
-- mappning (dynamic / explicit)
-- hit
-- score
-
-******************
-
-Visa Skillnad Query / Filter
-Visa Exempel Query
-    - när använda Query (techo, hard techno)
-Visa Exempel Filter
-    - när använda filter
-
-Övningar Query/Filter

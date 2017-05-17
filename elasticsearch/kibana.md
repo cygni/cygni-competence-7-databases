@@ -56,22 +56,6 @@ Görs så här: year: [ 0 TO 2000]
 
 
 
-### ToDo:
-- styles per year
-
-Match
-Hitta 'Never gonna give you up'
-
-Query vs Filter
-Query: Hitta alla Techno låtar från 2002
-Filter: "-"
-
-
-Filterfrågor
-
-Hitta alla
-
-
 [kibana-select-index]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/kibana-select-index.png?raw=true "Kibana välj index"
 
 [kibana-simple-search]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/kibana-simple-search.png?raw=true "Kibana fritextsökning"
