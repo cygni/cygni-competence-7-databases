@@ -36,7 +36,15 @@ Görs så här: year: [ 0 TO 2000]
 2. Hur många masters släpptes mellan 1980 och 1989?
 3. Hitta alla masters av en artist med namn 'John' som släpptes före 2000.
 
-## Grafer
+## Övningar Grafer
+1. Gör en Tag Cloud över styles:
+![alt][tagcloud-styles]
+
+2. Gör en Bar Chart över styles:
+![alt][bar-styles]
+
+3. Gör en Bar Chart över masters per år och de fem vanligaste styles inom varje år:
+![alt][year-sub-styles]
 
 
 
@@ -65,3 +73,9 @@ Hitta alla
 [kibana-and-search]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/kibana-and-search.png?raw=true "Kibana boolsksökning"
 
 [kibana-range-search]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/kibana-range-search.png?raw=true "Kibana rangesökning"
+
+[tagcloud-styles]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/tagcloud-styles.png?raw=true "Tag Cloud över styles"
+
+[bar-styles]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/bar-styles.png?raw=true "Masters per style"
+
+[year-sub-styles]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/bar-year-sub-styles.png?raw=true "Masters per år, sub styles"
