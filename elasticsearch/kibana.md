@@ -28,8 +28,13 @@ title: demon AND artists: E-Type
 ![alt][kibana-and-search]
 
 ## Rangesökning
-Görs såhär: year: [ 0 TO 2000]
+Görs så här: year: [ 0 TO 2000]
 ![alt][kibana-range-search]
+
+## Övningar
+1. Hur många masters har Rick Astley släppt?
+2. Hur många masters släpptes mellan 1980 och 1989?
+3. Hitta alla masters av en artist med namn 'John' som släpptes före 2000.
 
 ## Grafer
 

@@ -52,8 +52,8 @@ curl -XPOST 'localhost:9200/masters/_search?pretty' -H 'Content-Type: applicatio
 }
 '
 ```
-[Query API][https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html]
-[Match Query][https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html]
+[Query API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html)
+[Match Query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html)
 
 Hitta alla masters utgivna 2003 i stilen Techno:
 ```bash
@@ -71,7 +71,7 @@ curl -XPOST 'localhost:9200/masters/_search?pretty' -H 'Content-Type: applicatio
 }
 '
 ```
-[Bool Query][https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html]
+[Bool Query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html)
 
 Hitta masters i stilen 'Hard Techno' från index 9000:
 ```bash
@@ -131,7 +131,7 @@ curl -XPOST 'localhost:9200/masters/_search?pretty' -H 'Content-Type: applicatio
 }
 '
 ```
-[Term Query][https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html]
+[Term Query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html)
 
 Räkna masters utgivna 2012:
 ```bash
@@ -143,7 +143,7 @@ curl -XGET 'localhost:9200/masters/_count?pretty' -H 'Content-Type: application/
 }
 '
 ```
-[Count API][https://www.elastic.co/guide/en/elasticsearch/reference/current/search-count.html]
+[Count API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-count.html)
 
 Aggregera masters per år:
 ```bash
@@ -162,12 +162,12 @@ curl -XGET 'localhost:9200/masters/_search?pretty' -H 'Content-Type: application
 }
 '
 ```
-[https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html]
+[Search aggregation](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html)
 
 Övningar:
 
 1. Hur många masters har Rick Astley släppt?
-2. Hur många masters släpptes mellan 1980 och 1989? [Range queries][https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html]
+2. Hur många masters släpptes mellan 1980 och 1989? [Range queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html)
 3. Hitta alla masters av en artist med namn 'John' som släpptes före 2000.
 4. Aggregera antalet masters per style.
 

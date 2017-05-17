@@ -42,7 +42,7 @@ curl -XGET 'localhost:9200/masters/_search?pretty' -H 'Content-Type: application
             {
                "range": {
                   "year": {
-                     "gte": 0,
+                     "gte": 1,
                      "lte": 1999
                   }
                }
