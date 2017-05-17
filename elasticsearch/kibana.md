@@ -51,12 +51,12 @@ Filterfrågor
 Hitta alla
 
 
-[kibana-select-index]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/kibana-select-index?raw=true "Kibana välj index"
+[kibana-select-index]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/kibana-select-index.png?raw=true "Kibana välj index"
 
-[kibana-simple-search]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/kibana-simple-search?raw=true "Kibana fritextsökning"
+[kibana-simple-search]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/kibana-simple-search.png?raw=true "Kibana fritextsökning"
 
-[kibana-field-search]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/kibana-field-search?raw=true "Kibana fältsökning"
+[kibana-field-search]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/kibana-field-search.png?raw=true "Kibana fältsökning"
 
-[kibana-and-search]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/kibana-and-search?raw=true "Kibana boolsksökning"
+[kibana-and-search]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/kibana-and-search.png?raw=true "Kibana boolsksökning"
 
-[kibana-range-search]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/kibana-range-search?raw=true "Kibana rangesökning"
+[kibana-range-search]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/kibana-range-search.png?raw=true "Kibana rangesökning"
