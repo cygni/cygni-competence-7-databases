@@ -10,6 +10,25 @@ docker run -d --name kibana-cygni --net n-es-cygni -e XPACK_SECURITY_ENABLED=fal
 Det kan ta en bra stund för Kibana att initera sig men när allt är igång kommer du åt
 tjänsten här: http://localhost:5601
 
+## Val av index
+Kibana kräver att man väljer ett default-index att arbeta mot. Se screenshot nedan:
+
+
+## Fritextsökning
+Det går bra att skriva en vanlig sträng i sökfältet. Då söks i alla indexerade fält.
+
+
+## Fältsökning
+Genom att skriva fältets namn - kolon - sökord så söks bara i det fältet.
+
+## Boolsksökning
+Sökparametrar kan kombineras med AND:
+title: demon AND artists: E-Type
+
+## Rangesökning
+Görs såhär: year: [ 0 TO 2000]
+
+## Grafer
 
 
 
