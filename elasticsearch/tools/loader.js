@@ -21,21 +21,21 @@ const rl = readline.createInterface({
 
 const batchSize = 100000;
 let batch = [];
-let count = 0;
+let docCount = 0;
 
 let requestInProgress = false;
 
 rl.on('line', line => {
-  count += 1;
   batch.push(JSON.parse(line));
 
   if (!requestInProgress && batch.length >= batchSize && batch.length % 2 === 0) {
     rl.pause();
     const toSend = batch;
+    docCount += toSend.length / 2;
     batch = [];
     requestInProgress = true;
     flushBatch(toSend).then(() => {
-      console.log(`indexed ${count / 2} docs`);
+      console.log(`indexed ${docCount} docs`);
       requestInProgress = false;
       rl.resume();
     }).catch(err => {
@@ -50,7 +50,7 @@ rl.on('line', line => {
 rl.on('close', () => {
   if (batch.length > 0) {
     flushBatch(batch).then(() => {
-      console.log(`indexed ${count / 2} docs`);
+      console.log(`indexed ${docCount} docs`);
       console.log('Great success! \uD83D\uDC4D');
       process.exit();
     }).catch(err => {
