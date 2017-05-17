@@ -28,7 +28,13 @@ Alla kommandon utgår från cygni-competence-7-databases/elasticsearch!
 win> docker run -d --name es-cygni --net n-es-cygni -p 9200:9200 -e "http.host=0.0.0.0" -e "transport.host=127.0.0.1" -v %cd%\elasticsearch.yaml:/usr/share/elasticsearch/config/elasticsearch.yml  docker.elastic.co/elasticsearch/elasticsearch:5.3.1
 ```
 
-## Vanliga operationer i ES (via curl eller PostMan)
+## Postman
+Postman är en plugin till Chrome som erbjuder ett grafiskt gränssnitt för REST-anrop. Den kan hämtas här: [https://www.getpostman.com/]
+
+Under Body välj raw och JSON (application/json) som format.
+[postman-example]
+
+## Vanliga operationer i ES (via curl eller Postman)
 
 ### Skapa ett dokument
 Skapar ett nytt dokument med automatisk mappning. 'twitter' är indexet, 'tweet'
@@ -99,3 +105,6 @@ curl -XGET 'localhost:9200/twitter/tweet/_search?pretty' -H 'Content-Type: appli
 }
 '
 ```
+
+
+[postman-example]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/postman.png?raw=true "Postman example"
