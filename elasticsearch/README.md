@@ -38,7 +38,7 @@ Under Body välj raw och JSON (application/json) som format.
 
 ### Lista alla index
 ```bash
-curl -X GET "localhost:9200/_cat/indices/*?v=&s=index"
+curl -X GET 'localhost:9200/_cat/indices/*?v=&s=index'
 ```
 
 ### Skapa ett dokument

@@ -36,6 +36,11 @@ curl -XPUT 'localhost:9200/masters-2?pretty' -H 'Content-Type: application/json'
 '
 ```
 
+## Se definierade mappningar i ett index
+```bash
+curl -XGET 'localhost:9200/masters-2?pretty' -H 'Content-Type: application/json' -d'
+```
+
 Dokumentation för mappningar: https://www.elastic.co/guide/en/elasticsearch/reference/5.3/mapping.html
 
 ## Indexera om data
@@ -62,4 +67,4 @@ Dokumentation för reindex: https://www.elastic.co/guide/en/elasticsearch/refere
   1. Titta på hur default mappningen blev i indexet "masters".
   2. Skapa ett nytt index "masters-2" med explicit mappning.
   3. Indexera masters-2 med allt data från masters.
-  4. Notera storleksskillnaden mellan masters och masters-2 [kolla här hur man listar index](./README.md#Lista-alla-index)
+  4. Notera storleksskillnaden mellan masters och masters-2 [kolla här hur man listar index](./README.md#lista-alla-index)
