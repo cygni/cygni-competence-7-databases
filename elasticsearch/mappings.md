@@ -11,7 +11,6 @@ curl -XPUT 'localhost:9200/masters-2?pretty' -H 'Content-Type: application/json'
 {
   "settings" : {
       "index" : {
-          "number_of_shards" : 3,
           "number_of_replicas" : 0
       }
   },
