@@ -9,6 +9,7 @@ Oftast definierar man mappningar i samband med att man skapar indexet:
 ```bash
 curl -XPUT 'localhost:9200/masters-2?pretty' -H 'Content-Type: application/json' -d'
 {
+  "mappings": {
     "master": {
         "properties": {
           "title" : { "type": "text", "copy_to":  "all_names"},
@@ -21,11 +22,10 @@ curl -XPUT 'localhost:9200/masters-2?pretty' -H 'Content-Type: application/json'
             }
           },
           "styles": { "type": "keyword" },
-          "all_names": {
-            "type": "text"
-          }
+          "all_names": { "type": "text" }
         }
     }
+  }
 }
 '
 ```
@@ -36,7 +36,6 @@ Dokumentation för mappningar: https://www.elastic.co/guide/en/elasticsearch/ref
 
 ```bash
 curl -XPOST 'localhost:9200/_reindex?pretty' -H 'Content-Type: application/json' -d'
-{
   {
     "source": {
       "index": "masters"
@@ -45,7 +44,6 @@ curl -XPOST 'localhost:9200/_reindex?pretty' -H 'Content-Type: application/json'
       "index": "masters-2"
     }
   }
-}
 '
 ```
 
