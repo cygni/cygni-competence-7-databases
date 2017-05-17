@@ -32,7 +32,7 @@ win> docker run -d --name es-cygni --net n-es-cygni -p 9200:9200 -e "http.host=0
 Postman är en plugin till Chrome som erbjuder ett grafiskt gränssnitt för REST-anrop. Den kan hämtas här: [https://www.getpostman.com/]
 
 Under Body välj raw och JSON (application/json) som format.
-[postman-example]
+![Postman example][postman-example]
 
 ## Vanliga operationer i ES (via curl eller Postman)
 
