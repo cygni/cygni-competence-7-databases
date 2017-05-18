@@ -41,7 +41,9 @@ vi har formaterat om det till JSON för enklare indexering i ElasticSearch.
 
 ## Querybaserad sökning
 
-Hitta masters med titeln 'Gonna Gonna Give You '
+Hitta masters med titeln 'Gonna Gonna Give You Up':
+[Query API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html)
+[Match Query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html)
 ```bash
 curl -XPOST 'localhost:9200/masters/_search?pretty' -H 'Content-Type: application/json' -d'
 {
@@ -52,10 +54,9 @@ curl -XPOST 'localhost:9200/masters/_search?pretty' -H 'Content-Type: applicatio
 }
 '
 ```
-[Query API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html)
-[Match Query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html)
 
 Hitta alla masters utgivna 2003 i stilen Techno:
+[Bool Query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html)
 ```bash
 curl -XPOST 'localhost:9200/masters/_search?pretty' -H 'Content-Type: application/json' -d'
 {
@@ -71,7 +72,6 @@ curl -XPOST 'localhost:9200/masters/_search?pretty' -H 'Content-Type: applicatio
 }
 '
 ```
-[Bool Query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html)
 
 Hitta masters i stilen 'Hard Techno' från index 9000:
 ```bash
@@ -85,6 +85,7 @@ curl -XPOST 'localhost:9200/masters/_search?pretty' -H 'Content-Type: applicatio
     "from": 9000,
     "size": 5
 }
+'
 ```
 
 Men!! Vi ser i svaret träffar som inte innehåller style 'Hard Techno':
@@ -111,13 +112,15 @@ Men!! Vi ser i svaret träffar som inte innehåller style 'Hard Techno':
           ]
         }
       }
-  }
+  ]
+}
 ```
 
 Ovanstående beror på att vi gör en textuell matchning. För exakt sökning behöver
 vi använda 'term'-sökning istället.
 
 Term-sökning på exakt 'Hard Techno':
+[Term Query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html)
 ```bash
 curl -XPOST 'localhost:9200/masters/_search?pretty' -H 'Content-Type: application/json' -d'
 {
@@ -131,9 +134,9 @@ curl -XPOST 'localhost:9200/masters/_search?pretty' -H 'Content-Type: applicatio
 }
 '
 ```
-[Term Query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html)
 
 Räkna masters utgivna 2012:
+[Count API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-count.html)
 ```bash
 curl -XGET 'localhost:9200/masters/_count?pretty' -H 'Content-Type: application/json' -d'
 {
@@ -143,9 +146,9 @@ curl -XGET 'localhost:9200/masters/_count?pretty' -H 'Content-Type: application/
 }
 '
 ```
-[Count API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-count.html)
 
 Aggregera masters per år:
+[Search aggregation](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html)
 ```bash
 curl -XGET 'localhost:9200/masters/_search?pretty' -H 'Content-Type: application/json' -d'
 {
@@ -162,7 +165,6 @@ curl -XGET 'localhost:9200/masters/_search?pretty' -H 'Content-Type: application
 }
 '
 ```
-[Search aggregation](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html)
 
 Övningar:
 
