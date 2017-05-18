@@ -154,7 +154,7 @@ curl -XGET 'localhost:9200/masters/_search?pretty' -H 'Content-Type: application
 {
 	"size": 0,
     "aggs" : {
-        "genres" : {
+        "masters_per_year" : {
             "terms" : {
                 "field" : "year",
                 "size": 120,
