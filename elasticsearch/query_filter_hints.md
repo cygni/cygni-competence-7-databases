@@ -66,10 +66,27 @@ curl -XGET 'localhost:9200/masters/_search?pretty' -H 'Content-Type: application
 ```bash
 curl -XGET 'localhost:9200/masters/_search?pretty' -H 'Content-Type: application/json' -d'
 {
-	"size": 0,
+    "size": 0,
     "aggs" : {
         "genres" : {
             "terms" : { "field" : "styles.keyword", "size": 1000 }
+        }
+    }
+}
+'
+```
+
+5. Hur många unika styles finns det?
+```bash
+curl -XGET 'localhost:9200/masters/_search?pretty' -H 'Content-Type: application/json' -d'
+{
+    "size": 0,
+    "aggs": {
+
+       "distinct_terms": {
+            "cardinality": {
+                "field": "styles.keyword"
+            }
         }
     }
 }
