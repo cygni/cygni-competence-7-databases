@@ -1,4 +1,4 @@
-# Cygni competence - 7 databases - ElasticSearch
+# Cygni competence - 7 databases - Elasticsearch
 
 ## Förberedelser
 Följ alla instruktioner nedan som en förberedelse inför kurstillfället! Se

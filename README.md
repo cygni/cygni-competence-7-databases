@@ -1,6 +1,6 @@
 #Cygni competence - 7 databases
 
-This course is based on the book [Seven Databases in Seven Weeks](https://pragprog.com/book/rwdata/seven-databases-in-seven-weeks). Each chapter will be covered on the following occassions. Note that the chapter on Riak has been replaced with ElasticSearch.
+This course is based on the book [Seven Databases in Seven Weeks](https://pragprog.com/book/rwdata/seven-databases-in-seven-weeks). Each chapter will be covered on the following occassions. Note that the chapter on Riak has been replaced with Elasticsearch.
 
 ### Stockholm
 
@@ -12,7 +12,7 @@ This course is based on the book [Seven Databases in Seven Weeks](https://pragpr
 | 2017-02-15 | PostgreSQL      | Rickard Lindström     |
 | 2017-03-09 | MongoDB         | Fortunato Flores Ando |
 | 2017-03-27 | HBase           | Pär Tjärnberg         |
-| 2017-04-27 | ElasticSearch   | Henrik L. + Breding   |
+| 2017-05-18 | Elasticsearch   | Henrik L. + Breding   |
 
 
 ### Göteborg
@@ -24,7 +24,7 @@ This course is based on the book [Seven Databases in Seven Weeks](https://pragpr
 | 2017-02-21 | PostgreSQL      | Rickard Lindström     |
 | 2017-03-13 | MongoDB         | Fortunato Flores Ando |
 | 2017-04-10 | HBase           | Pär Tjärnberg         |
-| 2017-05-11 | ElasticSearch   | Henrik L. + Breding   |
+| 2017-05-30 | Elasticsearch   | Henrik L. + Breding   |
 
 
 
@@ -40,7 +40,7 @@ On windows 10, you should install 'Docker for Windows'. This installation uses H
 ## Docker on Windows 7 or 8
 On Windows 7 or 8, you have to install 'Docker Toolbox'.
 
-- Instructions: https://docs.docker.com/toolbox/toolbox_install_windows/ 
+- Instructions: https://docs.docker.com/toolbox/toolbox_install_windows/
 
 ## Docker for Mac
 Note that the old way of using Docker on OSX with docker-machine is not recommended!
