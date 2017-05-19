@@ -42,7 +42,7 @@ Postman är en plugin till Chrome som erbjuder ett grafiskt gränssnitt för RES
 Under Body välj raw och JSON (application/json) som format.
 ![Postman example][postman-example]
 
-## Läsa in testdata (ElasticSearch måste vara igång)
+## Läsa in testdata (Elasticsearch måste vara igång)
 Det är drygt en miljon poster som ska läsas in, det tar
 några minuter!
 ```bash
