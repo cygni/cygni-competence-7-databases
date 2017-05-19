@@ -2,12 +2,14 @@
 
 ## Förberedelser
 Följ alla instruktioner nedan som en förberedelse inför kurstillfället! Se
-[FAQ](#FAQ) för vanligt förekommande problem.
+[FAQ](https://github.com/cygni/cygni-competence-7-databases/tree/master/elasticsearch#faq) för vanligt förekommande problem.
 
 
 ## Pre´reqs
 
-Docker krävs för att starta ElasticSearch.
+Docker krävs för att starta Elasticsearch och Kibana.
+- Win64: https://store.docker.com/editions/community/docker-ce-desktop-windows
+- OSX: https://store.docker.com/editions/community/docker-ce-desktop-mac
 
 curl för kommandon från kommandoprompten.
 - Win64: https://curl.haxx.se/download.html#Win64
@@ -41,6 +43,8 @@ Under Body välj raw och JSON (application/json) som format.
 ![Postman example][postman-example]
 
 ## Läsa in testdata (ElasticSearch måste vara igång)
+Det är drygt en miljon poster som ska läsas in, det tar
+några minuter!
 ```bash
 unzip data/masters_all.json.zip -d data/
 cd tools
@@ -56,7 +60,7 @@ docker run -d --name kibana-cygni --net n-es-cygni -e XPACK_SECURITY_ENABLED=fal
 Det kan ta en bra stund för Kibana att initera sig men när allt är igång kommer du åt
 tjänsten här: http://localhost:5601
 
-### Val av index
+### Kibana, val av index
 Kibana kräver att man väljer ett default-index att arbeta mot. Se screenshot nedan:
 
 ![alt][kibana-select-index]
@@ -77,21 +81,23 @@ curl -XPOST 'localhost:9200/masters/_search?pretty' -H 'Content-Type: applicatio
 ```
 
 ## FAQ
-1. Elasticsearch docker container dör.
-    För lite minne, Elasticsearch och Kibana tillsammans kräver minst 4GB.
 
-2. Elasticsearch contianern går inte att starta.
-    I Windows: problem med sökvägar som innehåller mellanslag.
+### Elasticsearch docker container dör.
+För lite minne, Elasticsearch och Kibana tillsammans kräver minst 4GB.
 
-3. http://localhost:9200 svarar inte.
-    Hänt i Windows: exponerad port binds inte till localhost utan till IP-numret.
-    Byt då alla exempel-url:ar från localhost till ditt IP. tools/loader.js behöver
-    också redigeras:
+### Elasticsearch contianern går inte att starta.
+I Windows: problem med sökvägar som innehåller mellanslag.
+
+### http://localhost:9200 svarar inte.
+Hänt i Windows: exponerad port binds inte till localhost utan till IP-numret.
+
+Byt då alla exempel-url:ar från localhost till ditt IP. tools/loader.js behöver
+också redigeras:
 ```javascript
-    const client = elasticsearch.Client({
-                hosts: '<ditt ip-nr>:9200',
-                httpAuth: 'elastic:changeme',
-            });
+const client = elasticsearch.Client({
+    hosts: '<ditt ip-nr>:9200',
+    httpAuth: 'elastic:changeme',
+});
 ```
 
 [postman-example]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/postman.png?raw=true "Postman example"
