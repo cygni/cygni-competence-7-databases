@@ -1,10 +1,4 @@
-## Läsa in testdata (ElasticSearch måste vara igång)
-```bash
-unzip data/masters_all.json.zip -d data/
-cd tools
-npm install
-node loader.js
-```
+
 ## Om testdatat
 Från Discogs (https://data.discogs.com) har vi använt en delmängd av deras data som kallas Master Release.
 Testfilen innehåller 1 134 618 st JSON-dokument. Här är ett exempel på ett dokument:
@@ -170,5 +164,6 @@ curl -XGET 'localhost:9200/masters/_search?pretty' -H 'Content-Type: application
 
 1. Hur många masters har Rick Astley släppt?
 2. Hur många masters släpptes mellan 1980 och 1989? [Range queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html)
-3. Hitta alla masters av en artist med namn 'John' som släpptes före 2000.
+3. Hitta alla masters av en artist vars namn innehåller 'John' och som släpptes före 2000.
 4. Aggregera antalet masters per style.
+5. Hur många unika styles finns det? [Cardinality](https://www.elastic.co/guide/en/elasticsearch/guide/current/cardinality.html)

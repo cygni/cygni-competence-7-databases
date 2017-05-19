@@ -1,6 +1,12 @@
 # Cygni competence - 7 databases - ElasticSearch
 
+## Förberedelser
+Följ alla instruktioner nedan som en förberedelse inför kurstillfället! Se
+[FAQ](#FAQ) för vanligt förekommande problem.
+
+
 ## Pre´reqs
+
 Docker krävs för att starta ElasticSearch.
 
 curl för kommandon från kommandoprompten.
@@ -18,9 +24,9 @@ $ docker pull docker.elastic.co/kibana/kibana:5.3.1
 $ docker network create n-es-cygni
 ```
 
-Alla kommandon utgår från cygni-competence-7-databases/elasticsearch!
+> **_Alla kommandon utgår från mappen cygni-competence-7-databases/elasticsearch!_**
 
-## Starta ES:
+## Starta Elasticsearch
 ```bash
 *nix> docker run -d --name es-cygni --net n-es-cygni -p 9200:9200 -e "http.host=0.0.0.0" -e "transport.host=127.0.0.1" -v $(pwd)/elasticsearch.yaml:/usr/share/elasticsearch/config/elasticsearch.yml  docker.elastic.co/elasticsearch/elasticsearch:5.3.1
 ```
@@ -34,82 +40,60 @@ Postman är en plugin till Chrome som erbjuder ett grafiskt gränssnitt för RES
 Under Body välj raw och JSON (application/json) som format.
 ![Postman example][postman-example]
 
-## Vanliga operationer i ES (via curl eller Postman)
-
-### Lista alla index
+## Läsa in testdata (ElasticSearch måste vara igång)
 ```bash
-curl -X GET 'localhost:9200/_cat/indices/*?v=&s=index'
+unzip data/masters_all.json.zip -d data/
+cd tools
+npm install
+node loader.js
 ```
 
-### Skapa ett dokument
-Skapar ett nytt dokument med automatisk mappning. 'twitter' är indexet, 'tweet'
-är dokument-typen. 1 är dokumentets ID. ?pretty gör svaret finformaterat!
-
+##  Starta Kibana
 ```bash
-curl -XPUT 'localhost:9200/twitter/tweet/1?pretty' -H 'Content-Type: application/json' -d'
-{
-    "user" : "kimchy",
-    "post_date" : "2009-11-15T14:12:12",
-    "message" : "trying out Elasticsearch"
-}
-'
-```
-### Hämta ett dokument
-```bash
-curl -XGET 'localhost:9200/twitter/tweet/1?pretty'
+docker run -d --name kibana-cygni --net n-es-cygni -e XPACK_SECURITY_ENABLED=false -e ELASTICSEARCH_URL=http://es-cygni:9200 -p 5601:5601 docker.elastic.co/kibana/kibana:5.3.1
 ```
 
-### Hämta mappning för ett index
-```bash
-curl -XGET 'localhost:9200/twitter/_mapping?pretty'
-```
+Det kan ta en bra stund för Kibana att initera sig men när allt är igång kommer du åt
+tjänsten här: http://localhost:5601
 
-### Skapa en explicit mappning
-```bash
-curl -XPUT 'localhost:9200/twitter?pretty' -H 'Content-Type: application/json' -d'
-{
-  "mappings": {
-    "tweet": {
-      "properties": {
-        "message": {
-          "type": "text"
-        }
-      }
-    }
-  }
-}
-'
-curl -XPUT 'localhost:9200/twitter/_mapping/user?pretty' -H 'Content-Type: application/json' -d'
-{
-  "properties": {
-    "name": {
-      "type": "text"
-    }
-  }
-}
-'
-curl -XPUT 'localhost:9200/twitter/_mapping/tweet?pretty' -H 'Content-Type: application/json' -d'
-{
-  "properties": {
-    "user_name": {
-      "type": "text"
-    }
-  }
-}
-'
-```
+### Val av index
+Kibana kräver att man väljer ett default-index att arbeta mot. Se screenshot nedan:
+
+![alt][kibana-select-index]
+
+## Verifiera
+Säkerställ att Elasticsearch har gått igång ordentligt samt att inläsningen av
+testdatat gått bra:
 
 ```bash
-curl -XGET 'localhost:9200/twitter/tweet/_search?pretty' -H 'Content-Type: application/json' -d'
+curl -XPOST 'localhost:9200/masters/_search?pretty' -H 'Content-Type: application/json' -d'
 {
     "query": {
-        "match": {
-            "user": "kimchy"
-        }
-    }
+        "match" : { "title": "Never Gonna Give You Up"}
+    },
+    "size": 5
 }
 '
 ```
 
+## FAQ
+1. Elasticsearch docker container dör.
+    För lite minne, Elasticsearch och Kibana tillsammans kräver minst 4GB.
+
+2. Elasticsearch contianern går inte att starta.
+    I Windows: problem med sökvägar som innehåller mellanslag.
+
+3. http://localhost:9200 svarar inte.
+    Hänt i Windows: exponerad port binds inte till localhost utan till IP-numret.
+    Byt då alla exempel-url:ar från localhost till ditt IP. tools/loader.js behöver
+    också redigeras:
+```javascript
+    const client = elasticsearch.Client({
+                hosts: '<ditt ip-nr>:9200',
+                httpAuth: 'elastic:changeme',
+            });
+```
 
 [postman-example]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/postman.png?raw=true "Postman example"
+
+[kibana-select-index]: https://github.com/cygni/cygni-competence-7-databases/blob/screenshots/elasticsearch/kibana-select-index.png?raw=true "Kibana välj index"
