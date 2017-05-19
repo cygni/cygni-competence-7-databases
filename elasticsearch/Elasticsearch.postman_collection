@@ -1,0 +1,311 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Elasticsearch",
+		"_postman_id": "0725d486-0006-16dc-9ba1-d7187df785fb",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "0. Match all",
+			"request": {
+				"url": "localhost:9200/masters/_search",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"query\": {\n        \"match_all\" : {}\n    },\n    \"size\": 5\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "1. Search title",
+			"request": {
+				"url": "localhost:9200/masters/_search",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"query\": {\n        \"match\" : { \"title\": \"Never Gonna Give You Up\"}\n    },\n    \"size\": 5\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "2. Search year styles",
+			"request": {
+				"url": "localhost:9200/masters/_search",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"query\": {\n        \"bool\": {\n            \"must\": [\n                { \"match\": { \"year\": 2003 }},\n                { \"match\": { \"styles\": \"Techno\"}}\n            ]\n        }\n    },\n    \"size\": 5\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "3.  Hard Techno text search",
+			"request": {
+				"url": "localhost:9200/masters/_search",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"query\": {\n        \"match\": {\n            \"styles\": \"Hard Techno\"\n        }\n    },\n    \"from\": 9000,\n    \"size\": 5\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "4.  Hard Techno term search",
+			"request": {
+				"url": "localhost:9200/masters/_search",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"query\": {\n        \"term\": {\n            \"styles.keyword\": \"Hard Techno\"\n        }\n    },\n    \"from\": 150,\n    \"size\": 5\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "5. Count masters in 2012",
+			"request": {
+				"url": "localhost:9200/masters/_count",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"query\": {\n        \"term\": { \"year\": 2012 }\n    }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "6. Aggregate masters per year",
+			"request": {
+				"url": "localhost:9200/masters/_search",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"size\": 0,\n    \"aggs\" : {\n        \"genres\" : {\n            \"terms\" : {\n                \"field\" : \"year\",\n                \"size\": 120,\n                \"order\" : { \"_term\" : \"asc\" }\n            }\n        }\n    }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "S1. Masters for Rick Astley",
+			"request": {
+				"url": "localhost:9200/masters/_search",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"query\": {\n        \"match\": {\n            \"artists.keyword\": {\n                \"query\": \"Rick Astley\"\n            }\n        }\n    }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "S2. Masters 1980 - 1989",
+			"request": {
+				"url": "localhost:9200/masters/_count",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"query\": {\n        \"range\" : {\n            \"year\" : {\n                \"gte\" : 1980,\n                \"lte\" : 1989\n            }\n        }\n    }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "S3. Masters with artist John before 2000",
+			"request": {
+				"url": "localhost:9200/masters/_search",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"query\": {\n      \"bool\": {\n         \"must\": [\n            {\n               \"range\": {\n                  \"year\": {\n                     \"gte\": 1,\n                     \"lte\": 1999\n                  }\n               }\n            },\n            {\n               \"match\": {\n                  \"artists\": {\n                     \"query\": \"John\"\n                  }\n               }\n            }\n         ]\n      }\n   },\n   \"size\": 5\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "S4. Aggregate Masters per style",
+			"request": {
+				"url": "localhost:9200/masters/_search",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"size\": 0,\n    \"aggs\" : {\n        \"genres\" : {\n            \"terms\" : { \"field\" : \"styles.keyword\", \"size\": 1000 }\n        }\n    }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "S5. Number of unique styles",
+			"request": {
+				"url": "localhost:9200/masters/_search",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"size\": 0,\n    \"aggs\": {\n\n       \"distinct_terms\": {\n            \"cardinality\": {\n                \"field\": \"styles.keyword\"\n            }\n        }\n    }\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "m1. Create Index & mapping",
+			"request": {
+				"url": "localhost:9200/masters-2",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"settings\" : {\n      \"index\" : {\n          \"number_of_replicas\" : 0\n      }\n  },\n  \"mappings\": {\n    \"master\": {\n      \t\"_all\": { \"enabled\": false },\n        \"properties\": {\n          \"title\" : { \"type\": \"text\", \"copy_to\":  \"all_names\"},\n          \"year\": { \"type\": \"date\", \"format\": \"year\" },\n          \"artists\": { \"type\": \"text\", \"copy_to\":  \"all_names\" },\n          \"videos\": {\n            \"properties\": {\n              \"duration\": { \"type\": \"integer\" },\n              \"title\": { \"type\": \"text\", \"copy_to\":  \"all_names\" }\n            }\n          },\n          \"styles\": { \"type\": \"keyword\" },\n          \"all_names\": { \"type\": \"text\" }\n        }\n    }\n  }\n}\n"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "m2. Get mapping",
+			"request": {
+				"url": "localhost:9200/masters-2",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"settings\" : {\n      \"index\" : {\n          \"number_of_replicas\" : 0\n      }\n  },\n  \"mappings\": {\n    \"master\": {\n      \t\"_all\": { \"enabled\": false },\n        \"properties\": {\n          \"title\" : { \"type\": \"text\", \"copy_to\":  \"all_names\"},\n          \"year\": { \"type\": \"date\", \"format\": \"year\" },\n          \"artists\": { \"type\": \"text\", \"copy_to\":  \"all_names\" },\n          \"videos\": {\n            \"properties\": {\n              \"duration\": { \"type\": \"integer\" },\n              \"title\": { \"type\": \"text\", \"copy_to\":  \"all_names\" }\n            }\n          },\n          \"styles\": { \"type\": \"keyword\" },\n          \"all_names\": { \"type\": \"text\" }\n        }\n    }\n  }\n}\n"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "m3. Reindex",
+			"request": {
+				"url": "localhost:9200/_reindex",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"source\": {\n\t  \"index\": \"masters\"\n\t},\n\t\"dest\": {\n\t  \"index\": \"masters-2\"\n\t}\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
