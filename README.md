@@ -34,18 +34,13 @@ We have prepared [docker images](https://hub.docker.com/r/cygni/7-databases/tags
 ## Docker on Windows 10
 On windows 10, you should install 'Docker for Windows'. This installation uses Hyper-V to run the Docker host.
 
-- Instructions: https://docs.docker.com/docker-for-windows/
+- Instructions: https://docs.docker.com/desktop/install/windows-install/
 - Installer: https://download.docker.com/win/stable/InstallDocker.msi
-
-## Docker on Windows 7 or 8
-On Windows 7 or 8, you have to install 'Docker Toolbox'.
-
-- Instructions: https://docs.docker.com/toolbox/toolbox_install_windows/
 
 ## Docker for Mac
 Note that the old way of using Docker on OSX with docker-machine is not recommended!
 
-- Instructions: https://docs.docker.com/docker-for-mac/
+- Instructions: https://docs.docker.com/desktop/install/mac-install/
 
 ## Test docker
 Make sure your docker installation works by running a simple 'hello-world' container:
@@ -71,9 +66,9 @@ To generate this message, Docker took the following steps:
 To try something more ambitious, you can run an Ubuntu container with:
  $ docker run -it ubuntu bash
 
-Share images, automate workflows, and more with a free Docker Hub account:
- https://hub.docker.com
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
 
 For more examples and ideas, visit:
- https://docs.docker.com/engine/userguide/
+ https://docs.docker.com/get-started/
 ```
