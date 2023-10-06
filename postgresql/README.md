@@ -59,7 +59,7 @@ https://www.postgresql.org/docs/9.6/static/index.html
 
 ## Day 1 - CRUD operations (together)
 
-![alt text](https://github.com/cygni/cygni-competence-7-databases/blob/master/postgresql/events_diagram.png "Day 1 table relations")
+![alt text](events_diagram.png "Day 1 table relations")
 
 1)  Create the table `countries` and insert rows.
 
@@ -350,9 +350,9 @@ During the first couple of exercises we will import the movies/actors structure 
     Run `/code/create_movies.sql` and `/code/movies_data.sql` 
    (hint: if using postgres-client docker image the sql files are in /code)
    
-![alt text](https://github.com/cygni/cygni-competence-7-databases/blob/master/postgresql/movies_diagram.png "Movies")   
+![alt text](movies_diagram.png "Movies")   
 
-2) Select all action movies from the imported structure
+1) Select all action movies from the imported structure
 
                              title                     
         -----------------------------------------------
@@ -364,7 +364,7 @@ During the first couple of exercises we will import the movies/actors structure 
          Beverly Hills Cop
          ...
 
-3) Select all comedy movies where arnold is an actor
+2) Select all comedy movies where arnold is an actor
 
                title        
         --------------------
@@ -377,7 +377,7 @@ During the first couple of exercises we will import the movies/actors structure 
          Twins
          Commando
          
-4) Find all movies that are categorized as `Action` and `SciFi`
+3) Find all movies that are categorized as `Action` and `SciFi`
        
                           title                   
        -------------------------------------------
@@ -389,7 +389,7 @@ During the first couple of exercises we will import the movies/actors structure 
         Cyborg
         ...
 
-5) Find the top 5 best ranked movies (average of all scores in different categories)
+4) Find the top 5 best ranked movies (average of all scores in different categories)
 
 
                   title          | score 

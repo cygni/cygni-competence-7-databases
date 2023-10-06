@@ -2,6 +2,9 @@
 
 This course is based on the book [Seven Databases in Seven Weeks](https://pragprog.com/book/rwdata/seven-databases-in-seven-weeks). Each chapter will be covered on the following occassions. Note that the chapter on Riak has been replaced with Elasticsearch.
 
+<details>
+<summary>Old dates and trainers.</summary>
+
 ### Stockholm
 
 | Date       | Database        | Trainer               |
@@ -27,18 +30,27 @@ This course is based on the book [Seven Databases in Seven Weeks](https://pragpr
 | 2017-05-30 | Elasticsearch   | Henrik L. + Breding   |
 
 
+</details>
+
+### Göteborg
+| Date | Database        | Trainer |
+|------| --------------- |---------|
+| TBA  | CouchDB         | TBD     |
+| TBA  | Neo4J           | TBD     |
+| TBA  | Redis           | TBD     |
+| TBA  | PostgreSQL      | TBD     |
+| TBA  | MongoDB         | TBD     |
+| TBA  | HBase           | TBD     |
+| TBA  | Elasticsearch   | TBD     |
 
 ## Course structure
 We have prepared [docker images](https://hub.docker.com/r/cygni/7-databases/tags/) for each occasion to reduce the time and effort needed to get database instances up and running. See the `README.md` for each database for specific guidelines. Please make sure that you have read the chapter in the book as well as the 'Before we start' section in the `README.md` for the applicable database *before* the occasion. Also ensure that you have a docker installation that is working on your computer. See below for installation instructions on different platforms.
 
 ## Docker on Windows 10
-On windows 10, you should install 'Docker for Windows'. This installation uses Hyper-V to run the Docker host.
 
 - Instructions: https://docs.docker.com/desktop/install/windows-install/
-- Installer: https://download.docker.com/win/stable/InstallDocker.msi
 
 ## Docker for Mac
-Note that the old way of using Docker on OSX with docker-machine is not recommended!
 
 - Instructions: https://docs.docker.com/desktop/install/mac-install/
 
