@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 services:
   zookeeper:
     container_name: zookeeper
@@ -43,7 +43,7 @@ services:
     ports:
       - 8888:8888
     entrypoint: ["./build/env/bin/hue", "runserver_plus", "0.0.0.0:8888"]
+
 networks:
   vnet:
-    external:
-      name: vnet
+    name: "vnet"
