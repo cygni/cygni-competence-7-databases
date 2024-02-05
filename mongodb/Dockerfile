@@ -1,4 +1,3 @@
-FROM mongo:3.4
+FROM mongo:5.0.24
 
-COPY data /my-data
-
+COPY demo-data /my-data

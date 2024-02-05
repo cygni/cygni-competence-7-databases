@@ -5,21 +5,22 @@ Preparations and examples we'll be using through the workshop.
 
 ##Preparations
 
-Build and run our mongo docker image. Beside mongodb (3.4.2) it has some data we will import.
+Build and run our mongo docker image. Beside mongodb (5.0.24) it has some data we will import.
+There is also a mongo-express image that is a gui to visualize the data in mongodb. 
 
-    docker build -t cygni/mongo .
-    docker run --name my-mongo -d cygni/mongo
+To Start the containers
 
-After doing this in subsequent sessions just run `docker start my-mongo` to restart the container.
+    docker-compose up -d
    
 Load data. This executes `mongoimport` in a shell in the running container:
 
-    docker exec -it my-mongo bash -c 'mongoimport --db test --collection restaurants --drop --file /my-data/restaurants.json'
+
+    docker exec -it mongodb-mongo-1 bash -c 'mongoimport --uri=mongodb://root:example@localhost/ --db test --collection restaurants --drop --file /my-data/restaurants.json  --collection restaurants --drop --file /my-data/restaurants.json  --collection restaurants --drop --file /my-data/restaurants.json --authenticationDatabase admin'
+
 
 We can now use the mongo shell within the container:
-  
-    docker exec -it my-mongo mongo
 
+    docker exec -it mongodb-mongo-1 mongosh -u root -p example --authenticationDatabase admin
     
 ##Basic CRUD
     
